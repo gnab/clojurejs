@@ -15,13 +15,21 @@ function parseExpression (str, cursor) {
 
   for (; cursor.i < str.length; ++cursor.i) {
     chr = str[cursor.i];
-    if (chr === '(') {
+    if (chr === '(' && !cursor.string) {
       ++cursor.i;
       expr.push(parseExpression(str, cursor));
     }
-    else if (chr === ')') {
+    else if (chr === ')' && !cursor.string) {
       pushWordIfPresent();
       return expr;
+    }
+    else if (chr === '\'' || chr === '"') {
+      if (chr === cursor.string) {
+        delete cursor.string;
+      }
+      else {
+        cursor.string = chr;
+      }
     }
     else {
       if (/\s/.exec(chr)) {
