@@ -10,7 +10,14 @@ describe('Parser', function () {
     parser.parse('(func 1 2)').should.eql([['func', '1', '2']]);
   });
 
-  it('should parse strings', function () {
-    parser.parse('(concat "abc(" ")def")').should.eql([['concat', 'abc(', ')def']]);
+  describe('strings', function () {
+    it('should parse strings', function () {
+      parser.parse('(concat "abc(" ")def")').should.eql([['concat', 'abc(', ')def']]);
+    });
+
+    it('should ignore strings inside strings', function () {
+      parser.parse('(alert \'ab"cd"ef\'').should.eql([['alert', 'ab"cd"ef']]);
+    });
   });
+
 });

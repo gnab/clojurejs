@@ -11,7 +11,7 @@ function parseExpression (str, cursor) {
     , chr
     ;
 
-  cursor = cursor || {i: 0, word: ''};
+  cursor = cursor || {i: 0, token: ''};
 
   for (; cursor.i < str.length; ++cursor.i) {
     chr = str[cursor.i];
@@ -20,12 +20,15 @@ function parseExpression (str, cursor) {
       expr.push(parseExpression(str, cursor));
     }
     else if (chr === ')' && !cursor.string) {
-      pushWordIfPresent();
+      pushTokenIfPresent();
       return expr;
     }
     else if (chr === '\'' || chr === '"') {
       if (chr === cursor.string) {
         delete cursor.string;
+      }
+      else if (cursor.string) {
+        cursor.token += chr;
       }
       else {
         cursor.string = chr;
@@ -33,23 +36,21 @@ function parseExpression (str, cursor) {
     }
     else {
       if (/\s/.exec(chr)) {
-        pushWordIfPresent();
+        pushTokenIfPresent();
         continue;
       }
 
-      cursor.word += chr;
+      cursor.token += chr;
     }
   }
 
-  pushWordIfPresent();
+  pushTokenIfPresent();
   return expr;
 
-  function pushWordIfPresent () {
-    if (cursor.word) {
-      expr.push(cursor.word);
-      cursor.word = '';
+  function pushTokenIfPresent () {
+    if (cursor.token) {
+      expr.push(cursor.token);
+      cursor.token = '';
     }
   }
 }
-
-console.log(parse('(+ 1 1)'));
