@@ -30,5 +30,4 @@ describe('Parser', function () {
     parser.parse('(concat "(" ")" "\\"" "\'" \'\\\'\' \'"\')')
       .should.eql([['concat', '(', ')', '\\"', '\'', '\\\'', '"']]);
   });
-
 });

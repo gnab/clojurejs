@@ -1,6 +1,6 @@
-module.exports = {
-  parse: parse
-};
+if (typeof exports !== 'undefined') {
+  exports.parse = parse;
+}
 
 function parse (str) {
   return parseExpression(str);
