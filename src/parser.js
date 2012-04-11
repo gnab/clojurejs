@@ -43,7 +43,7 @@ function parseExpression (str, cursor) {
 
     // Character
     else {
-      if (/\s/.exec(chr)) {
+      if (/\s/.exec(chr) && !cursor.inStrChr) {
         pushTokenIfPresent();
         continue;
       }
