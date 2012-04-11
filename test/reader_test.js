@@ -30,4 +30,8 @@ describe('Reader', function () {
     reader.parse('(concat "(" ")" "\\"" "\'" \'\\\'\' \'"\')')
       .should.eql([['concat', '(', ')', '\\"', '\'', '\\\'', '"']]);
   });
+
+  it('should parse vectors', function () {
+    reader.parse('(defn [a b c])').should.eql([['defn', ['a', 'b', 'c']]]);
+  });
 });

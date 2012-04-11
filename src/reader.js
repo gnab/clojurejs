@@ -6,7 +6,7 @@ function parse (str) {
   return parseExpression(str);
 }
 
-function parseExpression (str, cursor) {
+function parseExpression (str, cursor, closeChar) {
   var expr = []
     , chr
     , prevChr
@@ -31,17 +31,17 @@ function parseExpression (str, cursor) {
       }
     }
 
-    // Lists
-    else if (chr === '(' && !cursor.inStrChr) {
+    // Lists / Vectors
+    else if ((chr === '(' || chr === '[') && !cursor.inStrChr) {
       ++cursor.pos;
-      expr.push(parseExpression(str, cursor));
+      expr.push(parseExpression(str, cursor, chr === '(' ? ')' : ']'));
     }
-    else if (chr === ')' && !cursor.inStrChr) {
+    else if (chr === closeChar && !cursor.inStrChr) {
       pushTokenIfPresent();
       return expr;
     }
-
-    // Character
+    
+    // Characters
     else {
       if (/\s/.exec(chr) && !cursor.inStrChr) {
         pushTokenIfPresent();
