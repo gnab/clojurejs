@@ -9,14 +9,15 @@ function parse (str) {
 function parseExpression (str, cursor) {
   var expr = []
     , chr
+    , prevChr
     ;
 
-  cursor = cursor || {i: 0, token: ''};
+  cursor = cursor || {pos: 0, token: ''};
 
-  for (; cursor.i < str.length; ++cursor.i) {
-    chr = str[cursor.i];
+  for (; cursor.pos < str.length; ++cursor.pos) {
+    chr = str[cursor.pos];
     if (chr === '(' && !cursor.string) {
-      ++cursor.i;
+      ++cursor.pos;
       expr.push(parseExpression(str, cursor));
     }
     else if (chr === ')' && !cursor.string) {
@@ -24,15 +25,7 @@ function parseExpression (str, cursor) {
       return expr;
     }
     else if (chr === '\'' || chr === '"') {
-      if (chr === cursor.string) {
-        delete cursor.string;
-      }
-      else if (cursor.string) {
-        cursor.token += chr;
-      }
-      else {
-        cursor.string = chr;
-      }
+      parseString();
     }
     else {
       if (/\s/.exec(chr)) {
@@ -42,6 +35,8 @@ function parseExpression (str, cursor) {
 
       cursor.token += chr;
     }
+
+    prevChr = chr;
   }
 
   pushTokenIfPresent();
@@ -51,6 +46,21 @@ function parseExpression (str, cursor) {
     if (cursor.token) {
       expr.push(cursor.token);
       cursor.token = '';
+    }
+  }
+
+  function parseString () {
+    if (cursor.string && prevChr === '\\') {
+      cursor.token += chr;
+    }
+    else if (chr === cursor.string) {
+      delete cursor.string;
+    }
+    else if (cursor.string) {
+      cursor.token += chr;
+    }
+    else {
+      cursor.string = chr;
     }
   }
 }

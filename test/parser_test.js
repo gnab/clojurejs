@@ -16,7 +16,11 @@ describe('Parser', function () {
     });
 
     it('should ignore strings inside strings', function () {
-      parser.parse('(alert \'ab"cd"ef\'').should.eql([['alert', 'ab"cd"ef']]);
+      parser.parse('(alert \'ab"cd"ef\')').should.eql([['alert', 'ab"cd"ef']]);
+    });
+
+    it('should ignore escaped strings', function () {
+      parser.parse('(alert "ab\\"cd")').should.eql([['alert', 'ab\\"cd']]);
     });
   });
 
