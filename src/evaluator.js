@@ -16,9 +16,32 @@ function evaluate (exprs) {
 }
 
 function evaluateExpression (expr) {
+  switch (expr.kind) {
+    case 'number':
+      return +expr.value;
+    case 'string':
+      return expr.value;
+    case 'identifier':
+      return lookupFunction(expr.value);
+    case 'expression':
+      return evaluateFunction(expr);
+  }
+
   var func = lookupFunction(expr.shift());
 
   return func.apply({}, expr);
+}
+
+function evaluateFunction (expr) {
+  var func = evaluateExpression(expr.value.shift())
+    , args = []
+    ;
+
+  while (expr.value.length) {
+    args.push(evaluateExpression(expr.value.shift()));
+  }
+
+  return func.apply({}, args);
 }
 
 function lookupFunction (name) {
@@ -31,6 +54,6 @@ function lookupFunction (name) {
       }
 
       return sum;
-    }
+    };
   }
 }

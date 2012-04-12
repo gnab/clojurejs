@@ -12,7 +12,7 @@ function parseExpression (str, cursor, closeChar) {
     , prevChr
     ;
 
-  cursor = cursor || { pos: 0, token: '' };
+  cursor = cursor || { pos: 0, token: { value: '' } };
 
   for (; cursor.pos < str.length; ++cursor.pos) {
     chr = str[cursor.pos];
@@ -23,18 +23,21 @@ function parseExpression (str, cursor, closeChar) {
         cursor.inStrChr = chr;
       }
       else if (chr === cursor.inStrChr) {
-        pushTokenIfPresent();
+        pushTokenIfPresent('string');
         delete cursor.inStrChr;
       }
       else {
-        cursor.token += chr;
+        cursor.token.value += chr;
       }
     }
 
     // Lists / Vectors
     else if ((chr === '(' || chr === '[') && !cursor.inStrChr) {
       ++cursor.pos;
-      expr.push(parseExpression(str, cursor, chr === '(' ? ')' : ']'));
+      expr.push({
+        value: parseExpression(str, cursor, chr === '(' ? ')' : ']')
+      , kind: chr === '(' ? 'expression' : 'vector'
+      });
     }
     else if (chr === closeChar && !cursor.inStrChr) {
       pushTokenIfPresent();
@@ -48,7 +51,7 @@ function parseExpression (str, cursor, closeChar) {
         continue;
       }
 
-      cursor.token += chr;
+      cursor.token.value += chr;
     }
 
     prevChr = chr;
@@ -56,14 +59,19 @@ function parseExpression (str, cursor, closeChar) {
 
   return expr;
 
-  function pushTokenIfPresent () {
-    if (cursor.token) {
+  function pushTokenIfPresent (kind) {
+    if (cursor.token.value) {
+      cursor.token.kind = kind || (isNumeric(cursor.token.value) ? 'number' : 'identifier');
       expr.push(cursor.token);
-      cursor.token = '';
+      cursor.token = { value: '' };
     }
   }
 
   function isStrChr (chr) {
      return chr === '\'' || chr === '"';
+  }
+
+  function isNumeric (value) {
+    return !!/^\d/.exec(value);
   }
 }
