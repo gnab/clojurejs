@@ -15,4 +15,14 @@ describe('Clojure JS', function () {
     evaluator.evaluate(reader.parse('(odd? 13)')).should.equal(true);
     evaluator.evaluate(reader.parse('(even? 13)')).should.equal(false);
   });
+
+  it('should execute anonymous functions', function () {
+    var f1 = evaluator.evaluate(reader.parse('(fn [a b] (+ a b))'));
+
+    f1(1, 2).should.equal(3);
+
+    var f2 = evaluator.evaluate(reader.parse('(fn [a] (fn [b] (+ a b)))'));
+
+    f2(1)(2).should.equal(3);
+  });
 });

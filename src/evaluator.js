@@ -3,10 +3,10 @@ var core = require('./clojure/core')
 
 exports.evaluate = evaluate;
 
-function evaluate (exprs) {
-  var context = {}
-    , result
-    ;
+function evaluate (exprs, context) {
+  var result;
+
+  context = context || {};
 
   exprs.map(function (e) { result = evaluateExpression(e, context); });
 
@@ -21,6 +21,8 @@ function evaluateExpression (expr, context) {
       return expr.value;
     case 'identifier':
       return lookupIdentifier(expr.value, context);
+    case 'vector':
+      return expr.value.map(function (a) { return evaluateExpression(a, context);});
     case 'expression':
       return evaluateFunction(expr, extendContext(context));
   }
@@ -35,9 +37,15 @@ function extendContext(context) {
 }
 
 function evaluateFunction (expr, context) {
-  var func = evaluateExpression(expr.value[0], context);
+  var func = evaluateExpression(expr.value[0], context)
+    , args = expr.value.slice(1)
+    ;
 
-  return func.apply(context, expr.value.slice(1).map(evaluateExpression));
+  if (!func.macro) {
+    args = args.map(function (a) { return evaluateExpression(a, context);});
+  }
+
+  return func.apply(context, args);
 }
 
 function lookupIdentifier (name, context) {
