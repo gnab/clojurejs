@@ -3,14 +3,9 @@ if (typeof exports !== 'undefined') {
 }
 
 function evaluate (exprs) {
-  var id
-    , result;
+  var result;
 
-  for (id in exprs) {
-    if (exprs.hasOwnProperty(id)) {
-      result = evaluateExpression(exprs[id]);
-    }
-  }
+  exprs.map(function (e) { result = evaluateExpression(e); });
 
   return result;
 }
@@ -29,38 +24,44 @@ function evaluateExpression (expr) {
 }
 
 function evaluateFunction (expr) {
-  var func = evaluateExpression(expr.value.shift())
-    , args = []
-    ;
+  var func = evaluateExpression(expr.value[0]);
 
-  while (expr.value.length) {
-    args.push(evaluateExpression(expr.value.shift()));
-  }
-
-  return func.apply({}, args);
+  return func.apply({}, expr.value.slice(1).map(evaluateExpression));
 }
 
 function lookupIdentifier (name) {
   if (name === '+') {
     return function () {
-      var i, sum = 0;
+      var sum = 0;
 
-      for (i = 0; i < arguments.length; ++i) {
-        sum += +arguments[i];
-      }
+      Array.prototype.map.call(arguments, function (n) {
+        sum += +n;
+      });
 
       return sum;
     };
   }
   else if (name === '*') {
     return function () {
-      var i, product = 1;
+      var product = 1;
 
-      for (i = 0; i < arguments.length; ++i) {
-        product *= +arguments[i];
-      }
+      Array.prototype.map.call(arguments, function (n) {
+        product *= +n;
+      });
 
       return product;
     };
   }
 }
+
+Array.prototype.map = Array.prototype.map || function (f) {
+  var i
+    , result = []
+    ;
+
+  for (i = 0; i < this.length; ++i) {
+    result.push(f(this[i]));
+  }
+
+  return result;
+};
