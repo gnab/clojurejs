@@ -1,6 +1,7 @@
-if (typeof exports !== 'undefined') {
-  exports.evaluate = evaluate;
-}
+var core = require('./clojure/core')
+  ;
+
+exports.evaluate = evaluate;
 
 function evaluate (exprs) {
   var context = {}
@@ -36,7 +37,7 @@ function extendContext(context) {
 function evaluateFunction (expr, context) {
   var func = evaluateExpression(expr.value[0], context);
 
-  return func.apply({}, expr.value.slice(1).map(evaluateExpression));
+  return func.apply(context, expr.value.slice(1).map(evaluateExpression));
 }
 
 function lookupIdentifier (name, context) {
@@ -44,31 +45,12 @@ function lookupIdentifier (name, context) {
     return context[name];
   }
 
+  if (core[name]) {
+    return core[name];
+  }
+
   if (typeof window !== 'undefined' && window[name]) {
     return window[name];
-  }
-
-  if (name === '+') {
-    return function () {
-      var sum = 0;
-
-      Array.prototype.map.call(arguments, function (n) {
-        sum += +n;
-      });
-
-      return sum;
-    };
-  }
-  else if (name === '*') {
-    return function () {
-      var product = 1;
-
-      Array.prototype.map.call(arguments, function (n) {
-        product *= +n;
-      });
-
-      return product;
-    };
   }
 }
 

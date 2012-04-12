@@ -10,4 +10,9 @@ describe('Clojure JS', function () {
   it('should execute nested expression', function () {
     evaluator.evaluate(reader.parse('(+ 1 (* 2 3)')).should.equal(7);
   });
+
+  it('should execute core functions', function () {
+    evaluator.evaluate(reader.parse('(odd? 13)')).should.equal(true);
+    evaluator.evaluate(reader.parse('(even? 13)')).should.equal(false);
+  });
 });
