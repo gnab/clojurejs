@@ -22,14 +22,10 @@ function evaluateExpression (expr) {
     case 'string':
       return expr.value;
     case 'identifier':
-      return lookupFunction(expr.value);
+      return lookupIdentifier(expr.value);
     case 'expression':
       return evaluateFunction(expr);
   }
-
-  var func = lookupFunction(expr.shift());
-
-  return func.apply({}, expr);
 }
 
 function evaluateFunction (expr) {
@@ -44,7 +40,7 @@ function evaluateFunction (expr) {
   return func.apply({}, args);
 }
 
-function lookupFunction (name) {
+function lookupIdentifier (name) {
   if (name === '+') {
     return function () {
       var i, sum = 0;
@@ -54,6 +50,17 @@ function lookupFunction (name) {
       }
 
       return sum;
+    };
+  }
+  else if (name === '*') {
+    return function () {
+      var i, product = 1;
+
+      for (i = 0; i < arguments.length; ++i) {
+        product *= +arguments[i];
+      }
+
+      return product;
     };
   }
 }
