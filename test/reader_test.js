@@ -1,4 +1,6 @@
-var reader = require('../src/reader.js')
+var reader = require('../src/reader')
+  , tokens = require('./tokens')
+  , e = tokens.e, i = tokens.i, n = tokens.n, v = tokens.v, s = tokens.s
   ;
 
 describe('Reader', function () {
@@ -35,16 +37,4 @@ describe('Reader', function () {
   it('should parse vectors', function () {
     reader.parse('(defn [a b c])').should.eql([e(i('defn'), v(i('a'), i('b'), i('c')))]);
   });
-
-  function n (value) { return {kind: 'number', value: value }; }
-  function s (value) { return {kind: 'string', value: value }; }
-  function i (value) { return {kind: 'identifier', value: value }; }
-
-  function e (value) {
-    return {kind: 'expression', value: Array.prototype.slice.apply(arguments) };
-  }
-
-  function v (value) {
-    return {kind: 'vector', value: Array.prototype.slice.apply(arguments) };
-  }
 });
