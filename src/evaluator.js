@@ -6,7 +6,7 @@ exports.evaluate = evaluate;
 function evaluate (exprs, context) {
   var result;
 
-  context = context || {};
+  context = context || extendContext(core);
 
   exprs.map(function (e) { result = evaluateExpression(e, context); });
 
@@ -51,10 +51,6 @@ function evaluateFunction (expr, context) {
 function lookupIdentifier (name, context) {
   if (context[name]) {
     return context[name];
-  }
-
-  if (core[name]) {
-    return core[name];
   }
 
   if (typeof window !== 'undefined' && window[name]) {
