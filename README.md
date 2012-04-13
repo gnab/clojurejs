@@ -13,6 +13,7 @@ Head over to [the demo page](http://gnab.github.com/clojurejs) to check it out.
 Only a few, simple steps is required:
 
     git clone git://github.com/gnab/clojurejs.git
+    cd clojurejs
     make
 
 Also, you need node (and npm) installed on your system.
