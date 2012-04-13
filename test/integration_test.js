@@ -30,4 +30,8 @@ describe('Clojure JS', function () {
 
     f(3).should.equal(-1);
   });
+
+  it('should execute JavaScript functions', function () {
+    clojure.run('(parseInt "42")').should.equal(42);
+  });
 });

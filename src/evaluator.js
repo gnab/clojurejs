@@ -56,6 +56,10 @@ function lookupIdentifier (name, context) {
   if (typeof window !== 'undefined' && window[name]) {
     return window[name];
   }
+
+  if (typeof global !== 'undefined' && global[name]) {
+    return global[name];
+  }
 }
 
 Array.prototype.map = Array.prototype.map || function (f) {
