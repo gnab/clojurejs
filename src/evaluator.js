@@ -54,11 +54,15 @@ function lookupIdentifier (name, context) {
   }
 
   if (typeof window !== 'undefined' && window[name]) {
-    return window[name];
+    return function () {
+      return window[name].apply(window, arguments);
+    };
   }
 
   if (typeof global !== 'undefined' && global[name]) {
-    return global[name];
+    return function () {
+      return global[name].apply(global, arguments);
+    };
   }
 }
 
