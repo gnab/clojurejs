@@ -30,8 +30,8 @@ describe('Reader', function () {
   });
 
   it('should ignore special characters in strings', function () {
-    reader.read('(concat "(" ")" "\\"" "\'" \'\\\'\' \'"\')')
-      .should.eql([e(i('concat'), s('('), s(')'), s('\\"'), s('\''), s('\\\''), s('"'))]);
+    reader.read('(concat "(" ")" "\\"" "[" "]")')
+      .should.eql([e(i('concat'), s('('), s(')'), s('\\"'), s('['), s(']'))]);
   });
 
   it('should read vectors', function () {
