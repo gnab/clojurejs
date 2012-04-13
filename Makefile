@@ -1,4 +1,4 @@
-all: deps test
+all: deps test bundle
 
 deps:
 	npm install
@@ -6,7 +6,10 @@ deps:
 test:
 	find test -name *_test.js | xargs ./node_modules/.bin/mocha
 
-auto:
+autotest:
 	find test -name *_test.js | xargs ./node_modules/.bin/mocha -w
 
-.PHONY: deps test auto
+bundle:
+	node build/clojure.js
+
+.PHONY: deps test autotest bundle
