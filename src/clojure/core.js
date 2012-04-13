@@ -1,6 +1,6 @@
 var evaluator = require('../evaluator');
 
-// Arithmetics
+// Arithmetic functions
 
 exports['+'] = function () {
   var sum = 0;
@@ -12,9 +12,9 @@ exports['+'] = function () {
   return sum;
 };
 exports['-'] = function () {
-  var sum = 0;
+  var sum = arguments[0];
 
-  Array.prototype.map.call(arguments, function (n) {
+  Array.prototype.map.call(Array.prototype.slice.call(arguments, 1), function (n) {
     sum -= +n;
   });
 
@@ -39,7 +39,7 @@ exports['/'] = function () {
   return product;
 };
 
-// Functions
+// Boolean functions
 
 exports['odd?'] = function (n) {
   return n % 2 === 1; 
@@ -48,6 +48,25 @@ exports['odd?'] = function (n) {
 exports['even?'] = function (n) {
   return n % 2 === 0; 
 };
+
+// Meta functions
+
+exports.partial = function () {
+  var func = arguments[0]
+    , args = Array.prototype.slice.call(arguments, 1)
+    ;
+
+  return function () {
+    var context = this;
+
+    return function () {
+      Array.prototype.map.call(arguments, function (a) { args.push(a); });
+      return func.apply(context, args);
+    }.apply(context, arguments);
+  };
+};
+
+// Special Forms
 
 exports.fn = function (args, exprs) {
   var context = this

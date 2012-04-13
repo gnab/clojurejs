@@ -1,8 +1,8 @@
 if (typeof exports !== 'undefined') {
-  exports.parse = parse;
+  exports.read = read;
 }
 
-function parse (str) {
+function read (str) {
   return parseExpression(str);
 }
 

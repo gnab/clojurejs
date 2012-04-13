@@ -5,6 +5,8 @@
 
   "predef": [
     "require",
+    "describe",
+    "it",
     "exports",
     "window"
   ]
