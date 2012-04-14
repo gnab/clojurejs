@@ -34,4 +34,8 @@ describe('Clojure JS', function () {
   it('should execute JavaScript functions', function () {
     clojure.run('(parseInt "42")').should.equal(42);
   });
+
+  it('should execute sequence functions', function () {
+    clojure.run('(map odd? [1 2 3])').should.eql([true, false, true]);
+  });
 });

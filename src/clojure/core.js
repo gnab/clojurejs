@@ -8,4 +8,5 @@ exports.extend = function (collection) {
 
 exports.extend(require('./core.specialforms'));
 exports.extend(require('./core.primitives.numbers'));
+exports.extend(require('./core.sequences'));
 exports.extend(require('./core.functions'));
