@@ -3,6 +3,7 @@ var core = require('./clojure/core')
   ;
 
 exports.globalContext = globalContext;
+exports.extendContext = extendContext;
 exports.evaluate = evaluate;
 
 function evaluate (exprs, context) {
@@ -47,17 +48,17 @@ function evaluateFunction (expr, context) {
 }
 
 function lookupIdentifier (name, context) {
-  if (context[name]) {
+  if (typeof context[name] !== 'undefined') {
     return context[name];
   }
 
-  if (typeof window !== 'undefined' && window[name]) {
+  if (typeof window !== 'undefined' && typeof window[name] !== 'undefined') {
     return function () {
       return window[name].apply(window, arguments);
     };
   }
 
-  if (typeof global !== 'undefined' && global[name]) {
+  if (typeof global !== 'undefined' && typeof global[name] !== 'undefined') {
     return function () {
       return global[name].apply(global, arguments);
     };
