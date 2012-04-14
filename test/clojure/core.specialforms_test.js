@@ -1,24 +1,20 @@
-var core = require('../../src/clojure/core.specialforms')
+var clojure = require('../../src/clojure')
   , evaluator = require('../../src/evaluator')
-  , tokens = require('../tokens')
-  , e = tokens.e, n = tokens.n, i = tokens.i
   ;
 
 describe('Special Forms', function () {
   it('def', function () {
-    core.def('a', 5);
+    clojure.run('(def a 5)');
 
     evaluator.globalContext.should.have.property('a', 5);
   });
 
   it('if', function () {
-    var context = evaluator.extendContext(core);
-    context['false'] = false;
+    clojure.run('(if true 42 (this-is-not-evaluated)').should.equal(42);
+    clojure.run('(if false (this-is-not-evaluated) 43)').should.equal(43);
+  });
 
-    var exprs1 = [e(i('if'), n(1), n(42))];             // (if 1 42)
-    var exprs2 = [e(i('if'), i('false'), n(1), n(43))]; // (if false 1 43)
-
-    evaluator.evaluate(exprs1, context).should.equal(42);
-    evaluator.evaluate(exprs2, context).should.equal(43);
+  it('fn', function () {
+    clojure.run('((fn [a b] (+ a b)) 1 2)').should.equal(3);
   });
 });

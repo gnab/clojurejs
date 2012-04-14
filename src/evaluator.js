@@ -3,7 +3,6 @@ var core = require('./clojure/core')
   ;
 
 exports.globalContext = globalContext;
-exports.extendContext = extendContext;
 exports.evaluate = evaluate;
 
 function evaluate (exprs, context) {
@@ -22,7 +21,7 @@ function evaluateExpression (expr, context) {
       return lookupIdentifier(expr.value, context);
     case 'vector':
       return expr.value.map(function (a) { return evaluateExpression(a, context);});
-    case 'expression':
+    case 'call':
       return evaluateFunction(expr, extendContext(context));
   }
 }
@@ -63,6 +62,8 @@ function lookupIdentifier (name, context) {
       return global[name].apply(global, arguments);
     };
   }
+
+  throw new Error('Unable to resolve symbol: ' + name + ' in this context');
 }
 
 Array.prototype.map = Array.prototype.map || function (f) {

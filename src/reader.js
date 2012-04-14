@@ -36,7 +36,7 @@ function parseExpression (str, cursor, closeChar) {
       ++cursor.pos;
       expr.push({
         value: parseExpression(str, cursor, chr === '(' ? ')' : ']')
-      , kind: chr === '(' ? 'expression' : 'vector'
+      , kind: chr === '(' ? 'call' : 'vector'
       });
     }
     else if (chr === closeChar && !cursor.str) {

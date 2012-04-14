@@ -1,10 +1,28 @@
 var evaluator = require('../src/evaluator.js')
   , tokens = require('./tokens')
-  , e = tokens.e, i = tokens.i, n = tokens.n, v = tokens.v, s = tokens.s
+  , c = tokens.c, i = tokens.i, n = tokens.n, v = tokens.v, s = tokens.s
   ;
 
 describe('Evaluator', function () {
-  it('should evaluate simple expression', function () {
-    evaluator.evaluate([e(i('+'), n('1'), n('1'))]).should.equal(2);
+  describe('Expressions', function () {
+    it('should evaluate numbers', function () {
+      evaluator.evaluate([n('42')]).should.equal(42);
+    });
+
+    it('should evaluate strings', function () {
+      evaluator.evaluate([s('clojure')]).should.equal('clojure');
+    });
+
+    it('should evaluate identifiers', function () {
+      evaluator.evaluate([i('a')], {a: 5}).should.equal(5);
+    });
+
+    it('should evaluate vectors', function () {
+      evaluator.evaluate([v(n(42), s('clojure'))]).should.eql([42, 'clojure']);
+    });
+
+    it('should evaluate calls', function () {
+      evaluator.evaluate([c(i('f'))], {f: function () { return 42; }}).should.equal(42);
+    });
   });
 });

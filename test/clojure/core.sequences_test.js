@@ -1,9 +1,7 @@
-var core = require('../../src/clojure/core.sequences');
+var clojure = require('../../src/clojure');
 
 describe('Sequences', function () {
   it('map', function () {
-    var pos = function (n) { return n >= 0; };
-
-    core.map(pos, [-1, 0, 1]).should.eql([false, true, true]);
+    clojure.run('(map odd? [1 2 3])').should.eql([true, false, true]);
   });
 });

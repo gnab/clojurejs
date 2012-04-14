@@ -1,12 +1,16 @@
-exports.extend = function (collection) {
-  var func;
+function extend(collection) {
+  var name;
 
-  for (func in collection) {
-    exports[func] = collection[func];
+  for (name in collection) {
+    exports[name] = collection[name];
   }
-};
+}
 
-exports.extend(require('./core.specialforms'));
-exports.extend(require('./core.primitives.numbers'));
-exports.extend(require('./core.sequences'));
-exports.extend(require('./core.functions'));
+extend(require('./core.specialforms'));
+extend(require('./core.primitives.numbers'));
+extend(require('./core.functions'));
+extend(require('./core.sequences'));
+
+exports['true'] = true;
+exports['false'] = false;
+exports.nil = null;
