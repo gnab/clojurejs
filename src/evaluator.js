@@ -1,16 +1,14 @@
 var core = require('./clojure/core')
+  , globalContext = extendContext(core)
   ;
 
+exports.globalContext = globalContext;
 exports.evaluate = evaluate;
 
 function evaluate (exprs, context) {
-  var result;
+  context = context || globalContext;
 
-  context = context || extendContext(core);
-
-  exprs.map(function (e) { result = evaluateExpression(e, context); });
-
-  return result;
+  return exprs.map(function (e) { return evaluateExpression(e, context); }).slice(-1)[0];
 }
 
 function evaluateExpression (expr, context) {
