@@ -17,3 +17,12 @@ Only a few, simple steps is required:
     make
 
 Also, you need node (and npm) installed on your system.
+
+A REPL is provided by running the repl script in the root dir.
+For running the clojurejs REPL using Emacs' inferior lisp mode, type the following:
+
+    C-u M-x inferior-lisp followed by /path/to/clojurejs/repl
+
+
+
+
