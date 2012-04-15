@@ -18,8 +18,12 @@ function readEvalPrompt(input){
     process.exit(0);
     break;
   default:
-    var data = reader.read(input);
-    console.log(evaluator.evaluate(data));
+    try{
+      var data = reader.read(input);
+      console.log(evaluator.evaluate(data));      
+    } catch (error) {
+      console.log("Error: ",error);
+    }
     rl.prompt();
     break;
   }  
