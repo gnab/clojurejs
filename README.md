@@ -20,7 +20,8 @@ Also, you need node (and npm) installed on your system.
 
 Try running ./repl in the root directory for a simple, and as of right now, stateless, REPL. 
 For running the clojurejs REPL using Emacs' inferior lisp mode, do the following:
-    Type C-u M-x inferior-lisp followed by /path/to/clojurejs/repl
+
+    C-u M-x inferior-lisp followed by /path/to/clojurejs/repl
 
 
 
