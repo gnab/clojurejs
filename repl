@@ -1,0 +1,15 @@
+#! /bin/bash
+
+echo '(quit) to quit'
+while true; do
+    echo -n "repl> "
+    read input
+    if [[ "$input" == "(quit)" ]]
+    then
+        exit
+    else
+        node src/repl/readevalprint.js "$input"
+    fi
+done
+
+
