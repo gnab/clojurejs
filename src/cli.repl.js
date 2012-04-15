@@ -1,9 +1,8 @@
 var rl = require('readline').createInterface(process.stdin, process.stdout, null)
-, reader = require('../reader')
-, evaluator = require('../evaluator')
+, reader = require('./reader')
+, evaluator = require('./evaluator')
 , prefix = "repl> "
 ;
-
 
 console.log("Welcome to the clojurejs REPL! Type (quit) to quit");
 rl.on('line', readEvalPrompt)

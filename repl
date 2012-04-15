@@ -1,5 +1,5 @@
 #! /bin/sh
 
-node src/repl/readevalprint.js
+node src/cli.repl
 
 
