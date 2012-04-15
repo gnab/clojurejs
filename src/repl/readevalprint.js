@@ -1,7 +1,28 @@
-var reader = require('../reader')
-  , evaluator = require('../evaluator')
-  , api
-  ;
+var rl = require('readline').createInterface(process.stdin, process.stdout, null)
+, reader = require('../reader')
+, evaluator = require('../evaluator')
+, prefix = "repl> "
+;
 
-var data = reader.read(process.argv[2]);
-console.log(evaluator.evaluate(data));
+
+console.log("Welcome to the clojurejs REPL! Type (quit) to quit");
+rl.on('line', readEvalPrompt)
+  .on('close', function() {process.exit(0);});
+rl.setPrompt(prefix, prefix.length);
+rl.prompt();
+
+function readEvalPrompt(input){
+  input = input.trim();
+  switch(input) {
+  case '(quit)':
+    console.log('Bye!');
+    process.exit(0);
+    break;
+  default:
+    var data = reader.read(input);
+    console.log(evaluator.evaluate(data));
+    rl.setPrompt(prefix, prefix.length);
+    rl.prompt();
+    break;
+  }  
+}
