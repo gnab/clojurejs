@@ -1,68 +1,61 @@
-if (typeof exports !== 'undefined') {
-  exports.read = read;
+var tokens = require('./tokens');
+
+exports.read = read;
+
+function read (insideString) {
+  return parseExpressions(insideString);
 }
 
-function read (str) {
-  return parseExpression(str);
-}
-
-function parseExpression (str, cursor, closeChar) {
-  var expr = []
-    , chr
-    , prevChr
+function parseExpressions (insideString, cursor, closeChar) {
+  var expressions = []
+    , currentChar
+    , previousChar
+    , token
+    , subTokens
     ;
 
-  cursor = cursor || { pos: 0, token: { value: '' }, str: false };
+  cursor = cursor || { pos: 0 , token: { value: '' } , insideString: false };
+  closeChar = closeChar || ')';
 
-  for (; cursor.pos < str.length; ++cursor.pos) {
-    chr = str[cursor.pos];
+  for (; cursor.pos < insideString.length; cursor.pos++) {
+    currentChar = insideString[cursor.pos];
 
-    // Strings
-    if (chr === '"' && prevChr !== '\\') {
-      if (!cursor.str) {
-        cursor.str = true;
-      }
-      else if (cursor.str) {
-        pushTokenIfPresent('string');
-        delete cursor.str;
-      }
-      else {
-        cursor.token.value += chr;
-      }
-    }
-
-    // Lists / Vectors
-    else if ((chr === '(' || chr === '[') && !cursor.str) {
-      ++cursor.pos;
-      expr.push({
-        value: parseExpression(str, cursor, chr === '(' ? ')' : ']')
-      , kind: chr === '(' ? 'call' : 'vector'
+    if (!cursor.insideString && (token = tokens.byOpenChar[currentChar])) {
+      cursor.pos++;
+      cursor.insideString = token.insideString;
+      subTokens = parseExpressions(insideString, cursor, token.closeChr);
+      expressions.push(token.terminal ? subTokens[0] : {
+        value: subTokens
+      , kind: token.kind
       });
+      cursor.insideString = false;
     }
-    else if (chr === closeChar && !cursor.str) {
-      pushTokenIfPresent();
-      return expr;
+    else if (currentChar === closeChar && !cursor.insideString) {
+      pushToken();
+      return expressions;
     }
-    
-    // Characters
+    else if (currentChar === closeChar && cursor.insideString && previousChar !== '\\') {
+      pushToken('string');
+      return expressions;
+    }
     else {
-      if (/\s/.exec(chr) && !cursor.str) {
-        pushTokenIfPresent();
+      if (/\s/.exec(currentChar) && !cursor.insideString) {
+        pushToken();
         continue;
       }
 
-      cursor.token.value += chr;
+      cursor.token.value += currentChar;
     }
 
-    prevChr = chr;
+    previousChar = currentChar;
   }
 
-  return expr;
+  return expressions;
 
-  function pushTokenIfPresent (kind) {
+  function pushToken (kind) {
     if (cursor.token.value) {
       cursor.token.kind = kind || (isNumeric(cursor.token.value) ? 'number' : 'identifier');
-      expr.push(cursor.token);
+      expressions.push(cursor.token);
       cursor.token = { value: '' };
     }
   }

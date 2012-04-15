@@ -1,5 +1,5 @@
 var evaluator = require('../src/evaluator.js')
-  , tokens = require('./tokens')
+  , tokens = require('../src/tokens')
   , c = tokens.c, i = tokens.i, n = tokens.n, v = tokens.v, s = tokens.s
   ;
 
