@@ -4,12 +4,7 @@ var tokens = module.exports = {
 , 'i': token('identifier')
 , 'c': token('call', ')', false)
 , 'v': token('vector', ']', false)
-};
-
-tokens.byOpenChar = {
-  '"': tokens.s
-, '(': tokens.c
-, '[': tokens.v
+, 'l': token('list', ')', false)
 };
 
 function token (kind, closeChr, terminal) {
@@ -21,11 +16,6 @@ function token (kind, closeChr, terminal) {
     , value: terminal === false ? args : args[0]
     };
   };
-
-  f.kind = kind;
-  f.closeChr = closeChr;
-  f.terminal = typeof terminal === 'undefined' ? true : false;
-  f.insideString = closeChr === '"';
 
   return f;
 }

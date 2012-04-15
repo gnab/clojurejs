@@ -6,61 +6,79 @@ function read (str) {
   return parseExpressions(str);
 }
 
-function parseExpressions (str, cursor, closeChar) {
+function parseExpressions(str, cursor, closingChar) {
   var expressions = []
+    , subExpressions
     , currentChar
     , previousChar
-    , token
-    , subTokens
     ;
 
   cursor = cursor || { pos: 0 , token: { value: '' } , insideString: false };
-  closeChar = closeChar || ')';
 
   for (; cursor.pos < str.length; cursor.pos++) {
     currentChar = str[cursor.pos];
-
-    if (!cursor.insideString && (token = tokens.byOpenChar[currentChar])) {
+ 
+    if (/\d/.exec(currentChar)) {
+      expressions.push(parseNumber(str, cursor));
+    }
+    else if (/\w|\+|\-|\*|\//.exec(currentChar)) {
+      expressions.push(parseIdentifier(str, cursor));
+    }
+    else if (currentChar === '"') {
       cursor.pos++;
-      cursor.insideString = token.insideString;
-      subTokens = parseExpressions(str, cursor, token.closeChr);
-      expressions.push(token.terminal ? subTokens[0] : {
-        value: subTokens
-      , kind: token.kind
+      expressions.push(parseString(str, cursor));
+    }
+    else if (currentChar === '[') {
+      cursor.pos++;
+      expressions.push({
+        value: parseExpressions(str, cursor, ']')
+      , kind: 'vector'
       });
-      cursor.insideString = false;
     }
-    else if (currentChar === closeChar && !cursor.insideString) {
-      pushToken();
-      return expressions;
+    else if (currentChar === '(') {
+      cursor.pos++;
+      subExpressions = parseExpressions(str, cursor, ')');
+      expressions.push({
+        value: subExpressions
+      , kind: previousChar === '\'' || subExpressions.length === 0  ? 'list' : 'call'
+      });
     }
-    else if (currentChar === closeChar && cursor.insideString && previousChar !== '\\') {
-      pushToken('string');
-      return expressions;
-    }
-    else {
-      if (/\s/.exec(currentChar) && !cursor.insideString) {
-        pushToken();
-        continue;
-      }
-
-      cursor.token.value += currentChar;
+    else if (currentChar === closingChar) {
+      break;
     }
 
     previousChar = currentChar;
   }
 
   return expressions;
+}
 
-  function pushToken (kind) {
-    if (cursor.token.value) {
-      cursor.token.kind = kind || (isNumeric(cursor.token.value) ? 'number' : 'identifier');
-      expressions.push(cursor.token);
-      cursor.token = { value: '' };
-    }
-  }
+function parseNumber (str, cursor) {
+  var substr = str.substr(cursor.pos)
+    , match = /\d+/.exec(substr)
+    ;
 
-  function isNumeric (value) {
-    return !!/^\d/.exec(value);
-  }
+  cursor.pos += match[0].length - 1;
+
+  return tokens.n(match[0]);
+}
+
+function parseIdentifier (str, cursor) {
+  var substr = str.substr(cursor.pos)
+    , match = /(\w|\d|\+|\-|\*|\/|\?)+/.exec(substr)
+    ;
+
+  cursor.pos += match[0].length - 1;
+
+  return tokens.i(match[0]);
+}
+
+function parseString (str, cursor) {
+  var substr = str.substr(cursor.pos)
+    , match = /(([^\\"]|\\\\|\\")*)"/.exec(substr)
+    ;
+
+  cursor.pos += match[0].length - 1;
+
+  return tokens.s(match[1]);
 }

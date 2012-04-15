@@ -1,40 +1,68 @@
 var reader = require('../src/reader')
   , tokens = require('../src/tokens')
-  , c = tokens.c, i = tokens.i, n = tokens.n, v = tokens.v, s = tokens.s
+  , c = tokens.c, i = tokens.i, n = tokens.n, v = tokens.v, s = tokens.s, l = tokens.l
   ;
 
 describe('Reader', function () {
-  it('should read simple expression', function () {
-    reader.read('(+ 1 1)').should.eql([c(i('+'), n('1'), n('1'))]);
+  describe('numbers', function () {
+    it('should read integers', function () {
+      reader.read('42').should.eql([n('42')]);
+    });
   });
 
-  it('should read nested expression', function () {
-    reader.read('(+ 1 (* 2 3))').should.eql([c(i('+'), n('1'),
-      c(i('*'), n('2'), n('3')))]);
+  describe('identifiers', function () {
+    it('should read alphanumeric identifiers', function () {
+      reader.read('a1').should.eql([i('a1')]);
+    });
+
+    it('should read identifiers with special characters', function () {
+      reader.read('+').should.eql([i('+')]);
+      reader.read('-').should.eql([i('-')]);
+      reader.read('*').should.eql([i('*')]);
+      reader.read('/').should.eql([i('/')]);
+
+      reader.read('odd?').should.eql([i('odd?')]);
+    });
   });
 
-  it('should read function call', function () {
-    reader.read('(func 1 2)').should.eql([c(i('func'), n('1'), n('2'))]);
+  describe('strings', function () {
+    it('should read strings', function () {
+      reader.read('"clojure"').should.eql([s('clojure')]);
+    });
+
+    it('should read strings with escapes', function () {
+      reader.read('"clo\\"jure"').should.eql([s('clo\\"jure')]);
+    });
   });
 
-  it('should ignore spaces', function () {
-    reader.read('(func   1   2)').should.eql([c(i('func'), n('1'), n('2'))]);
+  describe('vectors', function () {
+    it('should read vectors', function () {
+      reader.read('[42 "clojure"]').should.eql([v(n('42'), s('clojure'))]);
+    });
   });
 
-  it('should read strings', function () {
-    reader.read('(concat "abc" "def")').should.eql([c(i('concat'), s('abc'), s('def'))]);
+  describe('lists', function () {
+    it('should read empty lists', function () {
+      reader.read('()').should.eql([l()]);
+    });
+
+    it('should read lists', function () {
+      reader.read('\'(42 "clojure")').should.eql([l(n('42'), s('clojure'))]);
+    });
   });
 
-  it('should include spaces in strings', function () {
-    reader.read('(concat "abc def")').should.eql([c(i('concat'), s('abc def'))]);
-  });
+  describe('calls', function () {
+    it('should read no-argument calls', function () {
+      reader.read('(func)').should.eql([c(i('func'))]);
+    });
 
-  it('should ignore special characters in strings', function () {
-    reader.read('(concat "(" ")" "\\"" "[" "]")')
-      .should.eql([c(i('concat'), s('('), s(')'), s('\\"'), s('['), s(']'))]);
-  });
+    it('should read calls with arguments', function () {
+      reader.read('(+ 1 1)').should.eql([c(i('+'), n('1'), n('1'))]);
+    });
 
-  it('should read vectors', function () {
-    reader.read('(defn [a b c])').should.eql([c(i('defn'), v(i('a'), i('b'), i('c')))]);
+    it('should read nested calls', function () {
+      reader.read('(+ 1 (* 2 3) 4)').should.eql([c(i('+'), n('1'),
+        c(i('*'), n('2'), n('3')), n('4'))]);
+    });
   });
 });
