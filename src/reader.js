@@ -2,11 +2,11 @@ var tokens = require('./tokens');
 
 exports.read = read;
 
-function read (insideString) {
-  return parseExpressions(insideString);
+function read (str) {
+  return parseExpressions(str);
 }
 
-function parseExpressions (insideString, cursor, closeChar) {
+function parseExpressions (str, cursor, closeChar) {
   var expressions = []
     , currentChar
     , previousChar
@@ -17,13 +17,13 @@ function parseExpressions (insideString, cursor, closeChar) {
   cursor = cursor || { pos: 0 , token: { value: '' } , insideString: false };
   closeChar = closeChar || ')';
 
-  for (; cursor.pos < insideString.length; cursor.pos++) {
-    currentChar = insideString[cursor.pos];
+  for (; cursor.pos < str.length; cursor.pos++) {
+    currentChar = str[cursor.pos];
 
     if (!cursor.insideString && (token = tokens.byOpenChar[currentChar])) {
       cursor.pos++;
       cursor.insideString = token.insideString;
-      subTokens = parseExpressions(insideString, cursor, token.closeChr);
+      subTokens = parseExpressions(str, cursor, token.closeChr);
       expressions.push(token.terminal ? subTokens[0] : {
         value: subTokens
       , kind: token.kind
