@@ -20,7 +20,6 @@ function readEvalPrompt(input){
   default:
     var data = reader.read(input);
     console.log(evaluator.evaluate(data));
-    rl.setPrompt(prefix, prefix.length);
     rl.prompt();
     break;
   }  
