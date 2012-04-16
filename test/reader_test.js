@@ -20,6 +20,7 @@ describe('Reader', function () {
       reader.read('-').should.eql([i('-')]);
       reader.read('*').should.eql([i('*')]);
       reader.read('/').should.eql([i('/')]);
+      reader.read('=').should.eql([i('=')]);
 
       reader.read('odd?').should.eql([i('odd?')]);
     });
