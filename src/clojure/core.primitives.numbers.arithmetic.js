@@ -34,3 +34,6 @@ exports['/'] = function () {
 
   return product;
 };
+exports.mod = function (dividend, divisor) {
+  return +dividend % +divisor;
+};
