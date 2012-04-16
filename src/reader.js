@@ -21,7 +21,7 @@ function parseExpressions(str, cursor, closingChar) {
     if (/\d/.exec(currentChar)) {
       expressions.push(parseNumber(str, cursor));
     }
-    else if (/\w|\+|\-|\*|\//.exec(currentChar)) {
+    else if (/\w|\+|\-|\*|\/|\=/.exec(currentChar)) {
       expressions.push(parseIdentifier(str, cursor));
     }
     else if (currentChar === '"') {
@@ -65,7 +65,7 @@ function parseNumber (str, cursor) {
 
 function parseIdentifier (str, cursor) {
   var substr = str.substr(cursor.pos)
-    , match = /(\w|\d|\+|\-|\*|\/|\?)+/.exec(substr)
+    , match = /(\w|\d|\+|\-|\*|\/|\=|\?)+/.exec(substr)
     ;
 
   cursor.pos += match[0].length - 1;

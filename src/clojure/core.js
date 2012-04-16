@@ -10,6 +10,7 @@ extend(require('./core.specialforms'));
 extend(require('./core.primitives.numbers'));
 extend(require('./core.functions'));
 extend(require('./core.sequences'));
+extend(require('./core.misc'));
 
 exports['true'] = true;
 exports['false'] = false;
