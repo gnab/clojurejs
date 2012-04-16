@@ -36,6 +36,9 @@ exports['/'] = function () {
 
   return product;
 };
+exports.mod = function (num, div) {
+  return num % div;
+};
 
 // Test
 

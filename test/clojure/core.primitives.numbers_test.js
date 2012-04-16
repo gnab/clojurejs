@@ -15,6 +15,9 @@ describe('Primitives', function () {
       it('/', function () {
         clojure.run('(/ 6 2)').should.equal(3);
       });
+      it('mod', function () {
+        clojure.run('(mod 10 6)').should.equal(4);
+      });
     });
 
     describe('Test', function () {
