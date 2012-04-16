@@ -6,8 +6,10 @@ function extend(collection) {
   }
 }
 
+// Namespaces based on http://clojure.org/cheatsheet
 extend(require('./core.specialforms'));
-extend(require('./core.primitives.numbers'));
+extend(require('./core.primitives.numbers.arithmetic'));
+extend(require('./core.primitives.numbers.test'));
 extend(require('./core.functions'));
 extend(require('./core.sequences'));
 extend(require('./core.misc'));

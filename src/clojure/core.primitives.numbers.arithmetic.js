@@ -1,5 +1,3 @@
-// Arithmetic
-
 exports['+'] = function () {
   var sum = 0;
 
@@ -35,14 +33,4 @@ exports['/'] = function () {
   });
 
   return product;
-};
-
-// Test
-
-exports['odd?'] = function (n) {
-  return n % 2 === 1;
-};
-
-exports['even?'] = function (n) {
-  return n % 2 === 0;
 };
