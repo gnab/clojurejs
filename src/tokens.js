@@ -1,7 +1,7 @@
 var tokens = module.exports = {
   n: token('number', /^'?\d+/)
 , i: token('identifier', /^('?)[\w|\d|\+|\-|\*|\/|\?|=]+/)
-, k: token('keyword', /^'?:([\w|\d|\+|\-|\*|\/|\?]+)/)
+, k: token('keyword', /^'?:([\w|\d|\+|\-|\*|\/|\?|=]+)/)
 , s: token('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"')
 , v: token('vector', /^'?\[/, ']', false)
 , c: token('call', /^'?\(/, ')', false)
