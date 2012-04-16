@@ -1,84 +1,84 @@
-var tokens = require('./tokens');
+var tokens = require('./tokens')
+  , tokenParsers = {
+    n: parseNumber
+  , i: parseIdentifier
+  , k: parseKeyword
+  , s: parseString
+  , v: parseVector
+  , l: parseList
+  };
 
-exports.read = read;
-
-function read (str) {
-  return parseExpressions(str);
-}
+module.exports = {
+  read: function (str) {
+    return parseExpressions(str);
+  }
+};
 
 function parseExpressions(str, cursor, closingChar) {
   var expressions = []
-    , subExpressions
+    , token
+    , match
     , currentChar
-    , previousChar
     ;
 
   cursor = cursor || { pos: 0 , token: { value: '' } , insideString: false };
 
   for (; cursor.pos < str.length; cursor.pos++) {
     currentChar = str[cursor.pos];
- 
-    if (/\d/.exec(currentChar)) {
-      expressions.push(parseNumber(str, cursor));
-    }
-    else if (/\w|\+|\-|\*|\/|\=/.exec(currentChar)) {
-      expressions.push(parseIdentifier(str, cursor));
-    }
-    else if (currentChar === '"') {
-      cursor.pos++;
-      expressions.push(parseString(str, cursor));
-    }
-    else if (currentChar === '[') {
-      cursor.pos++;
-      expressions.push({
-        value: parseExpressions(str, cursor, ']')
-      , kind: 'vector'
-      });
-    }
-    else if (currentChar === '(') {
-      cursor.pos++;
-      subExpressions = parseExpressions(str, cursor, ')');
-      expressions.push({
-        value: subExpressions
-      , kind: previousChar === '\'' || subExpressions.length === 0  ? 'list' : 'call'
-      });
-    }
-    else if (currentChar === closingChar) {
-      break;
+    for (token in tokenParsers) {
+      if (tokens.hasOwnProperty(token)) {
+        if ((match = tokens[token].pattern.exec(str.substr(cursor.pos)))) {
+          expressions.push(tokenParsers[token](match, cursor, str));
+          break;
+        }
+      }
     }
 
-    previousChar = currentChar;
+    if (currentChar === closingChar) {
+      break;
+    }
   }
 
   return expressions;
 }
 
-function parseNumber (str, cursor) {
-  var substr = str.substr(cursor.pos)
-    , match = /\d+/.exec(substr)
-    ;
-
+function parseNumber (match, cursor) {
   cursor.pos += match[0].length - 1;
 
   return tokens.n(match[0]);
 }
 
-function parseIdentifier (str, cursor) {
-  var substr = str.substr(cursor.pos)
-    , match = /(\w|\d|\+|\-|\*|\/|\=|\?)+/.exec(substr)
-    ;
-
+function parseIdentifier (match, cursor) {
   cursor.pos += match[0].length - 1;
 
   return tokens.i(match[0]);
 }
 
-function parseString (str, cursor) {
-  var substr = str.substr(cursor.pos)
-    , match = /(([^\\"]|\\\\|\\")*)"/.exec(substr)
-    ;
-
+function parseKeyword (match, cursor) {
   cursor.pos += match[0].length - 1;
 
+  return tokens.k(match[1]);
+}
+
+function parseString (match, cursor) {
+  cursor.pos += match[0].length;
+
   return tokens.s(match[1]);
+}
+
+function parseVector(match, cursor, str) {
+  cursor.pos += match[0].length;
+
+  return tokens.v.apply(tokens, parseExpressions(str, cursor, ']'));
+}
+
+function parseList (match, cursor, str) {
+  cursor.pos += match[0].length;
+
+  var subExpressions = parseExpressions(str, cursor, ')')
+    , isCall = match[1] !== '\'' && subExpressions.length > 0
+    , token = isCall ? tokens.c : tokens.l
+    ;
+
+  return token.apply(tokens, subExpressions);
 }

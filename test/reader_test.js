@@ -1,16 +1,22 @@
 var reader = require('../src/reader')
   , tokens = require('../src/tokens')
-  , c = tokens.c, i = tokens.i, n = tokens.n, v = tokens.v, s = tokens.s, l = tokens.l
+  , c = tokens.c
+  , i = tokens.i
+  , n = tokens.n
+  , v = tokens.v
+  , s = tokens.s
+  , l = tokens.l
+  , k = tokens.k
   ;
 
 describe('Reader', function () {
-  describe('numbers', function () {
+  describe('number parsing', function () {
     it('should read integers', function () {
       reader.read('42').should.eql([n('42')]);
     });
   });
 
-  describe('identifiers', function () {
+  describe('identifier parsing', function () {
     it('should read alphanumeric identifiers', function () {
       reader.read('a1').should.eql([i('a1')]);
     });
@@ -26,7 +32,13 @@ describe('Reader', function () {
     });
   });
 
-  describe('strings', function () {
+  describe('keyword parsing', function () {
+    it('should read keywords', function () {
+      reader.read(':clojure').should.eql([k('clojure')]);
+    });
+  });
+
+  describe('string parsing', function () {
     it('should read strings', function () {
       reader.read('"clojure"').should.eql([s('clojure')]);
     });
@@ -36,13 +48,13 @@ describe('Reader', function () {
     });
   });
 
-  describe('vectors', function () {
+  describe('vector parsing', function () {
     it('should read vectors', function () {
       reader.read('[42 "clojure"]').should.eql([v(n('42'), s('clojure'))]);
     });
   });
 
-  describe('lists', function () {
+  describe('list parsing', function () {
     it('should read empty lists', function () {
       reader.read('()').should.eql([l()]);
     });
@@ -52,7 +64,7 @@ describe('Reader', function () {
     });
   });
 
-  describe('calls', function () {
+  describe('call parsing', function () {
     it('should read no-argument calls', function () {
       reader.read('(func)').should.eql([c(i('func'))]);
     });
@@ -64,6 +76,11 @@ describe('Reader', function () {
     it('should read nested calls', function () {
       reader.read('(+ 1 (* 2 3) 4)').should.eql([c(i('+'), n('1'),
         c(i('*'), n('2'), n('3')), n('4'))]);
+    });
+  });
+
+  describe('map parsing', function () {
+    it('should read maps', function () {
     });
   });
 });
