@@ -42,3 +42,9 @@ exports.fn = function (args, exprs) {
 };
 
 exports.fn.macro = true;
+
+exports.defn = function (name, args, exprs) {
+  evaluator.globalContext[name.value] = exports.fn.call(this, args, exprs);
+};
+
+exports.defn.macro = true;

@@ -17,4 +17,8 @@ describe('Special Forms', function () {
   it('fn', function () {
     clojure.run('((fn [a b] (+ a b)) 1 2)').should.equal(3);
   });
+  it('defn', function () {
+    clojure.run('(defn testfun [a b] (+ a b))');
+    clojure.run('(testfun 1 2)').should.equal(3);
+  });
 });
