@@ -75,8 +75,12 @@ function parseVector(match, cursor, str) {
 function parseList (match, cursor, str) {
   cursor.pos += match[0].length;
 
+  // No need to distinguish between standard and syntax-
+  // quoted lists until we decide to support namespaces
+  var quoted = match[1] === '\'' || match[1] === '`';
+
   var subExpressions = parseExpressions(str, cursor, ')')
-    , isCall = match[1] !== '\'' && subExpressions.length > 0
+    , isCall = !quoted && subExpressions.length > 0
     , token = isCall ? tokens.c : tokens.l
     ;
 

@@ -5,7 +5,7 @@ var tokens = module.exports = {
 , s: token('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"')
 , v: token('vector', /^'?\[/, ']', false)
 , c: token('call', /^'?\(/, ')', false)
-, l: token('list', /^('?)\(/, ')', false)
+, l: token('list', /^(['`])?\(/, ')', false)
 };
 
 function token (kind, pattern, closeChr, terminal) {

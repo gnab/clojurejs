@@ -59,8 +59,11 @@ describe('Reader', function () {
       reader.read('()').should.eql([l()]);
     });
 
-    it('should read lists', function () {
+    it('should read quoted lists', function () {
       reader.read('\'(42 "clojure")').should.eql([l(n('42'), s('clojure'))]);
+    });
+    it('should read syntax-quoted lists', function () {
+      reader.read('`(42 "clojure")').should.eql([l(n('42'), s('clojure'))]);
     });
   });
 
