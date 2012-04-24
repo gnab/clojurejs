@@ -13,6 +13,7 @@ extend(require('./core.primitives.numbers.test'));
 extend(require('./core.functions'));
 extend(require('./core.sequences'));
 extend(require('./core.misc'));
+extend(require('./core.macros'));
 
 exports['true'] = true;
 exports['false'] = false;
