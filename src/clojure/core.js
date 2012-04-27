@@ -14,6 +14,7 @@ extend(require('./core.functions'));
 extend(require('./core.sequences'));
 extend(require('./core.misc'));
 extend(require('./core.macros'));
+extend(require('./core.io'));
 
 exports['true'] = true;
 exports['false'] = false;

@@ -7,9 +7,13 @@
     "require",
     "describe",
     "it",
+    "before",
+    "after",
     "module",
     "exports",
     "window",
-    "global"
+    "global",
+    "sinon",
+    "console"
   ]
 }
