@@ -1,39 +1,46 @@
 exports.Namespace = Namespace;
 
-Namespace.all = [];
-
 function Namespace (name) {
-  this.__name__ = name;
-  this.__vars__ = {};
-
-  if (name) {
-    Namespace.all[name] = this;
-  }
+  this.name = name;
+  this.vars = {};
 }
+
+Namespace.set = function (name) {
+  if (!Namespace.all[name]) {
+    var namespace = new Namespace(name);
+    namespace.use(require('./clojure/core'));
+    Namespace.all[name] = namespace;
+  }
+
+  Namespace.current = Namespace.all[name];
+};
 
 Namespace.prototype.use = function (ns) {
   var name;
 
-  for (name in ns.__vars__) {
+  for (name in ns.vars) {
     this.set(name, ns.get(name));
   }
 };
 
 Namespace.prototype.get = function (name) {
-  return this.__vars__[name];
+  return this.vars[name];
 };
 
 Namespace.prototype.set = function (name, value) {
-  this.__vars__[name] = value;
+  this.vars[name] = value;
 };
 
 Namespace.prototype.extend = function () {
   var ns = new Namespace();
   
   function Vars () {}
-  Vars.prototype = this.__vars__;
+  Vars.prototype = this.vars;
  
-  ns.__vars__ = new Vars();
+  ns.vars = new Vars();
 
   return ns;
 };
+
+Namespace.all = [];
+Namespace.set('user');

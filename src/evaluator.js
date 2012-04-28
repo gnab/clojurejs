@@ -6,10 +6,6 @@ var Namespace = require('./namespace').Namespace
 exports.evaluate = evaluate;
 
 function evaluate (exprs, context) {
-  if (!Namespace.current) {
-    core.get('ns')(tokens.i('user'));
-  }
-
   context = context || Namespace.current;
 
   return exprs.map(function (e) { return evaluateExpression(e, context); }).slice(-1)[0];
