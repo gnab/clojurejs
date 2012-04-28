@@ -1,12 +1,12 @@
 var clojure = require('../../src/clojure')
-  , evaluator = require('../../src/evaluator')
+  , Namespace = require('../../src/namespace').Namespace
   ;
 
 describe('Special Forms', function () {
   it('def', function () {
     clojure.run('(def a 5)');
 
-    evaluator.globalContext.should.have.property('a', 5);
+    Namespace.current.get('a').should.equal(5);
   });
 
   it('if', function () {
@@ -17,6 +17,7 @@ describe('Special Forms', function () {
   it('fn', function () {
     clojure.run('((fn [a b] (+ a b)) 1 2)').should.equal(3);
   });
+
   it('defn', function () {
     clojure.run('(defn testfun [a b] (+ a b))');
     clojure.run('(testfun 1 2)').should.equal(3);

@@ -1,5 +1,6 @@
 var evaluator = require('../src/evaluator.js')
   , tokens = require('../src/tokens')
+  , Namespace = require('../src/namespace').Namespace
   , c = tokens.c, i = tokens.i, n = tokens.n, v = tokens.v, s = tokens.s
   ;
 
@@ -14,7 +15,9 @@ describe('Evaluator', function () {
     });
 
     it('should evaluate identifiers', function () {
-      evaluator.evaluate([i('a')], {a: 5}).should.equal(5);
+      var context = new Namespace();
+      context.set('a', 5);
+      evaluator.evaluate([i('a')], context).should.equal(5);
     });
 
     it('should evaluate vectors', function () {
@@ -22,7 +25,9 @@ describe('Evaluator', function () {
     });
 
     it('should evaluate calls', function () {
-      evaluator.evaluate([c(i('f'))], {f: function () { return 42; }}).should.equal(42);
+      var context = new Namespace();
+      context.set('f', function () { return 42; });
+      evaluator.evaluate([c(i('f'))], context).should.equal(42);
     });
   });
 });

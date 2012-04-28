@@ -1,9 +1,11 @@
-var evaluator = require('../evaluator');
+var evaluator = require('../evaluator')
+  , Namespace = require('../namespace').Namespace
+  ;
 
 exports.def = function (name, init) {
   var context = this;
 
-  evaluator.globalContext[name.value] = evaluator.evaluate([init], context);
+  Namespace.current.set(name.value, evaluator.evaluate([init], context));
 };
 
 exports.def.macro = true;
@@ -30,7 +32,7 @@ exports.fn = function (args, exprs) {
       // map args
       var extargs = arguments;
       args.value.map(function (a, i) {
-        context[a.value] = extargs[i];
+        context.set(a.value, extargs[i]);
       });
       // execute
       return evaluator.evaluate([exprs], context);
@@ -44,7 +46,7 @@ exports.fn = function (args, exprs) {
 exports.fn.macro = true;
 
 exports.defn = function (name, args, exprs) {
-  evaluator.globalContext[name.value] = exports.fn.call(this, args, exprs);
+  Namespace.current.set(name.value, exports.fn.call(this, args, exprs));
 };
 
 exports.defn.macro = true;

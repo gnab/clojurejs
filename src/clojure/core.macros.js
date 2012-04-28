@@ -1,5 +1,6 @@
-var evaluator = require('../evaluator');
-var fn = require('./core.specialforms').fn;
+var evaluator = require('../evaluator')
+  , Namespace = require('../namespace').Namespace
+  ;
 
 exports.defmacro = function (name, params, list) {
   
@@ -27,8 +28,7 @@ exports.defmacro = function (name, params, list) {
     return f.apply(context, arguments);
   };
   macro.macro = true; 
-  evaluator.globalContext[name.value] = macro;
-
+  Namespace.current.set(name.value, macro);
 };
 
 exports.defmacro.macro = true;

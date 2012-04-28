@@ -1,21 +1,26 @@
-function extend(collection) {
+var Namespace = require('../namespace').Namespace
+  , core = module.exports = new Namespace('clojure.core')
+  ;
+
+core.set('true', true);
+core.set('false', false);
+core.set('nil', null);
+
+// Based on http://clojure.org/cheatsheet
+use(require('./core.specialforms'));
+use(require('./core.primitives.numbers.arithmetic'));
+use(require('./core.primitives.numbers.test'));
+use(require('./core.functions'));
+use(require('./core.sequences'));
+use(require('./core.misc'));
+use(require('./core.macros'));
+use(require('./core.io'));
+use(require('./core.namespace'));
+
+function use (vars) {
   var name;
 
-  for (name in collection) {
-    exports[name] = collection[name];
+  for (name in vars) {
+    core.set(name, vars[name]);
   }
 }
-
-// Namespaces based on http://clojure.org/cheatsheet
-extend(require('./core.specialforms'));
-extend(require('./core.primitives.numbers.arithmetic'));
-extend(require('./core.primitives.numbers.test'));
-extend(require('./core.functions'));
-extend(require('./core.sequences'));
-extend(require('./core.misc'));
-extend(require('./core.macros'));
-extend(require('./core.io'));
-
-exports['true'] = true;
-exports['false'] = false;
-exports.nil = null;

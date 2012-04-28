@@ -1,12 +1,16 @@
-var core = require('./clojure/core')
-  , globalContext = extendContext(core)
+var Namespace = require('./namespace').Namespace
+  , core = require('./clojure/core')
+  , tokens = require('./tokens')
   ;
 
-exports.globalContext = globalContext;
 exports.evaluate = evaluate;
 
 function evaluate (exprs, context) {
-  context = context || globalContext;
+  if (!Namespace.current) {
+    core.get('ns')(tokens.i('user'));
+  }
+
+  context = context || Namespace.current;
 
   return exprs.map(function (e) { return evaluateExpression(e, context); }).slice(-1)[0];
 }
@@ -22,16 +26,8 @@ function evaluateExpression (expr, context) {
     case 'vector':
       return expr.value.map(function (a) { return evaluateExpression(a, context);});
     case 'call':
-      return evaluateFunction(expr, extendContext(context));
+      return evaluateFunction(expr, context.extend());
   }
-}
-
-function extendContext(context) {
-  function C () {}
-
-  C.prototype = context;
-
-  return new C();
 }
 
 function evaluateFunction (expr, context) {
@@ -47,8 +43,8 @@ function evaluateFunction (expr, context) {
 }
 
 function lookupIdentifier (name, context) {
-  if (typeof context[name] !== 'undefined') {
-    return context[name];
+  if (typeof context.get(name) !== 'undefined') {
+    return context.get(name);
   }
 
   if (typeof window !== 'undefined' && typeof window[name] !== 'undefined') {
