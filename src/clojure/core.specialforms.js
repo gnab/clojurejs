@@ -26,20 +26,17 @@ exports['if'] = function (test, then, els) {
 
 exports['if'].macro = true;
 
-exports.fn = function (args, exprs) {
-  var context = this
-    , f = function () {
-      // map args
-      var extargs = arguments;
-      args.value.map(function (a, i) {
-        context.set(a.value, extargs[i]);
-      });
-      // execute
-      return evaluator.evaluate([exprs], context);
-    };
+exports.fn = function (params, exprs) {
+  var context = this;
 
   return function () {
-    return f.apply(context, arguments);
+    var args = arguments;
+
+    params.value.map(function (arg, i) {
+      context.set(arg.value, args[i]);
+    });
+
+    return evaluator.evaluate([exprs], context);
   };
 };
 
