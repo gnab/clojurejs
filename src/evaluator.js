@@ -20,13 +20,13 @@ function evaluateExpression (expr, context) {
     case 'identifier':
       return lookupIdentifier(expr.value, context);
     case 'vector':
-      return expr.value.map(function (a) { return evaluateExpression(a, context);});
+      return expr.value.map(function (e) { return evaluateExpression(e, context);});
     case 'call':
-      return evaluateFunction(expr, context.extend());
+      return evaluateCall(expr, context.extend());
   }
 }
 
-function evaluateFunction (expr, context) {
+function evaluateCall (expr, context) {
   var func = evaluateExpression(expr.value[0], context)
     , args = expr.value.slice(1)
     ;
@@ -39,6 +39,10 @@ function evaluateFunction (expr, context) {
 }
 
 function lookupIdentifier (name, context) {
+  if (name === 'true') return true;
+  if (name === 'false') return false;
+  if (name === 'nil') return null;
+
   if (typeof context.get(name) !== 'undefined') {
     return context.get(name);
   }

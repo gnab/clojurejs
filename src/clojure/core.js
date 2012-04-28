@@ -2,10 +2,6 @@ var Namespace = require('../namespace').Namespace
   , core = module.exports = new Namespace('clojure.core')
   ;
 
-core.set('true', true);
-core.set('false', false);
-core.set('nil', null);
-
 // Based on http://clojure.org/cheatsheet
 use(require('./core.specialforms'));
 use(require('./core.primitives.numbers.arithmetic'));
