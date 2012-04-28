@@ -1,12 +1,20 @@
 var clojure = require('../../src/clojure')
   , Namespace = require('../../src/namespace').Namespace
+  , should = require('should')
   ;
 
 describe('Special Forms', function () {
-  it('def', function () {
-    clojure.run('(def a 5)');
+  describe('def', function () {
+    it('should define var with null value by default', function () {
+      clojure.run('(def a)');
 
-    Namespace.current.get('a').should.equal(5);
+      should.strictEqual(Namespace.current.get('a'), null);
+    });
+    it('should define var with given value', function () {
+      clojure.run('(def a 5)');
+
+      Namespace.current.get('a').should.equal(5);
+    });
   });
 
   it('if', function () {

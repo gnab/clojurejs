@@ -3,9 +3,11 @@ var evaluator = require('../evaluator')
   ;
 
 exports.def = function (name, init) {
-  var context = this;
+  var context = this
+    , value = (typeof init === 'undefined' ? null : evaluator.evaluate([init], context))
+    ;
 
-  Namespace.current.set(name.value, evaluator.evaluate([init], context));
+  Namespace.current.set(name.value, value);
 };
 
 exports.def.macro = true;
