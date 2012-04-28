@@ -1,5 +1,5 @@
 var Namespace = require('./namespace').Namespace
-  , core = require('./clojure/core')
+  , specialforms = require('./clojure/specialforms')
   , tokens = require('./tokens')
   ;
 
@@ -39,26 +39,60 @@ function evaluateCall (expr, context) {
 }
 
 function lookupIdentifier (name, context) {
+  var identifier
+    , lookups = [
+      lookupLiteralIdentifier
+    , lookupSpecialForm
+    , lookupContextIdentifier
+    , lookupWindowIdentifier
+    , lookupGlobalIdentifier
+    , throwUnableToResolve
+    ];
+
+  lookups.find(function (lookup) {
+    return (identifier = lookup.call(this, name, context)) !== undefined;
+  });
+
+  return identifier;
+}
+
+function lookupLiteralIdentifier (name) {
   if (name === 'true') return true;
   if (name === 'false') return false;
   if (name === 'nil') return null;
+}
 
-  if (typeof context.get(name) !== 'undefined') {
+function lookupSpecialForm (name ) {
+  var form = specialforms[name];
+
+  if (typeof form === 'function') {
+    return form;
+  }
+}
+
+function lookupContextIdentifier (name, context) {
+  if (context.get(name) !== undefined) {
     return context.get(name);
   }
+}
 
-  if (typeof window !== 'undefined' && typeof window[name] !== 'undefined') {
+function lookupWindowIdentifier (name) {
+  if (typeof window !== 'undefined' && window[name] !== undefined) {
     return function () {
       return window[name].apply(window, arguments);
     };
   }
+}
 
-  if (typeof global !== 'undefined' && typeof global[name] !== 'undefined') {
+function lookupGlobalIdentifier (name) {
+  if (typeof global !== 'undefined' && global[name] !== undefined) {
     return function () {
       return global[name].apply(global, arguments);
     };
   }
+}
 
+function throwUnableToResolve (name) {
   throw new Error('Unable to resolve symbol: ' + name + ' in this context');
 }
 
@@ -72,4 +106,15 @@ Array.prototype.map = Array.prototype.map || function (f) {
   }
 
   return result;
+};
+
+Array.prototype.find = Array.prototype.find || function (f) {
+  var i
+    ;
+
+  for (i = 0; i < this.length; ++i) {
+    if (f(this[i])) {
+      return this[i];
+    }
+  }
 };

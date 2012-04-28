@@ -3,7 +3,6 @@ var Namespace = require('../namespace').Namespace
   ;
 
 // Based on http://clojure.org/cheatsheet
-use(require('./core.specialforms'));
 use(require('./core.primitives.numbers.arithmetic'));
 use(require('./core.primitives.numbers.test'));
 use(require('./core.functions'));
