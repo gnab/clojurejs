@@ -1,4 +1,5 @@
 var evaluator = require('../src/evaluator.js')
+  , specialforms = require('../src/clojure/specialforms')
   , should = require('should')
   , tokens = require('../src/tokens')
   , Namespace = require('../src/namespace').Namespace
@@ -11,6 +12,10 @@ var evaluator = require('../src/evaluator.js')
   ;
 
 describe('Evaluator', function () {
+  beforeEach(function () {
+    Namespace.reset();
+  });
+
   describe('number evaluation', function () {
     it('should evaluate numbers', function () {
       evaluator.evaluate([number('42')]).should.equal(42);
@@ -38,10 +43,46 @@ describe('Evaluator', function () {
   });
 
   describe('symbol evaluation', function () {
-    it('should evaluate symbols', function () {
-      var context = new Namespace();
-      context.set('a', 5);
-      evaluator.evaluate([symbol('a')], context).should.equal(5);
+    it('should evaluate qualified symbols in current namespace', function () {
+      Namespace.current.set('a', 1);
+      evaluator.evaluate([symbol('user', 'a')], Namespace.current).should.equal(1);
+    });
+
+    it('should evaluate qualified symbols in other namespace', function () {
+      Namespace.current.set('a', 1);
+      Namespace.set('other');
+      evaluator.evaluate([symbol('user', 'a')], Namespace.current).should.equal(1);
+    });
+
+    it('should let special forms take precedence over vars', function () {
+      Namespace.current.set('def', 1);
+      evaluator.evaluate([symbol('def')], Namespace.current)
+        .should.equal(specialforms.def);
+    });
+
+    it('should evaluate qualified special form-named vars', function () {
+      Namespace.current.set('def', 1);
+      evaluator.evaluate([symbol('user', 'def')], Namespace.current).should.equal(1);
+    });
+
+    it('should not evaluate undefined, qualified special form-named vars', function () {
+      (function () { evaluator.evaluate([symbol('user', 'def')], Namespace.current); })
+        .should.throw(/No such var: user\/def/);
+    });
+
+    it('should evaluate vars in current namespace', function () {
+      Namespace.current.set('a', 1);
+      evaluator.evaluate([symbol('a')], Namespace.current).should.equal(1);
+    });
+
+    it('should evaluate vars in context extending namespace', function () {
+      Namespace.current.set('a', 1);
+      evaluator.evaluate([symbol('a')], Namespace.current.extend()).should.equal(1);
+    });
+
+    it('should throw error when symbol cannot be resolved', function () {
+      (function () { evaluator.evaluate([symbol('a')], Namespace.current)})
+        .should.throw(/Unable to resolve symbol: a in this context/);
     });
   });
 
@@ -53,9 +94,8 @@ describe('Evaluator', function () {
 
   describe('call evaluation', function () {
     it('should evaluate calls', function () {
-      var context = new Namespace();
-      context.set('f', function () { return 42; });
-      evaluator.evaluate([call(symbol('f'))], context).should.equal(42);
+      Namespace.current.set('f', function () { return 42; });
+      evaluator.evaluate([call(symbol('f'))], Namespace.current).should.equal(42);
     });
   });
 });

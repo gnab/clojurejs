@@ -26,7 +26,7 @@ function evaluateExpression (expr, context) {
     case literal.kind:
       return lookupLiteral(expr.value);
     case symbol.kind:
-      return lookupSymbol(expr.value, context);
+      return lookupSymbol(expr.value, expr.namespace, context);
     case vector.kind:
       return expr.value.map(function (e) { return evaluateExpression(e, context);});
     case call.kind:
@@ -52,24 +52,39 @@ function lookupLiteral (name) {
   if (name === 'nil') return null;
 }
 
-function lookupSymbol (name, context) {
+function lookupSymbol (name, namespace, context) {
   var symbol
     , lookups = [
-        lookupSpecialForm
+        lookupQualifiedSymbol
+      , lookupSpecialForm
       , lookupContextSymbol
       , lookupWindowSymbol
       , lookupGlobalSymbol
-      , throwUnableToResolve
+      , throwLookupError
       ];
 
   lookups.find(function (lookup) {
-    return (symbol = lookup.call(this, name, context)) !== undefined;
+    return (symbol = lookup.call(this, name, namespace, context)) !== undefined;
   });
 
   return symbol;
 }
 
-function lookupSpecialForm (name ) {
+function lookupQualifiedSymbol (name, namespace) {
+  if (namespace !== undefined) {
+    if (Namespace.get(namespace) === undefined) {
+      throw new Error('No such namespace: ' + namespace);
+    }
+
+    return Namespace.get(namespace).get(name);
+  }
+}
+
+function lookupSpecialForm (name, namespace) {
+  if (namespace !== undefined) {
+    return;
+  }
+
   var form = specialforms[name];
 
   if (typeof form === 'function') {
@@ -77,7 +92,7 @@ function lookupSpecialForm (name ) {
   }
 }
 
-function lookupContextSymbol (name, context) {
+function lookupContextSymbol (name, namespace, context) {
   if (context.get(name) !== undefined) {
     return context.get(name);
   }
@@ -99,7 +114,11 @@ function lookupGlobalSymbol (name) {
   }
 }
 
-function throwUnableToResolve (name) {
+function throwLookupError (name, namespace, context) {
+  if (namespace !== undefined) {
+    throw new Error('No such var: ' + namespace + '/' + name);
+  }
+
   throw new Error('Unable to resolve symbol: ' + name + ' in this context');
 }
 

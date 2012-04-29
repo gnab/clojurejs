@@ -8,6 +8,7 @@
     "describe",
     "it",
     "before",
+    "beforeEach",
     "after",
     "module",
     "exports",

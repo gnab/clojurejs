@@ -5,6 +5,10 @@ function Namespace (name) {
   this.vars = {};
 }
 
+Namespace.get = function (name) {
+  return Namespace.all[name];
+};
+
 Namespace.set = function (name) {
   if (!Namespace.all[name]) {
     var namespace = new Namespace(name);
@@ -13,6 +17,11 @@ Namespace.set = function (name) {
   }
 
   Namespace.current = Namespace.all[name];
+};
+
+Namespace.reset = function () {
+  Namespace.all = [];
+  Namespace.set('user');
 };
 
 Namespace.prototype.use = function (ns) {
@@ -42,5 +51,4 @@ Namespace.prototype.extend = function () {
   return ns;
 };
 
-Namespace.all = [];
-Namespace.set('user');
+Namespace.reset();
