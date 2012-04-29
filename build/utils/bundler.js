@@ -15,7 +15,9 @@ module.exports.bundle = function (options, callback) {
     bundle.register('post', minifier);
   }
 
+  bundle.prepend('(function () {');
   bundle.addEntry(options.source);
+  bundle.append('})()');
 
   bundle.on('syntaxError', function (err) {
     console.error(err);
