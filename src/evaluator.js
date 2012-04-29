@@ -1,11 +1,12 @@
 var Namespace = require('./namespace').Namespace
   , specialforms = require('./clojure/specialforms')
   , tokens = require('./tokens')
-  , call = tokens.call
-  , symbol = tokens.symbol
   , number = tokens.number
-  , vector = tokens.vector
   , string = tokens.string
+  , literal = tokens.literal
+  , symbol = tokens.symbol
+  , vector = tokens.vector
+  , call = tokens.call
   ;
 
 exports.evaluate = evaluate;
@@ -22,6 +23,8 @@ function evaluateExpression (expr, context) {
       return +expr.value;
     case string.kind:
       return expr.value;
+    case literal.kind:
+      return lookupLiteral(expr.value);
     case symbol.kind:
       return lookupSymbol(expr.value, context);
     case vector.kind:
@@ -43,28 +46,27 @@ function evaluateCall (expr, context) {
   return func.apply(context, args);
 }
 
+function lookupLiteral (name) {
+  if (name === 'true') return true;
+  if (name === 'false') return false;
+  if (name === 'nil') return null;
+}
+
 function lookupSymbol (name, context) {
   var symbol
     , lookups = [
-      lookupLiteralIdentifier
-    , lookupSpecialForm
-    , lookupContextIdentifier
-    , lookupWindowIdentifier
-    , lookupGlobalIdentifier
-    , throwUnableToResolve
-    ];
+        lookupSpecialForm
+      , lookupContextSymbol
+      , lookupWindowSymbol
+      , lookupGlobalSymbol
+      , throwUnableToResolve
+      ];
 
   lookups.find(function (lookup) {
     return (symbol = lookup.call(this, name, context)) !== undefined;
   });
 
   return symbol;
-}
-
-function lookupLiteralIdentifier (name) {
-  if (name === 'true') return true;
-  if (name === 'false') return false;
-  if (name === 'nil') return null;
 }
 
 function lookupSpecialForm (name ) {
@@ -75,13 +77,13 @@ function lookupSpecialForm (name ) {
   }
 }
 
-function lookupContextIdentifier (name, context) {
+function lookupContextSymbol (name, context) {
   if (context.get(name) !== undefined) {
     return context.get(name);
   }
 }
 
-function lookupWindowIdentifier (name) {
+function lookupWindowSymbol (name) {
   if (typeof window !== 'undefined' && window[name] !== undefined) {
     return function () {
       return window[name].apply(window, arguments);
@@ -89,7 +91,7 @@ function lookupWindowIdentifier (name) {
   }
 }
 
-function lookupGlobalIdentifier (name) {
+function lookupGlobalSymbol (name) {
   if (typeof global !== 'undefined' && global[name] !== undefined) {
     return function () {
       return global[name].apply(global, arguments);

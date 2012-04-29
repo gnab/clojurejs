@@ -1,18 +1,43 @@
 var reader = require('../src/reader')
   , tokens = require('../src/tokens')
-  , call = tokens.call
-  , symbol = tokens.symbol
   , number = tokens.number
-  , vector = tokens.vector
   , string = tokens.string
-  , list = tokens.list
+  , literal = tokens.literal
+  , symbol = tokens.symbol
   , keyword = tokens.keyword
+  , vector = tokens.vector
+  , list = tokens.list
+  , call = tokens.call
   ;
 
 describe('Reader', function () {
   describe('number parsing', function () {
     it('should read integers', function () {
       reader.read('42').should.eql([number('42')]);
+    });
+  });
+
+  describe('string parsing', function () {
+    it('should read strings', function () {
+      reader.read('"clojure"').should.eql([string('clojure')]);
+    });
+
+    it('should read strings with escapes', function () {
+      reader.read('"clo\\"jure"').should.eql([string('clo\\"jure')]);
+    });
+  });
+
+  describe('literal parsing', function () {
+    it('should read true', function () {
+      reader.read('true').should.eql([literal('true')]);
+    });
+
+    it('should read false', function () {
+      reader.read('false').should.eql([literal('false')]);
+    });
+
+    it('should read nil', function () {
+      reader.read('nil').should.eql([literal('nil')]);
     });
   });
 
@@ -40,16 +65,6 @@ describe('Reader', function () {
 
     it('should read namespaced keywords', function () {
       reader.read(':a.b.c/d').should.eql([keyword('a.b.c', 'd')]);
-    });
-  });
-
-  describe('string parsing', function () {
-    it('should read strings', function () {
-      reader.read('"clojure"').should.eql([string('clojure')]);
-    });
-
-    it('should read strings with escapes', function () {
-      reader.read('"clo\\"jure"').should.eql([string('clo\\"jure')]);
     });
   });
 

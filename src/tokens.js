@@ -3,6 +3,8 @@ var SYM_HEAD = 'a-z\\*\\+\\!\\-\\_\\?\\.'
 
   , tokens = module.exports = {
       number: token('number', /^'?\d+/)
+    , string: token('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"')
+    , literal: token('literal', /^'?(true|false|nil)/)
     , symbol: token('symbol', new RegExp(
         '^' +
         '\'?' +                                                   // Optional single-quote
@@ -16,7 +18,6 @@ var SYM_HEAD = 'a-z\\*\\+\\!\\-\\_\\?\\.'
         '(?:([' + SYM_HEAD + '][' + SYM_TAIL + ']*)\\/)?' +       // Optional namespace
         '([' + SYM_HEAD + '=' + '][' + SYM_TAIL + ']*)', 'i'      // Keyword
       ))
-    , string: token('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"')
     , vector: token('vector', /^'?\[/, ']', false)
     , call: token('call', /^'?\(/, ')', false)
     , list: token('list', /^(['`])?\(/, ')', false)

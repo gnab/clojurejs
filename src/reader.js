@@ -1,9 +1,10 @@
 var tokens = require('./tokens')
   , tokenParsers = {
     number: parseNumber
+  , string: parseString
+  , literal: parseLiteral
   , symbol: parseSymbol
   , keyword: parseKeyword
-  , string: parseString
   , vector: parseVector
   , list: parseList
   };
@@ -48,6 +49,18 @@ function parseNumber (match, cursor) {
   return tokens.number(match[0]);
 }
 
+function parseString (match, cursor) {
+  cursor.pos += match[0].length;
+
+  return tokens.string(match[1]);
+}
+
+function parseLiteral (match, cursor) {
+  cursor.pos += match[0].length;
+
+  return tokens.literal(match[1]);
+}
+
 function parseSymbol (match, cursor) {
   cursor.pos += match[0].length - 1;
 
@@ -58,12 +71,6 @@ function parseKeyword (match, cursor) {
   cursor.pos += match[0].length - 1;
 
   return tokens.keyword(match[1], match[2]);
-}
-
-function parseString (match, cursor) {
-  cursor.pos += match[0].length;
-
-  return tokens.string(match[1]);
 }
 
 function parseVector(match, cursor, str) {
