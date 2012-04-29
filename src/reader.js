@@ -21,7 +21,7 @@ function parseExpressions(str, cursor, closingChar) {
     , currentChar
     ;
 
-  cursor = cursor || { pos: 0 , token: { value: '' } , insideString: false };
+  cursor = cursor || { pos: 0 };
 
   for (; cursor.pos < str.length; cursor.pos++) {
     currentChar = str[cursor.pos];

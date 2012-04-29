@@ -31,6 +31,8 @@ function token (kind, pattern, closeChr, terminal) {
       kind: kind
     , namespace: terminal !== false && args.length === 2 ? args.shift() : undefined
     , value: terminal === false ? args : args.shift()
+    , stringify: stringify
+    , terminal: terminal
     };
   };
 
@@ -38,4 +40,18 @@ function token (kind, pattern, closeChr, terminal) {
   f.pattern = pattern;
 
   return f;
+}
+
+function stringify () {
+  if (this.terminal !== false) {
+    return this.value;
+  }
+
+  var values = this.value.map(function (t) { return t.stringify(); }).join(' ');
+
+  if (this.kind === tokens.vector.kind) {
+    return '[' + values + ']';
+  }
+
+  return '(' + values + ')';
 }

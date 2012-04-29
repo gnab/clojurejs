@@ -32,3 +32,11 @@ exports.defmacro = function (name, params, list) {
 };
 
 exports.defmacro.macro = true;
+
+exports.assert = function (condition) {
+  if (evaluator.evaluate([condition]) !== true) {
+    throw new Error('Assert failed: ' + condition.stringify());
+  }
+};
+
+exports.assert.macro = true;
