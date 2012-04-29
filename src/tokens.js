@@ -4,7 +4,7 @@ var SYM_HEAD = 'a-z\\*\\+\\!\\-\\_\\?\\.'
   , tokens = module.exports = {
       number: token('number', /^'?\d+/)
     , string: token('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"')
-    , literal: token('literal', /^'?(true|false|nil)/)
+    , literal: token('literal', /^'?(true|false|nil)$/)
     , symbol: token('symbol', new RegExp(
         '^' +
         '\'?' +                                                   // Optional single-quote

@@ -39,6 +39,10 @@ describe('Reader', function () {
     it('should read nil', function () {
       reader.read('nil').should.eql([literal('nil')]);
     });
+
+    it('should ignore symbols with leading literal names', function () {
+      reader.read('nil?').should.eql([symbol('nil?')]);
+    });
   });
 
   describe('symbol parsing', function () {
