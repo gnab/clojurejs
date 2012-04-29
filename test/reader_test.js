@@ -22,19 +22,24 @@ describe('Reader', function () {
     });
 
     it('should read identifiers with special characters', function () {
-      reader.read('+').should.eql([i('+')]);
-      reader.read('-').should.eql([i('-')]);
-      reader.read('*').should.eql([i('*')]);
+      reader.read('*+!-_?').should.eql([i('*+!-_?')]);
       reader.read('/').should.eql([i('/')]);
       reader.read('=').should.eql([i('=')]);
+      reader.read('.').should.eql([i('.')]);
+    });
 
-      reader.read('odd?').should.eql([i('odd?')]);
+    it('should read namespaced identifiers', function () {
+      reader.read('a.b.c/d').should.eql([i('a.b.c', 'd')]);
     });
   });
 
   describe('keyword parsing', function () {
     it('should read keywords', function () {
       reader.read(':clojure').should.eql([k('clojure')]);
+    });
+
+    it('should read namespaced keywords', function () {
+      reader.read(':a.b.c/d').should.eql([k('a.b.c', 'd')]);
     });
   });
 

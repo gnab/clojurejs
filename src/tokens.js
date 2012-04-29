@@ -1,12 +1,26 @@
-var tokens = module.exports = {
-  n: token('number', /^'?\d+/)
-, i: token('identifier', /^('?)[\w|\d|\+|\-|\*|\/|\?|=]+/)
-, k: token('keyword', /^'?:([\w|\d|\+|\-|\*|\/|\?|=]+)/)
-, s: token('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"')
-, v: token('vector', /^'?\[/, ']', false)
-, c: token('call', /^'?\(/, ')', false)
-, l: token('list', /^(['`])?\(/, ')', false)
-};
+var SYM_HEAD = 'a-z\\*\\+\\!\\-\\_\\?\\.'
+  , SYM_TAIL = SYM_HEAD + '0-9'
+
+  , tokens = module.exports = {
+      n: token('number', /^'?\d+/)
+    , i: token('identifier', new RegExp(
+        '^' +
+        '\'?' +                                                   // Optional single-quote
+        '(?:([' + SYM_HEAD + '][' + SYM_TAIL + ']*)\\/)?' +       // Optional namespace
+        '([' + SYM_HEAD + '\\/|=' + '][' + SYM_TAIL + ']*)', 'i'  // Symbol
+      ))
+    , k: token('keyword', new RegExp(
+        '^' +
+        '\'?' +                                                   // Optional single-quote
+        '::?' +                                                   // 1 or 2 colons
+        '(?:([' + SYM_HEAD + '][' + SYM_TAIL + ']*)\\/)?' +       // Optional namespace
+        '([' + SYM_HEAD + '=' + '][' + SYM_TAIL + ']*)', 'i'      // Keyword
+      ))
+    , s: token('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"')
+    , v: token('vector', /^'?\[/, ']', false)
+    , c: token('call', /^'?\(/, ')', false)
+    , l: token('list', /^(['`])?\(/, ')', false)
+  };
 
 function token (kind, pattern, closeChr, terminal) {
   var f = function () {
@@ -14,7 +28,8 @@ function token (kind, pattern, closeChr, terminal) {
 
     return {
       kind: kind
-    , value: terminal === false ? args : args[0]
+    , namespace: terminal !== false && args.length === 2 ? args.shift() : undefined
+    , value: terminal === false ? args : args.shift()
     };
   };
 

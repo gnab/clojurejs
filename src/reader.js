@@ -51,13 +51,13 @@ function parseNumber (match, cursor) {
 function parseIdentifier (match, cursor) {
   cursor.pos += match[0].length - 1;
 
-  return tokens.i(match[0]);
+  return tokens.i(match[1], match[2]);
 }
 
 function parseKeyword (match, cursor) {
   cursor.pos += match[0].length - 1;
 
-  return tokens.k(match[1]);
+  return tokens.k(match[1], match[2]);
 }
 
 function parseString (match, cursor) {
