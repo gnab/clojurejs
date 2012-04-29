@@ -1,4 +1,7 @@
-var evaluator = require('../evaluator');
+var evaluator = require('../evaluator')
+  , specialforms = require('../../src/clojure/specialforms')
+  , Namespace = require('../../src/namespace').Namespace
+  ;
 
 exports.partial = function () {
   var func = arguments[0]
@@ -14,3 +17,9 @@ exports.partial = function () {
     }.apply(context, arguments);
   };
 };
+
+exports.defn = function (name, args, exprs) {
+  Namespace.current.set(name.value, specialforms.fn.call(this, args, exprs));
+};
+
+exports.defn.macro = true;

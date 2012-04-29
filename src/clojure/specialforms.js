@@ -31,6 +31,8 @@ exports['if'].macro = true;
 exports.fn = function (params, exprs) {
   var context = this;
 
+  exprs = exprs || [];
+
   return function () {
     var args = arguments;
 
@@ -43,9 +45,3 @@ exports.fn = function (params, exprs) {
 };
 
 exports.fn.macro = true;
-
-exports.defn = function (name, args, exprs) {
-  Namespace.current.set(name.value, exports.fn.call(this, args, exprs));
-};
-
-exports.defn.macro = true;

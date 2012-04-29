@@ -22,12 +22,13 @@ describe('Special Forms', function () {
     clojure.run('(if false (this-is-not-evaluated) 43)').should.equal(43);
   });
 
-  it('fn', function () {
-    clojure.run('((fn [a b] (+ a b)) 1 2)').should.equal(3);
-  });
+  describe('fn', function () {
+    it('should define anonymous function', function () {
+      clojure.run('((fn [a b] (+ a b)) 1 2)').should.equal(3);
+    });
 
-  it('defn', function () {
-    clojure.run('(defn testfun [a b] (+ a b))');
-    clojure.run('(testfun 1 2)').should.equal(3);
+    it('should define anonymous function without body', function () {
+      should.strictEqual(clojure.run('((fn [a b]))'), undefined);
+    });
   });
 });
