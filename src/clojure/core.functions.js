@@ -1,6 +1,6 @@
 var evaluator = require('../evaluator')
-  , specialforms = require('../../src/clojure/specialforms')
-  , Namespace = require('../../src/namespace').Namespace
+  , specialforms = require('./specialforms')
+  , Namespace = require('../namespace').Namespace
   ;
 
 exports.partial = function () {
