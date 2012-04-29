@@ -1,11 +1,11 @@
 var tokens = require('./tokens')
   , tokenParsers = {
-    n: parseNumber
-  , i: parseIdentifier
-  , k: parseKeyword
-  , s: parseString
-  , v: parseVector
-  , l: parseList
+    number: parseNumber
+  , symbol: parseSymbol
+  , keyword: parseKeyword
+  , string: parseString
+  , vector: parseVector
+  , list: parseList
   };
 
 module.exports = {
@@ -45,31 +45,31 @@ function parseExpressions(str, cursor, closingChar) {
 function parseNumber (match, cursor) {
   cursor.pos += match[0].length - 1;
 
-  return tokens.n(match[0]);
+  return tokens.number(match[0]);
 }
 
-function parseIdentifier (match, cursor) {
+function parseSymbol (match, cursor) {
   cursor.pos += match[0].length - 1;
 
-  return tokens.i(match[1], match[2]);
+  return tokens.symbol(match[1], match[2]);
 }
 
 function parseKeyword (match, cursor) {
   cursor.pos += match[0].length - 1;
 
-  return tokens.k(match[1], match[2]);
+  return tokens.keyword(match[1], match[2]);
 }
 
 function parseString (match, cursor) {
   cursor.pos += match[0].length;
 
-  return tokens.s(match[1]);
+  return tokens.string(match[1]);
 }
 
 function parseVector(match, cursor, str) {
   cursor.pos += match[0].length;
 
-  return tokens.v.apply(tokens, parseExpressions(str, cursor, ']'));
+  return tokens.vector.apply(tokens, parseExpressions(str, cursor, ']'));
 }
 
 function parseList (match, cursor, str) {
@@ -81,7 +81,7 @@ function parseList (match, cursor, str) {
 
   var subExpressions = parseExpressions(str, cursor, ')')
     , isCall = !quoted && subExpressions.length > 0
-    , token = isCall ? tokens.c : tokens.l
+    , token = isCall ? tokens.call : tokens.list
     ;
 
   return token.apply(tokens, subExpressions);

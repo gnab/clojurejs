@@ -1,6 +1,11 @@
 var Namespace = require('./namespace').Namespace
   , specialforms = require('./clojure/specialforms')
   , tokens = require('./tokens')
+  , call = tokens.call
+  , symbol = tokens.symbol
+  , number = tokens.number
+  , vector = tokens.vector
+  , string = tokens.string
   ;
 
 exports.evaluate = evaluate;
@@ -13,15 +18,15 @@ function evaluate (exprs, context) {
 
 function evaluateExpression (expr, context) {
   switch (expr.kind) {
-    case 'number':
+    case number.kind:
       return +expr.value;
-    case 'string':
+    case string.kind:
       return expr.value;
-    case 'identifier':
-      return lookupIdentifier(expr.value, context);
-    case 'vector':
+    case symbol.kind:
+      return lookupSymbol(expr.value, context);
+    case vector.kind:
       return expr.value.map(function (e) { return evaluateExpression(e, context);});
-    case 'call':
+    case call.kind:
       return evaluateCall(expr, context.extend());
   }
 }
@@ -38,8 +43,8 @@ function evaluateCall (expr, context) {
   return func.apply(context, args);
 }
 
-function lookupIdentifier (name, context) {
-  var identifier
+function lookupSymbol (name, context) {
+  var symbol
     , lookups = [
       lookupLiteralIdentifier
     , lookupSpecialForm
@@ -50,10 +55,10 @@ function lookupIdentifier (name, context) {
     ];
 
   lookups.find(function (lookup) {
-    return (identifier = lookup.call(this, name, context)) !== undefined;
+    return (symbol = lookup.call(this, name, context)) !== undefined;
   });
 
-  return identifier;
+  return symbol;
 }
 
 function lookupLiteralIdentifier (name) {

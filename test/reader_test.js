@@ -1,89 +1,89 @@
 var reader = require('../src/reader')
   , tokens = require('../src/tokens')
-  , c = tokens.c
-  , i = tokens.i
-  , n = tokens.n
-  , v = tokens.v
-  , s = tokens.s
-  , l = tokens.l
-  , k = tokens.k
+  , call = tokens.call
+  , symbol = tokens.symbol
+  , number = tokens.number
+  , vector = tokens.vector
+  , string = tokens.string
+  , list = tokens.list
+  , keyword = tokens.keyword
   ;
 
 describe('Reader', function () {
   describe('number parsing', function () {
     it('should read integers', function () {
-      reader.read('42').should.eql([n('42')]);
+      reader.read('42').should.eql([number('42')]);
     });
   });
 
-  describe('identifier parsing', function () {
-    it('should read alphanumeric identifiers', function () {
-      reader.read('a1').should.eql([i('a1')]);
+  describe('symbol parsing', function () {
+    it('should read alphanumeric symbols', function () {
+      reader.read('a1').should.eql([symbol('a1')]);
     });
 
-    it('should read identifiers with special characters', function () {
-      reader.read('*+!-_?').should.eql([i('*+!-_?')]);
-      reader.read('/').should.eql([i('/')]);
-      reader.read('=').should.eql([i('=')]);
-      reader.read('.').should.eql([i('.')]);
+    it('should read symbols with special characters', function () {
+      reader.read('*+!-_?').should.eql([symbol('*+!-_?')]);
+      reader.read('/').should.eql([symbol('/')]);
+      reader.read('=').should.eql([symbol('=')]);
+      reader.read('.').should.eql([symbol('.')]);
     });
 
-    it('should read namespaced identifiers', function () {
-      reader.read('a.b.c/d').should.eql([i('a.b.c', 'd')]);
+    it('should read namespaced symbols', function () {
+      reader.read('a.b.c/d').should.eql([symbol('a.b.c', 'd')]);
     });
   });
 
   describe('keyword parsing', function () {
     it('should read keywords', function () {
-      reader.read(':clojure').should.eql([k('clojure')]);
+      reader.read(':clojure').should.eql([keyword('clojure')]);
     });
 
     it('should read namespaced keywords', function () {
-      reader.read(':a.b.c/d').should.eql([k('a.b.c', 'd')]);
+      reader.read(':a.b.c/d').should.eql([keyword('a.b.c', 'd')]);
     });
   });
 
   describe('string parsing', function () {
     it('should read strings', function () {
-      reader.read('"clojure"').should.eql([s('clojure')]);
+      reader.read('"clojure"').should.eql([string('clojure')]);
     });
 
     it('should read strings with escapes', function () {
-      reader.read('"clo\\"jure"').should.eql([s('clo\\"jure')]);
+      reader.read('"clo\\"jure"').should.eql([string('clo\\"jure')]);
     });
   });
 
   describe('vector parsing', function () {
     it('should read vectors', function () {
-      reader.read('[42 "clojure"]').should.eql([v(n('42'), s('clojure'))]);
+      reader.read('[42 "clojure"]').should.eql([vector(number('42'), string('clojure'))]);
     });
   });
 
   describe('list parsing', function () {
     it('should read empty lists', function () {
-      reader.read('()').should.eql([l()]);
+      reader.read('()').should.eql([list()]);
     });
 
     it('should read quoted lists', function () {
-      reader.read('\'(42 "clojure")').should.eql([l(n('42'), s('clojure'))]);
+      reader.read('\'(42 "clojure")').should.eql([list(number('42'), string('clojure'))]);
     });
     it('should read syntax-quoted lists', function () {
-      reader.read('`(42 "clojure")').should.eql([l(n('42'), s('clojure'))]);
+      reader.read('`(42 "clojure")').should.eql([list(number('42'), string('clojure'))]);
     });
   });
 
   describe('call parsing', function () {
     it('should read no-argument calls', function () {
-      reader.read('(func)').should.eql([c(i('func'))]);
+      reader.read('(func)').should.eql([call(symbol('func'))]);
     });
 
     it('should read calls with arguments', function () {
-      reader.read('(+ 1 1)').should.eql([c(i('+'), n('1'), n('1'))]);
+      reader.read('(+ 1 1)').should.eql([call(symbol('+'), number('1'), number('1'))]);
     });
 
     it('should read nested calls', function () {
-      reader.read('(+ 1 (* 2 3) 4)').should.eql([c(i('+'), n('1'),
-        c(i('*'), n('2'), n('3')), n('4'))]);
+      reader.read('(+ 1 (* 2 3) 4)').should.eql([call(symbol('+'), number('1'),
+        call(symbol('*'), number('2'), number('3')), number('4'))]);
     });
   });
 
