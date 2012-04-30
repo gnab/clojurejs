@@ -22,6 +22,7 @@ var Token = require('./token').Token
     , vector: createTokenGenerator('vector', /^'?\[/, '[', ']', false)
     , call: createTokenGenerator('call', /^'?\(/, '(', ')', false)
     , list: createTokenGenerator('list', /^(['`])?\(/, '(', ')', false)
+    , comment: createTokenGenerator('comment', /^;.*?(\n|$)/)
   };
 
 function createTokenGenerator (kind, pattern, openChr, closeChr, terminal) {

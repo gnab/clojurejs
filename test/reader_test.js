@@ -106,6 +106,12 @@ describe('Reader', function () {
     });
   });
 
+  describe('comment parsing', function () {
+    it('should ignore comments', function () {
+      reader.read(';ignore this line').should.eql([]);
+    });
+  });
+
   describe('map parsing', function () {
     it('should read maps', function () {
     });

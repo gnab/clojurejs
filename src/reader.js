@@ -6,6 +6,7 @@ var tokens = require('./tokens')
   , keyword: parseKeyword
   , vector: parseVector
   , list: parseList
+  , comment: parseComment
   };
 
 module.exports = {
@@ -16,6 +17,7 @@ module.exports = {
 
 function parseExpressions(str, cursor, closeChr) {
   var expressions = []
+    , tokenKind
     , token
     , match
     , currentChar
@@ -25,10 +27,13 @@ function parseExpressions(str, cursor, closeChr) {
 
   for (; cursor.pos < str.length; cursor.pos++) {
     currentChar = str[cursor.pos];
-    for (token in tokenParsers) {
-      if (tokens.hasOwnProperty(token)) {
-        if ((match = tokens[token].pattern.exec(str.substr(cursor.pos)))) {
-          expressions.push(tokenParsers[token](match, cursor, str));
+    for (tokenKind in tokenParsers) {
+      if (tokens.hasOwnProperty(tokenKind)) {
+        if ((match = tokens[tokenKind].pattern.exec(str.substr(cursor.pos)))) {
+          token = tokenParsers[tokenKind](match, cursor, str);
+          if (token) {
+            expressions.push(token);
+          }
           break;
         }
       }
@@ -95,4 +100,10 @@ function parseList (match, cursor, str) {
     ;
 
   return token.apply(tokens, subExpressions);
+}
+
+function parseComment (match, cursor) {
+  cursor.pos += match[0].length;
+
+  return null;
 }
