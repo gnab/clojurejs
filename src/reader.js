@@ -14,7 +14,7 @@ module.exports = {
   }
 };
 
-function parseExpressions(str, cursor, closingChar) {
+function parseExpressions(str, cursor, closeChr) {
   var expressions = []
     , token
     , match
@@ -34,7 +34,7 @@ function parseExpressions(str, cursor, closingChar) {
       }
     }
 
-    if (currentChar === closingChar) {
+    if (currentChar === closeChr) {
       break;
     }
   }
@@ -79,7 +79,7 @@ function parseKeyword (match, cursor) {
 function parseVector(match, cursor, str) {
   cursor.pos += match[0].length;
 
-  return tokens.vector.apply(tokens, parseExpressions(str, cursor, ']'));
+  return tokens.vector.apply(tokens, parseExpressions(str, cursor, tokens.vector.closeChr));
 }
 
 function parseList (match, cursor, str) {
@@ -89,7 +89,7 @@ function parseList (match, cursor, str) {
   // quoted lists until we decide to support namespaces
   var quoted = match[1] === '\'' || match[1] === '`';
 
-  var subExpressions = parseExpressions(str, cursor, ')')
+  var subExpressions = parseExpressions(str, cursor, tokens.list.closeChr)
     , isCall = !quoted && subExpressions.length > 0
     , token = isCall ? tokens.call : tokens.list
     ;

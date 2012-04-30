@@ -1,57 +1,48 @@
-var SYM_HEAD = 'a-z\\*\\+\\!\\-\\_\\?\\.'
+var Token = require('./token').Token
+  , SYM_HEAD = 'a-z\\*\\+\\!\\-\\_\\?\\.'
   , SYM_TAIL = SYM_HEAD + '0-9'
 
   , tokens = module.exports = {
-      number: token('number', /^'?\d+/)
-    , string: token('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"')
-    , literal: token('literal', /^'?(true|false|nil)$/)
-    , symbol: token('symbol', new RegExp(
+      number: createTokenGenerator('number', /^'?\d+/)
+    , string: createTokenGenerator('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"', '"')
+    , literal: createTokenGenerator('literal', /^'?(true|false|nil)$/)
+    , symbol: createTokenGenerator('symbol', new RegExp(
         '^' +
         '\'?' +                                                   // Optional single-quote
         '(?:([' + SYM_HEAD + '][' + SYM_TAIL + ']*)\\/)?' +       // Optional namespace
         '([' + SYM_HEAD + '\\/|=' + '][' + SYM_TAIL + ']*)', 'i'  // Symbol
       ))
-    , keyword: token('keyword', new RegExp(
+    , keyword: createTokenGenerator('keyword', new RegExp(
         '^' +
         '\'?' +                                                   // Optional single-quote
         '::?' +                                                   // 1 or 2 colons
         '(?:([' + SYM_HEAD + '][' + SYM_TAIL + ']*)\\/)?' +       // Optional namespace
         '([' + SYM_HEAD + '=' + '][' + SYM_TAIL + ']*)', 'i'      // Keyword
-      ))
-    , vector: token('vector', /^'?\[/, ']', false)
-    , call: token('call', /^'?\(/, ')', false)
-    , list: token('list', /^(['`])?\(/, ')', false)
+      ), ':')
+    , vector: createTokenGenerator('vector', /^'?\[/, '[', ']', false)
+    , call: createTokenGenerator('call', /^'?\(/, '(', ')', false)
+    , list: createTokenGenerator('list', /^(['`])?\(/, '(', ')', false)
   };
 
-function token (kind, pattern, closeChr, terminal) {
-  var f = function () {
-    var args = Array.prototype.slice.call(arguments);
+function createTokenGenerator (kind, pattern, openChr, closeChr, terminal) {
+  var generator = function () {
+    var args = Array.prototype.slice.call(arguments)
+      , namespace = terminal !== false && args.length === 2 ? args.shift() : undefined
+      , value = terminal === false ? args : args.shift()
+      ;
 
-    return {
-      kind: kind
-    , namespace: terminal !== false && args.length === 2 ? args.shift() : undefined
-    , value: terminal === false ? args : args.shift()
-    , stringify: stringify
-    , terminal: terminal
-    };
+      return new Token(
+          kind
+        , namespace
+        , value
+        , openChr
+        , closeChr
+        , terminal);
   };
 
-  f.kind = kind;
-  f.pattern = pattern;
+  generator.kind = kind;
+  generator.pattern = pattern;
+  generator.closeChr = closeChr;
 
-  return f;
-}
-
-function stringify () {
-  if (this.terminal !== false) {
-    return this.value;
-  }
-
-  var values = this.value.map(function (t) { return t.stringify(); }).join(' ');
-
-  if (this.kind === tokens.vector.kind) {
-    return '[' + values + ']';
-  }
-
-  return '(' + values + ')';
+  return generator;
 }
