@@ -1,5 +1,5 @@
 var Token = require('./token').Token
-  , SYM_HEAD = 'a-z\\*\\+\\!\\-\\_\\?\\.'
+  , SYM_HEAD = 'a-z\\*\\+\\!\\-\\_\\?\\.\\~\\@'
   , SYM_TAIL = SYM_HEAD + '0-9'
 
   , tokens = module.exports = {
