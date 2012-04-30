@@ -4,6 +4,10 @@ var clojure = require('../../src/clojure')
   ;
 
 describe('Special Forms', function () {
+  beforeEach(function () {
+    Namespace.reset();
+  });
+
   describe('def', function () {
     it('should define var with null value by default', function () {
       clojure.run('(def a)');
@@ -29,6 +33,19 @@ describe('Special Forms', function () {
 
     it('should define anonymous function without body', function () {
       should.strictEqual(clojure.run('((fn [a b]))'), undefined);
+    });
+  });
+
+  describe('let', function () {
+    it('should apply bindings to inner context', function () {
+      Namespace.current.set('x', 1);
+      clojure.run('(let [x 2] x)').should.equal(2);
+      clojure.run('x').should.equal(1);
+    });
+
+    it('should throw exception when uneven number of bindings', function () {
+      (function () { clojure.run('(let [x 1 y])')})
+        .should.throw(/let requires an even number of forms in binding vector/);
     });
   });
 });

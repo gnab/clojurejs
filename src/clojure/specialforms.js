@@ -45,3 +45,26 @@ exports.fn = function (params, exprs) {
 };
 
 exports.fn.macro = true;
+
+exports['let'] = function (bindings, exprs) {
+  var context = this
+    , i
+    , param
+    , value
+    ;
+
+  if (bindings.value.length % 2 !== 0) {
+    throw new Error('let requires an even number of forms in binding vector');
+  }
+
+  for (i = 0; i < bindings.value.length; i += 2) {
+    param = bindings.value[i].value;
+    value = evaluator.evaluate([bindings.value[i+1]], context);
+
+    context.set(param, value);
+  }
+
+  return evaluator.evaluate([exprs], context);
+};
+
+exports['let'].macro = true;
