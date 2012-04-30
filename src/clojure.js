@@ -1,6 +1,5 @@
 var reader = require('./reader')
   , evaluator = require('./evaluator')
-  , api
   ;
 
 exports.run = function (str) {
