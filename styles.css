@@ -13,6 +13,7 @@ html, body {
   -moz-box-shadow: 0 0 10px #ddd;
   box-shadow: 0 0 10px #ddd;
   padding: 14px 14px 10px 14px;
+  height: 30px;
   position: relative;
 }
 #logo {

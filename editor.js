@@ -187,6 +187,8 @@ function loadFontsizes () {
     var size = $('#fontsizes option:selected');
 
     $('#editor').css({'font-size': size.val() + 'px'});
+
+    editor.focus();
   });
 
   [14, 16, 18, 20].forEach(function (size) {
@@ -194,5 +196,5 @@ function loadFontsizes () {
     sizeElement.appendTo(fontsizesList);
   });
 
-  fontsizesList.chosen();
+  fontsizesList.chosen({disable_search_threshold: 100});
 }
