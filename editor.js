@@ -7,6 +7,7 @@ loadConsole();
 loadTasks();
 loadEditor();
 loadExecution();
+loadFontsizes();
 
 function run () {
   var result
@@ -175,4 +176,23 @@ function loadExecution () {
   $('#run').click(function () {
     run();
   });
+}
+
+function loadFontsizes () {
+  var fontsizesList = $('#fontsizes')
+    , sizeElement
+    ;
+
+  fontsizesList.change(function() {
+    var size = $('#fontsizes option:selected');
+
+    $('#editor').css({'font-size': size.val() + 'px'});
+  });
+
+  [14, 16, 18, 20].forEach(function (size) {
+    sizeElement = $('<option />').text(size + 'px').val(size);
+    sizeElement.appendTo(fontsizesList);
+  });
+
+  fontsizesList.chosen();
 }

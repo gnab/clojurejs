@@ -29,7 +29,7 @@ html, body {
   color: #f5f5f5;
 }
 #tasks {
-  width: 500px;
+  width: 250px;
 }
 #tasks_chzn {
   float: left;
@@ -39,6 +39,12 @@ html, body {
   float: left;
   margin-right: 0.8em;
   padding: 0 8px 0 8px !important;
+}
+#fontsizes {
+  width: 75px;
+}
+#fontsizes_chzn {
+  float: right;
 }
 .clear {
   clear: both;
