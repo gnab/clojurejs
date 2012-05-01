@@ -3,96 +3,32 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link href="http://fonts.googleapis.com/css?family=Amaranth" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="styles.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="chosen.css" type="text/css" media="screen" />
   </head>
   <body>
-    <h1>Clojurejs</h1>
-    <p>
-      <select id="tasks">
-        <option selected="selected">Choose task...</option>
-      </select>
-    </p>
+    <div id="header">
+      <a id="logo" href="/">clojure<span class="js">js</span></a>
+      <select id="tasks" data-placeholder="Choose a task..."></select>
+      <div class="chzn-container chzn-container-single">
+        <a id="run" href="#" class="chzn-single button">Run code</a>
+        <a id="reset" href="#" class="chzn-single button">Reset task</a>
+        <a id="clear" href="#" class="chzn-single button">Clear console</a>
+      </div>
+    </div>
+    <div id="description">Choose a task in the drop down list to get started!</div>
     <pre id="editor"></pre>
-    <pre id="output"></pre>
+    <div id="output"></div>
     <script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="ace/theme-merbivore.js" type="text/javascript" charset="utf-8"></script>
+    <script src="ace/theme-textmate.js" type="text/javascript" charset="utf-8"></script>
     <script src="ace/mode-clojure.js" type="text/javascript" charset="utf-8"></script> 
+
+    <script src="jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="chosen.jquery.min.js" type="text/javascript"></script>
+
     <script src="tasks.js" type="text/javascript"></script>
-    <script type="text/javascript" charset="utf-8">
-      var taskList
-        , editor
-        , output;
+    <script type="text/javascript" charset="utf-8" src="editor.js"></script>
 
-      loadTasks();
-      loadEditor();
-      loadExecution();
-      loadConsole();
-
-      function loadConsole () {
-        if (typeof console === 'undefined') {
-          console = {
-            log: function () {}
-          };
-        }
-
-        var consoleLog = console.log;
-        console.log = function (msg) {
-          output.innerHTML += msg + '\n';
-          consoleLog.apply(console, arguments);
-        };
-      };
-
-      function loadExecution () {
-        output = document.getElementById('output');
-
-        window.addEventListener('keydown', function (e) {
-          if (e.keyCode === 13 && e.ctrlKey) {
-            if (e.shiftKey) {
-              output.innerHTML = '';
-            }
-            run();
-          }
-        });
-      }
-
-      function run () {
-        var result;
-
-        try {
-          result = clojurejs.run(editor.getSession().getValue());
-          console.log(result);
-        }
-        catch (e) {
-          console.log(e.message);
-        }
-      };
-
-      function loadTasks () {
-        var taskName
-          , taskElement
-          ;
-        
-        taskList = document.getElementById('tasks');
-
-        for (taskName in tasks) {
-          taskElement = document.createElement('option');
-          taskElement.innerHTML = taskName;
-
-          taskList.appendChild(taskElement);
-        };
-
-        taskList.addEventListener('change', function (event) {
-          editor.getSession().setValue(tasks[taskList.value]);
-        });
-      };
-
-      function loadEditor () {
-        editor = ace.edit('editor');
-        editor.setTheme('ace/theme/merbivore');
-
-        var ClojureMode = require('ace/mode/clojure').Mode;
-        editor.getSession().setMode(new ClojureMode());
-      }
-    </script>
     <script type="text/javascript" src="https://raw.github.com/gnab/clojurejs/master/clojure.min.js"></script>
   </body>
 </html>

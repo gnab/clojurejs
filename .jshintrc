@@ -1,0 +1,17 @@
+{
+  "eqeqeq": true
+, "undef": true
+, "laxcomma": true
+
+, "predef": [
+    "$"
+  , "localStorage"
+  , "window"
+  , "document"
+  , "console"
+  , "tasks"
+  , "require"
+  , "ace"
+  , "clojurejs"
+  ]
+}
