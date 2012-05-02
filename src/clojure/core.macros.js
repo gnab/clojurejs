@@ -34,9 +34,19 @@ exports.defmacro = function (name, params, list) {
 exports.defmacro.macro = true;
 
 exports.assert = function (condition) {
-  if (evaluator.evaluate([condition]) !== true) {
+  var throwAssertError = function (condition){
     throw new Error('Assert failed: ' + condition.stringify());
+  };
+
+  try{
+    if (evaluator.evaluate([condition]) !== true) {
+      throwAssertError(condition);
+    }
+  } 
+  catch (x) {
+    throwAssertError(condition);
   }
+  
 };
 
 exports.assert.macro = true;
