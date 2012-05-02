@@ -5,8 +5,8 @@ var tasks = [
   , description:
     'Fix the asserts by replacing __ with the correct operator.'
   , code: 
-      '(assert (= 2 (__ 1 1)))\n' +
-      '(assert (= 6 (__ 2 3)))\n\n' +
+      '(assert (= 3 (__ 1 2)))\n' +
+      '(assert (= 20 (__ 4 5)))\n\n' +
       '(println "You made it!")'
   },
   {
