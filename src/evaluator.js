@@ -35,7 +35,7 @@ function evaluateExpression (expr, context) {
     case list.kind:
       return expr;
   }
-};
+}
 
 function evaluateCall (expr, context) {
   var func = evaluateExpression(expr.value[0], context)

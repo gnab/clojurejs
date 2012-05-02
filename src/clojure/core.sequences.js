@@ -7,5 +7,5 @@ exports.map = function (f, coll) {
 };
 
 exports.concat = function (coll1, coll2) {
-  return coll1.value.concat(coll2.value);
+  return list.apply(this, coll1.value.concat(coll2.value));
 };
