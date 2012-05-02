@@ -3,27 +3,22 @@ var tasks = [
     name: 
       'Simple arithmetic'
   , description:
-    'Fix the assert by replacing __ with the correct operator.'
+    'Fix the asserts by replacing __ with the correct operator.'
   , code: 
-      '(assert (= 2 (__ 1 1)))\n\n' +
+      '(assert (= 2 (__ 1 1)))\n' +
+      '(assert (= 6 (__ 2 3)))\n\n' +
       '(println "You made it!")'
   },
   {
     name: 
-      '1. List operations'
+      'List operations'
   , description:
-    'Return the first element in the list.'
+    'Fix the asserts by replacing __ with the correct list operations'
   , code: 
-      '(assert (= 5 (__ \'(1 2 3)))\n\n' +
-      '(println "You made it!")'
-  },
-  {
-    name: 
-      '2. List operations, cont'
-  , description:
-    'Return the fifth element in the list.'
-  , code: 
-      '(assert (= 5 (__ \'(0 1 2 3 4 5) __)))\n\n' +
+      '(assert (= 0 (__ \'(1 2 3)))\n' +
+      '(assert (= 2 (__ \'(1 2 3)))\n\n' +
+      '(assert (= \'(1 2 3 4 5) (__ \'(0 1 2 3 4 5))))\n' +
+      '(assert (= \'(1 2 3 4 5 6) (__ \'(1 2 3) \'(4 5 6))))\n\n' +
       '(println "You made it!")'
   },
   {
