@@ -34,19 +34,24 @@ exports.defmacro = function (name, params, list) {
 exports.defmacro.macro = true;
 
 exports.assert = function (condition) {
-  var throwAssertError = function (condition, extrainfo){
-    throw new Error('Assert failed: ' + condition.stringify() + 
-      (extrainfo !== undefined ? "; " + extrainfo : ""));
 
+  var errorString = function (condition, extrainfo){
+    return 'Assert failed: ' + condition.stringify() + 
+      (extrainfo !== undefined ? "; " + extrainfo : "");
   };
 
   try{
     if (evaluator.evaluate([condition]) !== true) {
-      throwAssertError(condition);
+      var error = new Error(errorString(condition));
+      error.constructedByAssert = true;
+      throw error;
     }
   } 
-  catch (e) {
-    throwAssertError(condition, e.message);
+  catch (e) { // Catch other exceptions
+    if (e.constructedByAssert){
+      throw e;
+    }
+    throw new Error(errorString(condition, e.message));
   }
   
 };
