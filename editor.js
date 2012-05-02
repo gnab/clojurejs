@@ -20,7 +20,7 @@ function run () {
     result = clojurejs.run(editor.getSession().getValue());
 
     if (result !== undefined) {
-      console.log(result.hasOwnProperty("stringify") ? result.stringify() : result);
+      console.log(result.stringify !== undefined ? result.stringify() : result);
     }
   }
   catch (e) {
