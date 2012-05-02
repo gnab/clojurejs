@@ -6,6 +6,7 @@ var Namespace = require('./namespace').Namespace
   , literal = tokens.literal
   , symbol = tokens.symbol
   , vector = tokens.vector
+  , list = tokens.list
   , call = tokens.call
   ;
 
@@ -31,8 +32,10 @@ function evaluateExpression (expr, context) {
       return expr.value.map(function (e) { return evaluateExpression(e, context);});
     case call.kind:
       return evaluateCall(expr, context.extend());
+    case list.kind:
+      return expr;
   }
-}
+};
 
 function evaluateCall (expr, context) {
   var func = evaluateExpression(expr.value[0], context)

@@ -7,9 +7,5 @@ exports.map = function (f, coll) {
 };
 
 exports.concat = function (coll1, coll2) {
-
   return coll1.value.concat(coll2.value);
 };
-
-exports.concat.macro = true;
-

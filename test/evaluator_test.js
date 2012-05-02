@@ -8,6 +8,7 @@ var evaluator = require('../src/evaluator.js')
   , literal = tokens.literal
   , symbol = tokens.symbol
   , vector = tokens.vector
+  , list = tokens.list
   , call = tokens.call
   ;
 
@@ -96,6 +97,14 @@ describe('Evaluator', function () {
     it('should evaluate calls', function () {
       Namespace.current.set('f', function () { return 42; });
       evaluator.evaluate([call(symbol('f'))], Namespace.current).should.equal(42);
+    });
+  });
+
+  describe('list evaluation', function () {
+    it('should not eval quoted lists', function () {
+      var quotedList = list(number('1'));
+      quotedList.quoted = true;
+      evaluator.evaluate([quotedList], Namespace.current).should.equal(quotedList);
     });
   });
 });
