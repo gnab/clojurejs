@@ -1,4 +1,5 @@
 var evaluator = require('../evaluator')
+  , reader = require('../reader')
   , tokens = require('../tokens')
   , list = tokens.list;
 
@@ -18,6 +19,14 @@ exports.rest = function (list) {
   list.value.splice(0, 1);
   return list;
 };
+
+exports.list = function () {
+  var quotedList = list.apply(this, arguments);
+  quotedList.quoted = true;
+  return quotedList;
+};
+
+exports.list.macro = true;
 
 
 
