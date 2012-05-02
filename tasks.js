@@ -15,8 +15,8 @@ var tasks = [
   , description:
     'Fix the asserts by replacing __ with the correct list operations'
   , code: 
-      '(assert (= 0 (__ \'(1 2 3)))\n' +
-      '(assert (= 2 (__ \'(1 2 3)))\n\n' +
+      '(assert (= 1 (__ \'(1 2 3))))\n' +
+      '(assert (= 2 (__ \'(1 2 3))))\n\n' +
       '(assert (= \'(1 2 3 4 5) (__ \'(0 1 2 3 4 5))))\n' +
       '(assert (= \'(1 2 3 4 5 6) (__ \'(1 2 3) \'(4 5 6))))\n\n' +
       '(println "You made it!")'
