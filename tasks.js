@@ -1,6 +1,24 @@
 var tasks = [
   {
     name: 
+      '1. List operations'
+  , description:
+    'Return the first element in the list. Do this by replacing __ with the necessary function call.'
+  , code: 
+      '(assert (= 5 (__ \'(1 2 3))\n\n' +
+      '(println "You made it!")'
+  },
+  {
+    name: 
+      '2. List operations, cont'
+  , description:
+    'Return the fifth element in the list.'
+  , code: 
+      '(assert (= 5 (__ \'(0 1 2 3 4 5) __)))\n\n' +
+      '(println "You made it!")'
+  },
+  {
+    name: 
       'FizzBuzz'
   , description:
       'Make the fizzbuzz function return "Fizz", "Buzz" or "FizzBuzz" if ' +
