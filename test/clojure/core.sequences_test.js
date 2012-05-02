@@ -17,4 +17,9 @@ describe('Sequences', function () {
     clojure.run('(concat \'(1) \'(2) \'(3)').should.eql(list(number('1'), number('2'), 
      number('3')));
   });
+  it('cons', function () {
+    var expList = list(number('1'), number('2'), number('3')); 
+    expList.quoted = true;
+    clojure.run('(cons 1 \'(2 3)').should.eql(expList);
+  });
 });
