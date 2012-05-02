@@ -6,6 +6,12 @@ exports.map = function (f, coll) {
   return coll.map(f);
 };
 
-exports.concat = function (coll1, coll2) {
-  return list.apply(this, coll1.value.concat(coll2.value));
+exports.concat = function () {
+  var concatList = [];
+
+  Array.prototype.map.call(arguments, function(coll) {
+      concatList = concatList.concat(coll.value);                           
+  });
+
+  return list.apply(this, concatList);
 };
