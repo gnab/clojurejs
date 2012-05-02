@@ -13,4 +13,7 @@ describe('Compare', function () {
       it('=', function () {
         clojure.run('(= "a" "b")').should.equal(false);
       });
+      it('=', function () {
+        clojure.run('(= \'(1 2) \'(1 2)').should.equal(true);
+      });
 });
