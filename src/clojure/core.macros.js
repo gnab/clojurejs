@@ -34,8 +34,10 @@ exports.defmacro = function (name, params, list) {
 exports.defmacro.macro = true;
 
 exports.assert = function (condition) {
-  var throwAssertError = function (condition){
-    throw new Error('Assert failed: ' + condition.stringify());
+  var throwAssertError = function (condition, extrainfo){
+    throw new Error('Assert failed: ' + condition.stringify() + 
+      (extrainfo !== undefined ? "; " + extrainfo : ""));
+
   };
 
   try{
@@ -43,8 +45,8 @@ exports.assert = function (condition) {
       throwAssertError(condition);
     }
   } 
-  catch (x) {
-    throwAssertError(condition);
+  catch (e) {
+    throwAssertError(condition, e.message);
   }
   
 };

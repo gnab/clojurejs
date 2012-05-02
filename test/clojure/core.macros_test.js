@@ -12,7 +12,7 @@ describe('Macros', function () {
         .should.throw(/Assert failed: \(= 1 2\)/);
     });
 
-    it('should handle unfinished asserts', function () {
+    it('should handle asserts failing due to invalid symbol', function () {
       (function () { clojure.run('(assert (= __ 2))'); })
         .should.throw(/Assert failed: \(= __ 2\)/);
     });
