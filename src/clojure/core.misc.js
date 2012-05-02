@@ -8,7 +8,9 @@ exports['='] = function () {
     // their stringify output do determine equality.
     currArgVal = (arg.kind === "list" ? arg.stringify() : arg);
 
-    equals = (currArgVal === prevArgVal);
+    if (prevArgVal !== undefined && currArgVal !== prevArgVal) {
+      equals = false;
+    }
     prevArgVal = currArgVal;
   });
 
