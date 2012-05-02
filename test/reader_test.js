@@ -84,10 +84,14 @@ describe('Reader', function () {
     });
 
     it('should read quoted lists', function () {
-      reader.read('\'(42 "clojure")').should.eql([list(number('42'), string('clojure'))]);
+      var expList = list(number('42'), string('clojure'));
+      expList.quoted = true;
+      reader.read('\'(42 "clojure")').should.eql([expList]);
     });
     it('should read syntax-quoted lists', function () {
-      reader.read('`(42 "clojure")').should.eql([list(number('42'), string('clojure'))]);
+      var expList = list(number('42'), string('clojure'));
+      expList.quoted = true;
+      reader.read('`(42 "clojure")').should.eql([expList]);
     });
   });
 
@@ -101,8 +105,10 @@ describe('Reader', function () {
     });
 
     it('should read nested calls', function () {
-      reader.read('(+ 1 (* 2 3) 4)').should.eql([call(symbol('+'), number('1'),
-        call(symbol('*'), number('2'), number('3')), number('4'))]);
+      var expCall = call(symbol('+'), number('1'),
+        call(symbol('*'), number('2'), number('3')), number('4'));
+      expCall.quoted = false;
+      reader.read('(+ 1 (* 2 3) 4)').should.eql([expCall]);
     });
   });
 

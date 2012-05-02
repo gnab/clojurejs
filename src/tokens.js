@@ -19,8 +19,8 @@ var Token = require('./token').Token
         '(?:([' + SYM_HEAD + '][' + SYM_TAIL + ']*)\\/)?' +       // Optional namespace
         '([' + SYM_HEAD + '=' + '][' + SYM_TAIL + ']*)', 'i'      // Keyword
       ), ':')
-    , vector: createTokenGenerator('vector', /^'?\[/, '[', ']', false)
-    , call: createTokenGenerator('call', /^'?\(/, '(', ')', false)
+    , vector: createTokenGenerator('vector', /^('?)\[/, '[', ']', false)
+    , call: createTokenGenerator('call', /^('?)\(/, '(', ')', false)
     , list: createTokenGenerator('list', /^(['`])?\(/, '(', ')', false)
     , comment: createTokenGenerator('comment', /^;.*?(\n|$)/)
   };

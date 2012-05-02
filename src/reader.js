@@ -99,7 +99,9 @@ function parseList (match, cursor, str) {
     , token = isCall ? tokens.call : tokens.list
     ;
 
-  return token.apply(tokens, subExpressions);
+  token = token.apply(tokens, subExpressions);
+  token.quoted = quoted;
+  return token;
 }
 
 function parseComment (match, cursor) {

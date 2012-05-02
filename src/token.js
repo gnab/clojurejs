@@ -7,6 +7,7 @@ function Token (kind, namespace, value, openChr, closeChr, terminal) {
   this.openChr = openChr;
   this.closeChr = closeChr;
   this.terminal = terminal;
+  this.quoted = false;
 }
 
 Token.prototype.stringify = function () {
