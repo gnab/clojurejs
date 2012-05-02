@@ -23,3 +23,7 @@ Token.prototype.stringify = function () {
   return (this.openChr || '') + value + (this.closeChr || '');
 };
 
+Token.prototype.toString = function() {
+  return this.stringify();
+};
+
