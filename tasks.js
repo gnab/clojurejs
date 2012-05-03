@@ -1,7 +1,7 @@
 var tasks = [
   {
     name: 
-      'Simple arithmetic'
+      'Simple arithmetics'
   , description:
     'Fix the asserts by replacing __ with the correct operator.'
   , code: 
