@@ -34,9 +34,9 @@ var tasks = [
   },
   {
     name: 
-      'Functions, super-advanced'
+      'Functions, cont.'
   , description:
-    "Create the add-heads-function, which adds the heads of the two lists given as arguments and returns the result. Remember, '(defn [arg1, arg2] body)..."
+    "Create the add-heads function, which adds the heads of the two lists given as arguments and returns the result. Remember, '(defn [arg1, arg2] body)..."
   , code: 
       '(assert (= 2 (add-heads \'(1) \'(1))))\n\n' +
       '(assert (= 4 (add-heads \'(1 2) \'(3 4))))\n\n' +
