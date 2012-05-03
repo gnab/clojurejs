@@ -41,6 +41,13 @@ html, body {
   margin-right: 0.8em;
   padding: 0 8px 0 8px !important;
 }
+#keybindings {
+  width: 80px;
+}
+#keybindings_chzn {
+  float: right;
+  margin-right: 1em;
+}
 #fontsizes {
   width: 75px;
 }

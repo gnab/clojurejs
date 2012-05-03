@@ -7,6 +7,7 @@ loadConsole();
 loadTasks();
 loadEditor();
 loadExecution();
+loadKeybindings();
 loadFontsizes();
 
 function run () {
@@ -176,6 +177,33 @@ function loadExecution () {
   $('#run').click(function () {
     run();
   });
+}
+
+function loadKeybindings () {
+  var keybindingsList = $('#keybindings')
+    , bindingElement
+    ;
+
+  keybindingsList.change(function() {
+    var binding = $('#keybindings option:selected')
+      , handler = binding.data()
+      ;
+
+    editor.setKeyboardHandler(handler.handleKeyboard ?
+      handler : undefined);
+
+    editor.focus();
+  });
+
+  [ { text: 'Normal', handler: null }
+  , { text: 'Emacs', handler: require('ace/keyboard/keybinding/emacs').Emacs }
+  , { text: 'Vim', handler: require('ace/keyboard/keybinding/vim').Vim }
+  ].forEach(function (binding) {
+    bindingElement = $('<option />').text(binding.text).data(binding.handler);
+    bindingElement.appendTo(keybindingsList);
+  });
+
+  keybindingsList.chosen({disable_search_threshold: 100});
 }
 
 function loadFontsizes () {
