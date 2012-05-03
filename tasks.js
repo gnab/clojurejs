@@ -24,12 +24,21 @@ var tasks = [
   },
   {
     name: 
-      'Functions'
+      'Functions, intro'
   , description:
     'Complete the very exotic add-nums function.'
   , code: 
       '(defn add-nums [num1 num2] __)\n' +
       '(assert (= 10 (add-nums 5 5))\n\n' +
+      '(println "You made it!")'
+  },
+  {
+    name: 
+      'Functions, super-advanced'
+  , description:
+    "Create the concat-and-double function: concatenate and multiply each value in two lists given as arguments, and return the value. Remember, '(defn [arg1, arg2] body)..."
+  , code: 
+      '(assert (= \'(2 4 6 8) (concat-and-double \'(1 2) \'(3 4))))\n\n' +
       '(println "You made it!")'
   },
   {
