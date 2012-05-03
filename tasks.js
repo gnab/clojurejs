@@ -24,6 +24,16 @@ var tasks = [
   },
   {
     name: 
+      'Functions'
+  , description:
+    'Complete the very exotic add-nums function.'
+  , code: 
+      '(defn add-nums [num1 num2] __)\n' +
+      '(assert (= 10 (add-nums 5 5))\n\n' +
+      '(println "You made it!")'
+  },
+  {
+    name: 
       'FizzBuzz'
   , description:
       'Make the fizzbuzz function return "Fizz", "Buzz" or "FizzBuzz" if ' +
