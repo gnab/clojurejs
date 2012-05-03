@@ -3,6 +3,12 @@ var tokens = require('../tokens')
 ;
 
 exports.map = function (f, coll) {
+
+  if (coll.kind === "list"){
+    return Array.prototype.map.call(coll.value, function(elem){
+      return f(elem.value);  
+    });
+  }
   return coll.map(f);
 };
 
