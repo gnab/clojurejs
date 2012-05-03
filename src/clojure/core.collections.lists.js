@@ -1,7 +1,7 @@
 var evaluator = require('../evaluator')
   , reader = require('../reader')
-  , tokens = require('../tokens')
-  , list = tokens.list;
+  , forms = require('../forms')
+  , list = forms.list;
 
 exports.first = function (list) {
   return evaluator.evaluate([list.value[0]]);

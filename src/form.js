@@ -1,6 +1,6 @@
-exports.Token = Token;
+exports.Form = Form;
  
-function Token (kind, namespace, value, openChr, closeChr, terminal) {
+function Form (kind, namespace, value, openChr, closeChr, terminal) {
   this.kind = kind;
   this.namespace = namespace;
   this.value = value;
@@ -10,7 +10,7 @@ function Token (kind, namespace, value, openChr, closeChr, terminal) {
   this.quoted = false;
 }
 
-Token.prototype.stringify = function () {
+Form.prototype.stringify = function () {
   var value;
 
   if (this.terminal !== false) {
@@ -23,7 +23,7 @@ Token.prototype.stringify = function () {
   return (this.openChr || '') + value + (this.closeChr || '');
 };
 
-Token.prototype.toString = function() {
+Form.prototype.toString = function() {
   return this.stringify();
 };
 

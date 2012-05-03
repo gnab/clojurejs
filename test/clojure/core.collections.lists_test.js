@@ -1,8 +1,8 @@
 var clojure = require('../../src/clojure')
-  , tokens = require('../../src/tokens')
-  , list = tokens.list
-  , number = tokens.number
-  , string = tokens.string
+  , forms = require('../../src/forms')
+  , list = forms.list
+  , number = forms.number
+  , string = forms.string
   ;
 
 describe('Collections', function () {

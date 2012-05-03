@@ -1,5 +1,5 @@
-var tokens = require('../tokens')
-  , list = tokens.list
+var forms = require('../forms')
+  , list = forms.list
 ;
 
 exports.map = function (f, coll) {

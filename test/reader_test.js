@@ -1,13 +1,13 @@
 var reader = require('../src/reader')
-  , tokens = require('../src/tokens')
-  , number = tokens.number
-  , string = tokens.string
-  , literal = tokens.literal
-  , symbol = tokens.symbol
-  , keyword = tokens.keyword
-  , vector = tokens.vector
-  , list = tokens.list
-  , call = tokens.call
+  , forms = require('../src/forms')
+  , number = forms.number
+  , string = forms.string
+  , literal = forms.literal
+  , symbol = forms.symbol
+  , keyword = forms.keyword
+  , vector = forms.vector
+  , list = forms.list
+  , call = forms.call
   ;
 
 describe('Reader', function () {

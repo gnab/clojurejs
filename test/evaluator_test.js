@@ -1,15 +1,15 @@
 var evaluator = require('../src/evaluator.js')
   , specialforms = require('../src/clojure/specialforms')
   , should = require('should')
-  , tokens = require('../src/tokens')
+  , forms = require('../src/forms')
   , Namespace = require('../src/namespace').Namespace
-  , number = tokens.number
-  , string = tokens.string
-  , literal = tokens.literal
-  , symbol = tokens.symbol
-  , vector = tokens.vector
-  , list = tokens.list
-  , call = tokens.call
+  , number = forms.number
+  , string = forms.string
+  , literal = forms.literal
+  , symbol = forms.symbol
+  , vector = forms.vector
+  , list = forms.list
+  , call = forms.call
   ;
 
 describe('Evaluator', function () {

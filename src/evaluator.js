@@ -1,13 +1,13 @@
 var Namespace = require('./namespace').Namespace
   , specialforms = require('./clojure/specialforms')
-  , tokens = require('./tokens')
-  , number = tokens.number
-  , string = tokens.string
-  , literal = tokens.literal
-  , symbol = tokens.symbol
-  , vector = tokens.vector
-  , list = tokens.list
-  , call = tokens.call
+  , forms = require('./forms')
+  , number = forms.number
+  , string = forms.string
+  , literal = forms.literal
+  , symbol = forms.symbol
+  , vector = forms.vector
+  , list = forms.list
+  , call = forms.call
   ;
 
 exports.evaluate = evaluate;

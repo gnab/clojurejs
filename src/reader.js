@@ -1,5 +1,5 @@
-var tokens = require('./tokens')
-  , tokenParsers = {
+var forms = require('./forms')
+  , formParsers = {
     number: parseNumber
   , string: parseString
   , symbol: parseSymbol
@@ -17,8 +17,8 @@ module.exports = {
 
 function parseExpressions(str, cursor, closeChr) {
   var expressions = []
-    , tokenKind
-    , token
+    , formKind
+    , form
     , match
     , currentChar
     ;
@@ -27,12 +27,12 @@ function parseExpressions(str, cursor, closeChr) {
 
   for (; cursor.pos < str.length; cursor.pos++) {
     currentChar = str[cursor.pos];
-    for (tokenKind in tokenParsers) {
-      if (tokens.hasOwnProperty(tokenKind)) {
-        if ((match = tokens[tokenKind].pattern.exec(str.substr(cursor.pos)))) {
-          token = tokenParsers[tokenKind](match, cursor, str);
-          if (token) {
-            expressions.push(token);
+    for (formKind in formParsers) {
+      if (forms.hasOwnProperty(formKind)) {
+        if ((match = forms[formKind].pattern.exec(str.substr(cursor.pos)))) {
+          form = formParsers[formKind](match, cursor, str);
+          if (form) {
+            expressions.push(form);
           }
           break;
         }
@@ -50,41 +50,41 @@ function parseExpressions(str, cursor, closeChr) {
 function parseNumber (match, cursor) {
   cursor.pos += match[0].length - 1;
 
-  return tokens.number(match[0]);
+  return forms.number(match[0]);
 }
 
 function parseString (match, cursor) {
   cursor.pos += match[0].length;
 
-  return tokens.string(match[1]);
+  return forms.string(match[1]);
 }
 
 function parseSymbol (match, cursor) {
   cursor.pos += match[0].length - 1;
 
   if (isLiteral(match)) {
-    return tokens.literal(match[2]);
+    return forms.literal(match[2]);
   }
 
-  return tokens.symbol(match[1], match[2]);
+  return forms.symbol(match[1], match[2]);
 }
 
 function isLiteral (match) {
   var isQualified = match[1] !== undefined;
 
-  return !isQualified && tokens.literal.pattern.exec(match[0]);
+  return !isQualified && forms.literal.pattern.exec(match[0]);
 }
 
 function parseKeyword (match, cursor) {
   cursor.pos += match[0].length - 1;
 
-  return tokens.keyword(match[1], match[2]);
+  return forms.keyword(match[1], match[2]);
 }
 
 function parseVector(match, cursor, str) {
   cursor.pos += match[0].length;
 
-  return tokens.vector.apply(tokens, parseExpressions(str, cursor, tokens.vector.closeChr));
+  return forms.vector.apply(forms, parseExpressions(str, cursor, forms.vector.closeChr));
 }
 
 function parseList (match, cursor, str) {
@@ -94,14 +94,14 @@ function parseList (match, cursor, str) {
   // quoted lists until we decide to support namespaces
   var quoted = match[1] === '\'' || match[1] === '`';
 
-  var subExpressions = parseExpressions(str, cursor, tokens.list.closeChr)
+  var subExpressions = parseExpressions(str, cursor, forms.list.closeChr)
     , isCall = !quoted && subExpressions.length > 0
-    , token = isCall ? tokens.call : tokens.list
+    , form = isCall ? forms.call : forms.list
     ;
 
-  token = token.apply(tokens, subExpressions);
-  token.quoted = quoted;
-  return token;
+  form = form.apply(forms, subExpressions);
+  form.quoted = quoted;
+  return form;
 }
 
 function parseComment (match, cursor) {
