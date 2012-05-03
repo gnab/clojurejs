@@ -3,29 +3,29 @@ var Form = require('./form').Form
   , SYM_TAIL = SYM_HEAD + '0-9'
 
   , forms = module.exports = {
-      number: createformGenerator('number', /^'?\d+/)
-    , string: createformGenerator('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"', '"')
-    , literal: createformGenerator('literal', /^'?(true|false|nil)$/)
-    , symbol: createformGenerator('symbol', new RegExp(
+      number: createFormGenerator('number', /^'?\d+/)
+    , string: createFormGenerator('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"', '"')
+    , literal: createFormGenerator('literal', /^'?(true|false|nil)$/)
+    , symbol: createFormGenerator('symbol', new RegExp(
         '^' +
         '\'?' +                                                   // Optional single-quote
         '(?:([' + SYM_HEAD + '][' + SYM_TAIL + ']*)\\/)?' +       // Optional namespace
         '([' + SYM_HEAD + '\\/|=' + '][' + SYM_TAIL + ']*)', 'i'  // Symbol
       ))
-    , keyword: createformGenerator('keyword', new RegExp(
+    , keyword: createFormGenerator('keyword', new RegExp(
         '^' +
         '\'?' +                                                   // Optional single-quote
         '::?' +                                                   // 1 or 2 colons
         '(?:([' + SYM_HEAD + '][' + SYM_TAIL + ']*)\\/)?' +       // Optional namespace
         '([' + SYM_HEAD + '=' + '][' + SYM_TAIL + ']*)', 'i'      // Keyword
       ), ':')
-    , vector: createformGenerator('vector', /^('?)\[/, '[', ']', false)
-    , call: createformGenerator('call', /^('?)\(/, '(', ')', false)
-    , list: createformGenerator('list', /^(['`])?\(/, '(', ')', false)
-    , comment: createformGenerator('comment', /^;.*?(\n|$)/)
+    , vector: createFormGenerator('vector', /^('?)\[/, '[', ']', false)
+    , call: createFormGenerator('call', /^('?)\(/, '(', ')', false)
+    , list: createFormGenerator('list', /^(['`])?\(/, '(', ')', false)
+    , comment: createFormGenerator('comment', /^;.*?(\n|$)/)
   };
 
-function createformGenerator (kind, pattern, openChr, closeChr, terminal) {
+function createFormGenerator (kind, pattern, openChr, closeChr, terminal) {
   var generator = function () {
     var args = Array.prototype.slice.call(arguments)
       , namespace = terminal !== false && args.length === 2 ? args.shift() : undefined
