@@ -1,3 +1,7 @@
+var forms = require('../forms')
+  , literal = forms.literal
+  ;
+
 exports['='] = function () {
   var prevArgVal;
   var currArgVal;
@@ -6,7 +10,7 @@ exports['='] = function () {
   Array.prototype.map.call(arguments, function (arg) {
     // Any lists making it in here are quoted, so compare
     // their stringify output do determine equality.
-    currArgVal = (arg.kind === "list" ? arg.stringify() : arg);
+    currArgVal = (arg.kind === "list" ? arg.stringify() : arg.value);
 
     if (prevArgVal !== undefined && currArgVal !== prevArgVal) {
       equals = false;
@@ -14,5 +18,5 @@ exports['='] = function () {
     prevArgVal = currArgVal;
   });
 
-  return equals;
+  return literal(equals);
 };

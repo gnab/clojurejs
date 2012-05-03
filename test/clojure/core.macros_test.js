@@ -1,9 +1,11 @@
-var clojure = require('../../src/clojure');
+var clojure = require('../../src/clojure')
+  , forms = require('../../src/forms')
+  , number = forms.number
 
 describe('Macros', function () {
   it('defmacro', function () {
     clojure.run('(defmacro unless [expr body] `(if expr nil body))');
-    clojure.run('(unless (= 1 2) (+ 1 2))').should.equal(3);
+    clojure.run('(unless (= 1 2) (+ 1 2))').should.eql(number(3));
   });
 
   describe('assert', function () {

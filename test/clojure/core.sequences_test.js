@@ -3,15 +3,18 @@ var clojure = require('../../src/clojure')
   , list = forms.list
   , string = forms.string
   , number = forms.number
+  , literal = forms.literal
   ;
 
 describe('Sequences', function () {
-  it('map', function () {
-    clojure.run('(map odd? [1 2 3])').should.eql([true, false, true]);
+  it('mapv', function () {
+    clojure.run('(map odd? [1 2 3])')
+      .should.eql([literal(true), literal(false), literal(true)]);
   });
 
   it('map', function () {
-    clojure.run('(map odd? \'(1 2 3))').should.eql([true, false, true]);
+    clojure.run('(map odd? \'(1 2 3))')
+      .should.eql([literal(true), literal(false), literal(true)]);
   });
 
   it('concat', function () {
@@ -22,6 +25,7 @@ describe('Sequences', function () {
     clojure.run('(concat \'(1) \'(2) \'(3)').should.eql(list(number('1'), number('2'), 
      number('3')));
   });
+
   it('cons', function () {
     var expList = list(number('1'), number('2'), number('3')); 
     expList.quoted = true;

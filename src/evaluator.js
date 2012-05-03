@@ -15,38 +15,45 @@ exports.evaluate = evaluate;
 function evaluate (exprs, context) {
   context = context || Namespace.current;
 
-  return exprs.map(function (e) { return evaluateExpression(e, context); }).slice(-1)[0];
+  var result = exprs.map(function (e) { return evaluateExpression(e, context); })
+    .slice(-1)[0];
+
+  return result === undefined ? literal(null) : result;
 }
 
-function evaluateExpression (expr, context) {
-  switch (expr.kind) {
+function evaluateExpression (form, context) {
+  if (form.quoted) {
+    return form;
+  }
+
+  switch (form.kind) {
     case number.kind:
-      return +expr.value;
-    case string.kind:
-      return expr.value;
+      return number(+form.value);
     case literal.kind:
-      return lookupLiteral(expr.value);
+      return literal(lookupLiteral(form.value));
     case symbol.kind:
-      return lookupSymbol(expr.value, expr.namespace, context);
+      return lookupSymbol(form.value, form.namespace, context);
     case vector.kind:
-      return expr.value.map(function (e) { return evaluateExpression(e, context);});
+      return vector.apply(forms, form.value.map(function (e) { return evaluateExpression(e, context);}));
     case call.kind:
-      return evaluateCall(expr, context.extend());
-    case list.kind:
-      return expr;
+      return evaluateCall(form, context.extend());
+    default:
+      return form;
   }
 }
 
-function evaluateCall (expr, context) {
-  var func = evaluateExpression(expr.value[0], context)
-    , args = expr.value.slice(1)
+function evaluateCall (form, context) {
+  var func = evaluateExpression(form.value[0], context)
+    , args = form.value.slice(1)
     ;
 
   if (!func.macro) {
-    args = args.map(function (a) { return evaluateExpression(a, context);});
+    args = args.map(function (arg) { 
+      return evaluateExpression(arg, context);
+    });
   }
 
-  return func.apply(context, args);
+  return (typeof func === 'function' ? func : func.value).apply(context, args);
 }
 
 function lookupLiteral (name) {

@@ -17,53 +17,49 @@ describe('Evaluator', function () {
     Namespace.reset();
   });
 
-  describe('number evaluation', function () {
-    it('should evaluate numbers', function () {
-      evaluator.evaluate([number('42')]).should.equal(42);
-    });
+  it('should evaluate numbers', function () {
+    evaluator.evaluate([number('42')]).should.eql(number(42));
   });
 
-  describe('string evaluation', function () {
-    it('should evaluate strings', function () {
-      evaluator.evaluate([string('clojure')]).should.equal('clojure');
-    });
+  it('should evaluate strings', function () {
+    evaluator.evaluate([string('clojure')]).should.eql(string('clojure'));
   });
 
   describe('literal evaluation', function () {
     it('should evaluate true', function () {
-      evaluator.evaluate([literal('true')]).should.equal(true);
+      evaluator.evaluate([literal('true')]).should.eql(literal(true));
     });
 
     it('should evaluate false', function () {
-      evaluator.evaluate([literal('false')]).should.equal(false);
+      evaluator.evaluate([literal('false')]).should.eql(literal(false));
     });
 
     it('should evaluate nil', function () {
-      should.strictEqual(evaluator.evaluate([literal('nil')]), null);
+      evaluator.evaluate([literal('nil')]).should.eql(literal(null));
     });
   });
 
   describe('symbol evaluation', function () {
     it('should evaluate qualified symbols in current namespace', function () {
-      Namespace.current.set('a', 1);
-      evaluator.evaluate([symbol('user', 'a')], Namespace.current).should.equal(1);
+      Namespace.current.set('a', number(1));
+      evaluator.evaluate([symbol('user', 'a')], Namespace.current).should.eql(number(1));
     });
 
     it('should evaluate qualified symbols in other namespace', function () {
-      Namespace.current.set('a', 1);
+      Namespace.current.set('a', number(1));
       Namespace.set('other');
-      evaluator.evaluate([symbol('user', 'a')], Namespace.current).should.equal(1);
+      evaluator.evaluate([symbol('user', 'a')], Namespace.current).should.eql(number(1));
     });
 
     it('should let special forms take precedence over vars', function () {
-      Namespace.current.set('def', 1);
+      Namespace.current.set('def', number(1));
       evaluator.evaluate([symbol('def')], Namespace.current)
         .should.equal(specialforms.def);
     });
 
     it('should evaluate qualified special form-named vars', function () {
-      Namespace.current.set('def', 1);
-      evaluator.evaluate([symbol('user', 'def')], Namespace.current).should.equal(1);
+      Namespace.current.set('def', number(1));
+      evaluator.evaluate([symbol('user', 'def')], Namespace.current).should.eql(number(1));
     });
 
     it('should not evaluate undefined, qualified special form-named vars', function () {
@@ -72,13 +68,13 @@ describe('Evaluator', function () {
     });
 
     it('should evaluate vars in current namespace', function () {
-      Namespace.current.set('a', 1);
-      evaluator.evaluate([symbol('a')], Namespace.current).should.equal(1);
+      Namespace.current.set('a', number(1));
+      evaluator.evaluate([symbol('a')], Namespace.current).should.eql(number(1));
     });
 
     it('should evaluate vars in context extending namespace', function () {
-      Namespace.current.set('a', 1);
-      evaluator.evaluate([symbol('a')], Namespace.current.extend()).should.equal(1);
+      Namespace.current.set('a', number(1));
+      evaluator.evaluate([symbol('a')], Namespace.current.extend()).should.eql(number(1));
     });
 
     it('should throw error when symbol cannot be resolved', function () {
@@ -87,16 +83,17 @@ describe('Evaluator', function () {
     });
   });
 
-  describe('vector evaluation', function () {
-    it('should evaluate vectors', function () {
-      evaluator.evaluate([vector(number(42), string('clojure'))]).should.eql([42, 'clojure']);
-    });
-  });
-
   describe('call evaluation', function () {
     it('should evaluate calls', function () {
       Namespace.current.set('f', function () { return 42; });
       evaluator.evaluate([call(symbol('f'))], Namespace.current).should.equal(42);
+    });
+  });
+
+  describe('vector evaluation', function () {
+    it('should evaluate vectors', function () {
+      evaluator.evaluate([vector(number('1'), number('2'))], Namespace.current)
+        .should.eql(vector(number(1), number(2)));
     });
   });
 

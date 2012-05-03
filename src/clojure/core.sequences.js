@@ -3,13 +3,15 @@ var forms = require('../forms')
 ;
 
 exports.map = function (f, coll) {
-
   if (coll.kind === "list"){
     return Array.prototype.map.call(coll.value, function(elem){
       return f(elem.value);  
     });
   }
-  return coll.map(f);
+
+  var result = coll.value.map(f);
+
+  return result;
 };
 
 exports.concat = function () {

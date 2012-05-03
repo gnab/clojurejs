@@ -1,3 +1,7 @@
+var forms = require('./forms')
+  , literal = forms.literal
+  ;
+
 exports.Namespace = Namespace;
 
 function Namespace (name) {

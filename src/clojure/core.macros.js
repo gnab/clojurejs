@@ -1,5 +1,7 @@
 var evaluator = require('../evaluator')
   , Namespace = require('../namespace').Namespace
+  , forms = require('../forms')
+  , literal = forms.literal
   ;
 
 exports.defmacro = function (name, params, list) {
@@ -41,7 +43,7 @@ exports.assert = function (condition) {
   };
 
   try{
-    if (evaluator.evaluate([condition]) !== true) {
+    if (evaluator.evaluate([condition]).value !== true) {
       var error = new Error(errorString(condition));
       error.constructedByAssert = true;
       throw error;

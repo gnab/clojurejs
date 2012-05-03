@@ -1,7 +1,11 @@
+var forms = require('../forms')
+  , literal = forms.literal
+  ;
+
 exports['odd?'] = function (n) {
-  return n % 2 === 1;
+  return literal(n % 2 === 1);
 };
 
 exports['even?'] = function (n) {
-  return n % 2 === 0;
+  return literal(n % 2 === 0);
 };

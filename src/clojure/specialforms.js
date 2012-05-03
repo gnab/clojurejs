@@ -1,10 +1,14 @@
 var evaluator = require('../evaluator')
   , Namespace = require('../namespace').Namespace
+  , forms = require('../forms')
+  , list = forms.list
+  , literal = forms.literal
   ;
 
 exports.def = function (name, init) {
   var context = this
-    , value = (typeof init === 'undefined' ? null : evaluator.evaluate([init], context))
+    , value = (typeof init === 'undefined' ? literal(null) 
+        : evaluator.evaluate([init], context))
     ;
 
   Namespace.current.set(name.value, value);
@@ -17,7 +21,7 @@ exports['if'] = function (test, then, els) {
     , result = evaluator.evaluate([test], context)
     ;
 
-  if (result !== null && result !== false) {
+  if (result.value !== null && result.value !== false) {
     return evaluator.evaluate([then], context);
   }
 
@@ -31,8 +35,6 @@ exports['if'].macro = true;
 exports.fn = function (params, exprs) {
   var context = this;
 
-  exprs = exprs || [];
-
   return function () {
     var args = arguments;
 
@@ -40,7 +42,7 @@ exports.fn = function (params, exprs) {
       context.set(arg.value, args[i]);
     });
 
-    return evaluator.evaluate([exprs], context);
+    return evaluator.evaluate(exprs === undefined ? [] : [exprs], context);
   };
 };
 

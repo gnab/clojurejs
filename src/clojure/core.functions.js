@@ -1,6 +1,8 @@
 var evaluator = require('../evaluator')
   , specialforms = require('./specialforms')
   , Namespace = require('../namespace').Namespace
+  , forms = require('../forms')
+  , literal = forms.literal
   ;
 
 exports.partial = function () {
@@ -12,8 +14,13 @@ exports.partial = function () {
     var context = this;
 
     return function () {
+      var result;
       Array.prototype.map.call(arguments, function (a) { args.push(a); });
-      return func.apply(context, args);
+      result = func.apply(context, args);
+      if (result === undefined || result === null) {
+        return literal(null);
+      }
+      return result;
     }.apply(context, arguments);
   };
 };
