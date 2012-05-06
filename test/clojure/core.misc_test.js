@@ -4,6 +4,10 @@ var clojure = require('../../src/clojure')
   ;
 
 describe('Compare', function () {
+  it('= should return true if just one argument is given', function () {
+    clojure.run('(= nil)').should.eql(literal(true));
+    clojure.run('(= "test")').should.eql(literal(true));
+  });
   it('= should return true if primitives are equal', function () {
     clojure.run('(= 1 1)').should.eql(literal(true));
   });
