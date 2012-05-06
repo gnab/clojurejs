@@ -50,7 +50,7 @@ function parseExpressions(str, cursor, closeChr) {
 function parseNumber (match, cursor) {
   cursor.pos += match[0].length - 1;
 
-  return forms.number(match[0]);
+  return forms.number(+match[0]);
 }
 
 function parseString (match, cursor) {

@@ -27,8 +27,6 @@ function evaluateExpression (form, context) {
   }
 
   switch (form.kind) {
-    case number.kind:
-      return number(+form.value);
     case literal.kind:
       return literal(lookupLiteral(form.value));
     case symbol.kind:
@@ -48,7 +46,7 @@ function evaluateCall (form, context) {
     ;
 
   if (!func.macro) {
-    args = args.map(function (arg) { 
+    args = args.map(function (arg) {
       return evaluateExpression(arg, context);
     });
   }

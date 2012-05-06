@@ -18,7 +18,7 @@ describe('Evaluator', function () {
   });
 
   it('should evaluate numbers', function () {
-    evaluator.evaluate([number('42')]).should.eql(number(42));
+    evaluator.evaluate([number(42)]).should.eql(number(42));
   });
 
   it('should evaluate strings', function () {
@@ -92,7 +92,7 @@ describe('Evaluator', function () {
 
   describe('vector evaluation', function () {
     it('should evaluate vectors', function () {
-      evaluator.evaluate([vector(number('1'), number('2'))], Namespace.current)
+      evaluator.evaluate([vector(number(1), number(2))], Namespace.current)
         .should.eql(vector(number(1), number(2)));
     });
   });

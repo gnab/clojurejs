@@ -13,7 +13,7 @@ var reader = require('../src/reader')
 describe('Reader', function () {
   describe('number parsing', function () {
     it('should read integers', function () {
-      reader.read('42').should.eql([number('42')]);
+      reader.read('42').should.eql([number(42)]);
     });
   });
 
@@ -74,7 +74,7 @@ describe('Reader', function () {
 
   describe('vector parsing', function () {
     it('should read vectors', function () {
-      reader.read('[42 "clojure"]').should.eql([vector(number('42'), string('clojure'))]);
+      reader.read('[42 "clojure"]').should.eql([vector(number(42), string('clojure'))]);
     });
   });
 
@@ -84,14 +84,17 @@ describe('Reader', function () {
     });
 
     it('should read quoted lists', function () {
-      var expList = list(number('42'), string('clojure'));
+      var expList = list(number(42), string('clojure'));
       expList.quoted = true;
       reader.read('\'(42 "clojure")').should.eql([expList]);
     });
     it('should read syntax-quoted lists', function () {
-      var expList = list(number('42'), string('clojure'));
+      var expList = list(number(42), string('clojure'));
       expList.quoted = true;
       reader.read('`(42 "clojure")').should.eql([expList]);
+    });
+    it('numbers in quoted lists should get handled correctly', function () {
+      reader.read('\'(1 2 3)')[0].value[0].value.should.equal(1);
     });
   });
 
@@ -101,12 +104,12 @@ describe('Reader', function () {
     });
 
     it('should read calls with arguments', function () {
-      reader.read('(+ 1 1)').should.eql([call(symbol('+'), number('1'), number('1'))]);
+      reader.read('(+ 1 1)').should.eql([call(symbol('+'), number(1), number(1))]);
     });
 
     it('should read nested calls', function () {
-      var expCall = call(symbol('+'), number('1'),
-        call(symbol('*'), number('2'), number('3')), number('4'));
+      var expCall = call(symbol('+'), number(1),
+        call(symbol('*'), number(2), number(3)), number(4));
       expCall.quoted = false;
       reader.read('(+ 1 (* 2 3) 4)').should.eql([expCall]);
     });
