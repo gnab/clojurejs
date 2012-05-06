@@ -76,6 +76,9 @@ describe('Reader', function () {
     it('should read vectors', function () {
       reader.read('[42 "clojure"]').should.eql([vector(number(42), string('clojure'))]);
     });
+    it('should read nested vectors', function () {
+      reader.read('[1 2 [3]]').should.eql([vector(number(1), number(2), vector(number(3)))]);
+    });
   });
 
   describe('list parsing', function () {
