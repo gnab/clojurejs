@@ -16,25 +16,20 @@ exports['='] = function equals() {
     nextForm = args[i + 1];
 
     // Do 'simple' check if form is string, number or keyword
-    if (form.kind === string.kind ||
-        form.kind === number.kind ||
-        form.kind === keyword.kind ){
-      if (form.value !== nextForm.value ||
-          form.kind !== nextForm.kind){
+    if ((form.kind === string.kind ||
+         form.kind === number.kind ||
+         form.kind === keyword.kind) &&
+        (form.kind !== nextForm.kind ||
+         form.value !== nextForm.value)){
         return literal(false);
-      }
     }
-     // Both of the arguments are vectors or lists
+    else if (form.value.length !== nextForm.value.length){
+      return literal(false);
+    }
     else {
-      // Check length
-      if (form.value.length !== nextForm.value.length){
-        return literal(false);
-      }
-      else { // Check equality recursively
-        for (var j = 0; j < form.value.length; j ++){
-          if (!equals(form.value[j], nextForm.value[j]).value){
-            return literal(false);
-          }
+      for (var j = 0; j < form.value.length; j ++){
+        if (!equals(form.value[j], nextForm.value[j]).value){
+          return literal(false);
         }
       }
     }
