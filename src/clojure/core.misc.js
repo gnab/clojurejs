@@ -12,11 +12,7 @@ exports['='] = function equals() {
   var isEqual = true;
 
   Array.prototype.map.call(args, function (form) {
-    if (form.kind !== prevForm.kind){
-      isEqual = false;
-      return;
-    }
-    else if (form.kind === string.kind || form.kind === number.kind || form.kind === form.keyword ){
+    if (form.kind === string.kind || form.kind === number.kind || form.kind === form.keyword ){
       if (form.value !== prevForm.value){
         isEqual = false;
       }
