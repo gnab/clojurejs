@@ -19,9 +19,13 @@ describe('Compare', function () {
   it('= should handle more than two arguments', function () {
     clojure.run('(= 1 2 1 1').should.eql(literal(false));
   });
-  it('= should equality between vectors and lists', function () {
+  it('= should handle equality between vectors and lists', function () {
     clojure.run('(= [1 2 3] \'(1 2 3)').should.eql(literal(true));
     clojure.run('(= [1 2 4] \'(1 2 3)').should.eql(literal(false));
     clojure.run('(= [1 2 3 4] \'(1 2 3)').should.eql(literal(false));
+  });
+  it('= should handle nested vectors', function () {
+    clojure.run('(= [1 [2 3] [4 5 [6]] [1 [2 3] [4 5 [6]]]').should.eql(literal(true));
+    clojure.run('(= [1 [2 3] [4 5 [6]]] [1 [2 3] [4 5 [7]]]]').should.eql(literal(false));
   });
 });
