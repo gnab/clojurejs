@@ -6,33 +6,38 @@ var forms = require('../forms')
   ;
 
 exports['='] = function equals() {
+  var isEqual = true
+    , args = Array.prototype.slice.call(arguments, 0)
+    , form
+    , nextForm;
 
-  var args = Array.prototype.slice.call(arguments, 0);
-  var prevForm = args.shift();
-  var isEqual = true;
+  for (var i = 0; i < args.length -1; i++) {
+    form = args[i];
+    nextForm = args[i + 1];
 
-  Array.prototype.map.call(args, function (form) {
-    if (form.kind === string.kind || form.kind === number.kind || form.kind === form.keyword ){
-      if (form.value !== prevForm.value){
-        isEqual = false;
+    // Do 'simple' check if primitive form value
+    if (form.kind === string.kind ||
+        form.kind === number.kind ||
+        form.kind === keyword.kind ){
+      if (form.value !== nextForm.value ||
+          form.kind !== nextForm.kind){
+        return literal(false);
       }
     }
-    else { // Assuming we're dealing with some sort of list
-      if (form.value.length !== prevForm.value.length){
-        isEqual = false;
-        return;
+     // Both of the arguments are vectors or lists
+    else {
+      // Check length
+      if (form.value.length !== nextForm.value.length){
+        return literal(false);
       }
-      else {
-        for (var i = 0; i < form.value.length; i ++){
-          if (equals(form.value[i], prevForm.value[i]).value === false){
-            isEqual = false;
-            return;
+      else { // Check equality recursively
+        for (var j = 0; j < form.value.length; j ++){
+          if (!equals(form.value[j], nextForm.value[j]).value){
+            return literal(false);
           }
         }
       }
     }
-    prevForm = form;
-  });
-
-  return literal(isEqual);
+  }
+  return literal(true);
 };
