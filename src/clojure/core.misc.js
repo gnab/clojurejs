@@ -1,22 +1,44 @@
 var forms = require('../forms')
   , literal = forms.literal
+  , string = forms.string
+  , number = forms.number
+  , keyword = forms.keyword
   ;
 
-exports['='] = function () {
-  var prevArgVal;
-  var currArgVal;
-  var equals = true;
+exports['='] = function equals() {
 
-  Array.prototype.map.call(arguments, function (arg) {
-    // Any lists making it in here are quoted, so compare
-    // their stringify output do determine equality.
-    currArgVal = (arg.kind === "list" ? arg.stringify() : arg.value);
+  var args = Array.prototype.slice.call(arguments, 0);
+  var prevForm = args.shift();
+  var isEqual = true;
 
-    if (prevArgVal !== undefined && currArgVal !== prevArgVal) {
-      equals = false;
+  console.log(args);
+
+  Array.prototype.map.call(args, function (form) {
+    if (form.kind !== prevForm.kind){
+      isEqual = false;
+      return;
     }
-    prevArgVal = currArgVal;
+    else if (form.kind === string.kind || form.kind === number.kind || form.kind === form.keyword ){
+      if (form.value !== prevForm.value){
+        isEqual = false;
+      }
+    }
+    else { // Assuming we're dealing with some sort of list
+      if (form.value.length !== prevForm.value.length){
+        isEqual = false;
+        return;
+      }
+      else {
+        for (var i = 0; i < form.value.length; i ++){
+          if (equals(form.value[i], prevForm.value[i]).value === false){
+            isEqual = false;
+            return;
+          }
+        }
+      }
+    }
+    prevForm = form;
   });
 
-  return literal(equals);
+  return literal(isEqual);
 };
