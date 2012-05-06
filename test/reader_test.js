@@ -96,7 +96,7 @@ describe('Reader', function () {
       expList.quoted = true;
       reader.read('`(42 "clojure")').should.eql([expList]);
     });
-    it('numbers in quoted lists should get handled correctly', function () {
+    it('should parse numbers in quoted lists', function () {
       reader.read('\'(1 2 3)')[0].value[0].value.should.equal(1);
     });
   });
