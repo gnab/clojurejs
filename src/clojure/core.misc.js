@@ -15,7 +15,7 @@ exports['='] = function equals() {
     form = args[i];
     nextForm = args[i + 1];
 
-    // Do 'simple' check if primitive form value
+    // Do 'simple' check if form is string, number or keyword
     if (form.kind === string.kind ||
         form.kind === number.kind ||
         form.kind === keyword.kind ){
