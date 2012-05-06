@@ -22,5 +22,6 @@ describe('Compare', function () {
   it('= should handle vectors and lists', function () {
     clojure.run('(= [1 2 3] \'(1 2 3)').should.eql(literal(true));
     clojure.run('(= [1 2 4] \'(1 2 3)').should.eql(literal(false));
+    clojure.run('(= [1 2 3 4] \'(1 2 3)').should.eql(literal(false));
   });
 });
