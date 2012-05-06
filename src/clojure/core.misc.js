@@ -11,8 +11,6 @@ exports['='] = function equals() {
   var prevForm = args.shift();
   var isEqual = true;
 
-  console.log(args);
-
   Array.prototype.map.call(args, function (form) {
     if (form.kind !== prevForm.kind){
       isEqual = false;
