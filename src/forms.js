@@ -3,7 +3,7 @@ var Form = require('./form').Form
   , SYM_TAIL = SYM_HEAD + '0-9'
 
   , forms = module.exports = {
-      number: createFormGenerator('number', /^'?\d+/)
+      number: createFormGenerator('number', /^(')?\d+/)
     , string: createFormGenerator('string', /^'?"(([^\\"]|\\\\|\\")*)/, '"', '"')
     , literal: createFormGenerator('literal', /^'?(true|false|nil)$/)
     , symbol: createFormGenerator('symbol', new RegExp(

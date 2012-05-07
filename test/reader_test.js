@@ -118,6 +118,18 @@ describe('Reader', function () {
     });
   });
 
+  describe('general quote parsing', function (){
+    it('should handle quoted numbers', function () {
+     reader.read('\'1')[0].value.should.equal(1);
+    });
+    it('should handle quoted keywords', function () {
+     reader.read('\':a')[0].value.should.equal('a');
+    });
+    it('should handle quoted strings', function () {
+     reader.read('\'"a"')[0].value.should.equal('a');
+    });
+  });
+
   describe('comment parsing', function () {
     it('should ignore comments', function () {
       reader.read(';ignore this line').should.eql([]);
