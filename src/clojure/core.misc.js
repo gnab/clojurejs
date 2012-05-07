@@ -15,13 +15,16 @@ exports['='] = function equals() {
     form = args[i];
     nextForm = args[i + 1];
 
-    // Do 'simple' check if form is string, number or keyword
-    if ((form.kind === string.kind ||
-         form.kind === number.kind ||
-         form.kind === keyword.kind) &&
-        (form.kind !== nextForm.kind ||
-         form.value !== nextForm.value)){
+    var stringNumOrKeyword = function(form) {
+      return (form.kind === string.kind ||
+               form.kind === number.kind ||
+               form.kind === keyword.kind);
+    };
+    if (stringNumOrKeyword(form) || stringNumOrKeyword(nextForm)){
+      if (form.kind !== nextForm.kind ||
+          form.value !== nextForm.value){
         return literal(false);
+      }
     }
     else if (form.value.length !== nextForm.value.length){
       return literal(false);
