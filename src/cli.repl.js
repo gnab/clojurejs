@@ -1,8 +1,11 @@
-/*global "process": true */
-var rl = require('readline').createInterface(process.stdin, process.stdout, null)
-  , clojure = require('./clojure')
-  , Namespace = require('./namespace').Namespace
-  ;
+const readline = require('node:readline');
+const clojure = require('./clojure')
+const Namespace = require('./namespace').Namespace
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 console.log("Welcome to the clojurejs REPL! Type (quit) to quit");
 
