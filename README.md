@@ -6,8 +6,6 @@ This is only an experiment in parsing and evaluating a LISP in JavaScript, i.e. 
 
 The current goal of the project is to implement the features listed in the [Clojure Cheat Sheet](http://clojure.org/cheatsheet) that makes sense running in a browser.
 
-Head over to [the demo page](http://gnab.github.com/clojurejs) to check it out.
-
 ### Getting Started
 
 Only a few, simple steps is required:
