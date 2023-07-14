@@ -1,5 +1,5 @@
 import { createInterface } from 'node:readline';
-import { run } from './clojure.js';
+import { read } from './reader.js';
 import { Namespace } from './namespace.js';
 
 const rl = createInterface({
@@ -24,7 +24,7 @@ function readEvalPrompt (input) {
       process.exit(0);
   }
   try {
-    result = run(input);
+    result = read(input);
 
     if (result !== undefined) {
       console.log(result);
