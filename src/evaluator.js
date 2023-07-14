@@ -1,6 +1,5 @@
 import { Namespace } from './namespace.js'
 import {forms} from './forms.js'
-//import { } from './clojure/specialforms.js'
 
 const number = forms.number
 const string = forms.string

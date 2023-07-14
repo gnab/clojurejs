@@ -1,5 +1,3 @@
-import {} from './clojure/core.js'
-
 export function Namespace (name) {
   this.name = name;
   this.vars = {};
