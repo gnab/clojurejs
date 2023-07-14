@@ -1,6 +1,5 @@
 import { createInterface } from 'node:readline';
 import { read } from './reader.js';
-import { Namespace } from './namespace.js';
 
 const rl = createInterface({
   input: process.stdin,
@@ -37,7 +36,7 @@ function readEvalPrompt (input) {
 }
 
 function prompt () {
-  var prefix = Namespace.current.name + '=> ';
+  var prefix = 'user=> ';
   rl.setPrompt(prefix, prefix.length);
   rl.prompt();
 }
