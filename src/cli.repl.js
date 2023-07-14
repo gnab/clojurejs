@@ -1,8 +1,8 @@
-const readline = require('node:readline');
-const clojure = require('./clojure')
-const Namespace = require('./namespace').Namespace
+import { createInterface } from 'node:readline';
+import { run } from './clojure.js';
+import { Namespace } from './namespace.js';
 
-const rl = readline.createInterface({
+const rl = createInterface({
   input: process.stdin,
   output: process.stdout,
 });
@@ -24,7 +24,7 @@ function readEvalPrompt (input) {
       process.exit(0);
   }
   try {
-    result = clojure.run(input);
+    result = run(input);
 
     if (result !== undefined) {
       console.log(result);

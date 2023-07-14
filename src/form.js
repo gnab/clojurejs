@@ -1,6 +1,4 @@
-exports.Form = Form;
- 
-function Form (kind, namespace, value, openChr, closeChr, terminal) {
+export function Form (kind, namespace, value, openChr, closeChr, terminal) {
   this.kind = kind;
   this.namespace = namespace;
   this.value = value;

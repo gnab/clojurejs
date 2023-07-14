@@ -1,19 +1,18 @@
-var forms = require('./forms')
-  , formParsers = {
-    number: parseNumber
-  , string: parseString
-  , symbol: parseSymbol
-  , keyword: parseKeyword
-  , vector: parseVector
-  , list: parseList
-  , comment: parseComment
+import {forms} from './forms.js'
+
+const formParsers = {
+    number: parseNumber,
+    string: parseString, 
+    symbol: parseSymbol, 
+    keyword: parseKeyword, 
+    vector: parseVector,
+    list: parseList,
+    comment: parseComment
   };
 
-module.exports = {
-  read: function (str) {
-    return parseExpressions(str);
-  }
-};
+export function read (str) {
+  return parseExpressions(str);
+}
 
 function parseExpressions(str, cursor, closeChr) {
   var expressions = []

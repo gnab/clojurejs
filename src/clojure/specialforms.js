@@ -1,9 +1,8 @@
-var evaluator = require('../evaluator')
-  , Namespace = require('../namespace').Namespace
-  , forms = require('../forms')
-  , list = forms.list
-  , literal = forms.literal
-  ;
+import { Namespace } from '../namespace.js'
+import {forms} from '../forms.js'
+
+const list = forms.list
+const literal = forms.literal
 
 exports.def = function (name, init) {
   var context = this

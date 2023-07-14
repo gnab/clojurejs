@@ -1,14 +1,14 @@
-var reader = require('./reader')
-  , evaluator = require('./evaluator')
-  ;
+import {read} from './reader.js';
+import {evaluate} from './evaluator.js';
 
-exports.run = function (str) {
-  var data = reader.read(str);
-  return evaluator.evaluate(data);
-};
+export function run (str) {
+  var data = read(str);
+  return data
+  //return evaluator.evaluate(data);
+}
 
 if (typeof window !== 'undefined') {
   window.clojurejs = {
-    run: exports.run
+    run: run
   };
 }

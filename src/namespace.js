@@ -1,10 +1,6 @@
-var forms = require('./forms')
-  , literal = forms.literal
-  ;
+import {} from './clojure/core.js'
 
-exports.Namespace = Namespace;
-
-function Namespace (name) {
+export function Namespace (name) {
   this.name = name;
   this.vars = {};
 }
@@ -16,7 +12,6 @@ Namespace.get = function (name) {
 Namespace.set = function (name) {
   if (!Namespace.all[name]) {
     var namespace = new Namespace(name);
-    namespace.use(require('./clojure/core'));
     Namespace.all[name] = namespace;
   }
 

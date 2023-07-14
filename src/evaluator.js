@@ -1,18 +1,16 @@
-var Namespace = require('./namespace').Namespace
-  , specialforms = require('./clojure/specialforms')
-  , forms = require('./forms')
-  , number = forms.number
-  , string = forms.string
-  , literal = forms.literal
-  , symbol = forms.symbol
-  , vector = forms.vector
-  , list = forms.list
-  , call = forms.call
-  ;
+import { Namespace } from './namespace.js'
+import {forms} from './forms.js'
+//import { } from './clojure/specialforms.js'
 
-exports.evaluate = evaluate;
+const number = forms.number
+const string = forms.string
+const literal = forms.literal
+const symbol = forms.symbol
+const vector = forms.vector
+const list = forms.list
+const call = forms.call
 
-function evaluate (exprs, context) {
+export function evaluate (exprs, context) {
   context = context || Namespace.current;
 
   var result = exprs.map(function (e) { return evaluateExpression(e, context); })
