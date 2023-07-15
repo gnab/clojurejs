@@ -1,14 +1,15 @@
 import { createInterface } from 'node:readline';
 import { read_str } from './reader.js';
+import { _pr_str } from './printer.js';
 
-const rl = createInterface({
+const readline = createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
 console.log("Welcome to the clojurejs REPL! Type (quit) to quit");
 
-rl.on('line', readEvalPrompt)
+readline.on('line', readEvalPrompt)
   .on('close', function () {process.exit(0);});
 
 prompt();
@@ -37,6 +38,6 @@ function readEvalPrompt (input) {
 
 function prompt () {
   var prefix = 'user=> ';
-  rl.setPrompt(prefix, prefix.length);
-  rl.prompt();
+  readline.setPrompt(prefix, prefix.length);
+  readline.prompt();
 }
