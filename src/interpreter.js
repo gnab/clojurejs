@@ -10,6 +10,29 @@ function READ(str) {
 }
 
 // eval
+function qqLoop (acc, elt) {
+  if (_list_Q(elt) && elt.length
+      && _symbol_Q(elt[0]) && elt[0].value == 'splice-unquote') {
+      return [_symbol("concat"), elt[1], acc];
+  } else {
+      return [_symbol("cons"), quasiquote (elt), acc];
+  }
+}
+function quasiquote(ast) {
+  if (_list_Q(ast) && 0<ast.length
+      && _symbol_Q(ast[0]) && ast[0].value == 'unquote') {
+      return ast[1];
+  } else if (_list_Q(ast)) {
+      return ast.reduceRight(qqLoop,[]);
+  } else if (_vector_Q(ast)) {
+      return [_symbol("vec"), ast.reduceRight(qqLoop,[])];
+  } else if (_symbol_Q(ast) || _hash_map_Q(ast)) {
+      return [_symbol("quote"), ast];
+  } else {
+      return ast;
+  }
+}
+
 function eval_ast(ast, env) {
   if (_symbol_Q(ast)) {
       return env.get(ast);
@@ -55,6 +78,13 @@ function _EVAL(ast, env) {
       }
       ast = a2;
       env = let_env;
+      break;
+  case "quote":
+      return a1;
+  case "quasiquoteexpand":
+      return quasiquote(a1);
+  case "quasiquote":
+      ast = quasiquote(a1);
       break;
   case "do":
       eval_ast(ast.slice(1, -1), env);
