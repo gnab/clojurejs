@@ -49,6 +49,8 @@ function macroexpand(ast, env) {
 }
 
 function eval_ast(ast, env) {
+  console.log("ast:", ast)
+  console.log("env:", env)
   if (_symbol_Q(ast)) {
       return env.get(ast);
   } else if (_list_Q(ast)) {
@@ -171,3 +173,6 @@ repl_env.set(_symbol('*ARGV*'), []);
 
 // core.mal: defined using the language itself
 evalString("(def not (fn (a) (if a false true)))");
+//evalString("(defmacro! cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
+
+//evalString("(defmacro! defn (fn (name args body) (def name (fn args body))))");
