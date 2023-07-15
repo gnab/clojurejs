@@ -232,6 +232,7 @@ export const ns = {'type': _obj_type,
           '-'  : function(a,b){return a-b;},
           '*'  : function(a,b){return a*b;},
           '/'  : function(a,b){return a/b;},
+          'inc'  : function(a){return a+1;},
           "time-ms": time_ms,
 
           'list': _list,
