@@ -25,11 +25,7 @@ function READ(str) {
 // eval
 function eval_ast(ast, env) {
   if (_symbol_Q(ast)) {
-      if (ast in env) {
-          return env[ast];
-      } else {
-          throw new Error("'" + ast.value + "' not found");
-      }
+      return env.get(ast);
   } else if (_list_Q(ast)) {
       return ast.map(function(a) { return EVAL(a, env); });
   } else if (_vector_Q(ast)) {
