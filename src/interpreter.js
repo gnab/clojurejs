@@ -33,6 +33,21 @@ function quasiquote(ast) {
   }
 }
 
+function is_macro_call(ast, env) {
+  return _list_Q(ast) &&
+         _symbol_Q(ast[0]) &&
+         env.find(ast[0]) &&
+         env.get(ast[0])._ismacro_;
+}
+
+function macroexpand(ast, env) {
+  while (is_macro_call(ast, env)) {
+      var mac = env.get(ast[0]);
+      ast = mac.apply(mac, ast.slice(1));
+  }
+  return ast;
+}
+
 function eval_ast(ast, env) {
   if (_symbol_Q(ast)) {
       return env.get(ast);
@@ -61,11 +76,16 @@ function _EVAL(ast, env) {
   if (!_list_Q(ast)) {
       return eval_ast(ast, env);
   }
+
+  // apply list
+  ast = macroexpand(ast, env);
+  if (!_list_Q(ast)) {
+      return eval_ast(ast, env);
+  }
   if (ast.length === 0) {
       return ast;
   }
 
-  // apply list
   var a0 = ast[0], a1 = ast[1], a2 = ast[2], a3 = ast[3];
   switch (a0.value) {
   case "def!":
@@ -86,6 +106,12 @@ function _EVAL(ast, env) {
   case "quasiquote":
       ast = quasiquote(a1);
       break;
+  case 'defmacro!':
+      var func = _clone(EVAL(a2, env));
+      func._ismacro_ = true;
+      return env.set(a1, func);
+  case 'macroexpand':
+      return macroexpand(a1, env);
   case "do":
       eval_ast(ast.slice(1, -1), env);
       ast = ast[ast.length-1];
@@ -131,5 +157,9 @@ const rep = function(str) { return PRINT(EVAL(READ(str), repl_env)); };
 
 // core.js: defined using javascript
 for (var n in ns) { repl_env.set(_symbol(n), ns[n]); }
+repl_env.set(_symbol('eval'), function(ast) {
+    return EVAL(ast, repl_env); });
+repl_env.set(_symbol('*ARGV*'), []);
+
 // core.mal: defined using the language itself
 rep("(def! not (fn* (a) (if a false true)))");
