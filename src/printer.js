@@ -1,5 +1,14 @@
 import {_obj_type} from './types.js'
 
+// Node vs browser behavior
+export const printer = {};
+if (typeof module !== 'undefined') {
+    // map output/print to console.log
+    printer.println = exports.println = function () {
+        console.log.apply(console, arguments);
+    };
+}
+
 export function _pr_str(obj, print_readably) {
     if (typeof print_readably === 'undefined') { print_readably = true; }
     var _r = print_readably;

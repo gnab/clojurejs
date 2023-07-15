@@ -74,12 +74,14 @@ function _EVAL(ast, env) {
 
   //printer.println("EVAL:", printer._pr_str(ast, true));
   if (!_list_Q(ast)) {
+    console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
   }
 
   // apply list
   ast = macroexpand(ast, env);
   if (!_list_Q(ast)) {
+    console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
   }
   if (ast.length === 0) {
@@ -87,8 +89,9 @@ function _EVAL(ast, env) {
   }
 
   var a0 = ast[0], a1 = ast[1], a2 = ast[2], a3 = ast[3];
+  console.log("a0.value:", a0.value)
   switch (a0.value) {
-  case "def!":
+  case "def":
       var res = EVAL(a2, env);
       return env.set(a1, res);
   case "let*":
@@ -167,4 +170,4 @@ repl_env.set(_symbol('eval'), function(ast) {
 repl_env.set(_symbol('*ARGV*'), []);
 
 // core.mal: defined using the language itself
-evalString("(def! not (fn* (a) (if a false true)))");
+evalString("(def not (fn* (a) (if a false true)))");
