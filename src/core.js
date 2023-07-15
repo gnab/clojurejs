@@ -6,14 +6,6 @@ import {_obj_type, _clone, _assoc_BANG, _dissoc_BANG, _list_Q, _vector_Q,
 import { read_str } from './reader.js';
 
 var core = {};
-if (typeof module === 'undefined') {
-    var exports = core;
-} else {
-    var types = require('./types'),
-        readline = require('./node_readline'),
-        printer = require('./printer'),
-        interop = require('./interop');
-}
 
 // Errors/Exceptions
 function mal_throw(exc) { throw exc; }
@@ -45,10 +37,7 @@ function println() {
 }
 
 function slurp(f) {
-    if (typeof require !== 'undefined') {
-        return require('fs').readFileSync(f, 'utf-8');
-    } else {
-        var req = new XMLHttpRequest();
+    var req = new XMLHttpRequest();
         req.open("GET", f, false);
         req.send();
         if (req.status == 200) {
@@ -56,7 +45,6 @@ function slurp(f) {
         } else {
             throw new Error("Failed to slurp file: " + f);
         }
-    }
 }
 
 
@@ -221,7 +209,6 @@ export const ns = {'type': _obj_type,
           'str': str,
           'prn': prn,
           'println': println,
-          'readline': readline,
           'read-string': read_str,
           'slurp': slurp,
           '<'  : function(a,b){return a<b;},
@@ -274,5 +261,3 @@ export const ns = {'type': _obj_type,
           'js-eval': js_eval,
           '.': js_method_call
 };
-
-exports.ns = core.ns = ns;

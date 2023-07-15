@@ -35,14 +35,14 @@ Env.prototype.find = function (key) {
 };
 Env.prototype.set = function(key, value) {
     if (!key.constructor || key.constructor.name !== 'Symbol') {
-        throw new Error("env.set key must be a symbol")
+        return "env.set key must be a symbol"
     }
     this.data[key.value] = value;
     return value;
 };
 Env.prototype.get = function(key) {
     if (!key.constructor || key.constructor.name !== 'Symbol') {
-        throw new Error("env.get key must be a symbol")
+        return "env.set key must be a symbol"
     }
     var env = this.find(key);
     if (!env) { throw new Error("'" + key.value + "' not found"); }

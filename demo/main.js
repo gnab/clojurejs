@@ -4,7 +4,7 @@ import { EditorState } from '@codemirror/state'
 import { clojure } from "../src/clojure"
 
 let editorState = EditorState.create({
-    doc: `(map inc [1 2 3]))`,
+    doc: `(map inc [1 2 3])`,
     extensions: [basicSetup, clojure()]
 })
 

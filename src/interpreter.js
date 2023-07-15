@@ -90,31 +90,3 @@ const rep = function(str) { return PRINT(EVAL(READ(str), repl_env)); };
 for (var n in ns) { repl_env.set(_symbol(n), ns[n]); }
 // core.mal: defined using the language itself
 rep("(def! not (fn* (a) (if a false true)))");
-
-function readEvalPrompt (input) {
-  var result;
-
-  input = input.trim();
-
-  if (input === '(quit)') {
-      console.log('Bye!');
-      process.exit(0);
-  }
-  try {
-    result = rep(input)
-
-    if (result !== undefined) {
-      console.log(result);
-    }
-  } catch (error) {
-    console.log("Error: ", error);
-  }
-
-  prompt();
-}
-
-function prompt () {
-  var prefix = 'user=> ';
-  readline.setPrompt(prefix, prefix.length);
-  readline.prompt();
-}
