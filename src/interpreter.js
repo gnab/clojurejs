@@ -64,7 +64,7 @@ function eval_ast(ast, env) {
       }
       return new_hm;
   } else {
-    //console.log("AST:", ast)
+    console.log("AST:", ast)
       return ast;
   }
 }
@@ -158,7 +158,7 @@ function EVAL(ast, env) {
 
 // repl
 const repl_env = new Env();
-export const evalString = function(str) { return EVAL(READ(str), repl_env).toString(); };
+export const evalString = function(str) { return _pr_str(EVAL(READ(str), repl_env)) };
 
 // core.js: defined using javascript
 for (var n in ns) { repl_env.set(_symbol(n), ns[n]); }

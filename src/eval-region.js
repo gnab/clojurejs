@@ -65,7 +65,7 @@ const updateEditor = (view, text, pos) => {
 
 export function tryEval(s) {
     try {
-        return evalString(s).trimEnd()
+        return evalString(s)
       } catch (err) {
         console.log(err)
         return "\nError: " + err.message
