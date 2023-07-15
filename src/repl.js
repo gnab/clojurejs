@@ -1,5 +1,5 @@
 import { createInterface } from 'node:readline';
-import { read } from './reader.js';
+import { read_str } from './reader.js';
 
 const rl = createInterface({
   input: process.stdin,
@@ -23,7 +23,7 @@ function readEvalPrompt (input) {
       process.exit(0);
   }
   try {
-    result = read(input);
+    result = read_str(input)
 
     if (result !== undefined) {
       console.log(result);
