@@ -1,7 +1,16 @@
 {
   "name": "clojurejs",
   "version": "0.0.1",
+  "main": "dist/assets/index-81a4c347.js",
   "type": "module",
+  "module": "dist/assets/index-81a4c347.js",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "import": "./dist/assets/index-81a4c347.js",
+    "require": "./dist/assets/index-81a4c347.js"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
