@@ -2,7 +2,7 @@ import { read_str } from './reader.js';
 import { _pr_str } from './printer.js';
 import { Env } from './env.js';
 import { ns } from './core.js';
-import { _symbol, _list_Q, _symbol_Q, _vector_Q, _hash_map_Q, _function } from './types.js';
+import { _symbol, _list_Q, _symbol_Q, _vector_Q, _hash_map_Q, _function, _clone } from './types.js';
 
 // read
 function READ(str) {
@@ -112,6 +112,17 @@ function _EVAL(ast, env) {
       return env.set(a1, func);
   case 'macroexpand':
       return macroexpand(a1, env);
+  case "try*":
+      try {
+          return EVAL(a1, env);
+      } catch (exc) {
+          if (a2 && a2[0].value === "catch*") {
+              if (exc instanceof Error) { exc = exc.message; }
+              return EVAL(a2[2], new Env(env, [a2[1]], [exc]));
+          } else {
+              throw exc;
+          }
+      }
   case "do":
       eval_ast(ast.slice(1, -1), env);
       ast = ast[ast.length-1];
