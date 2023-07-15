@@ -138,7 +138,7 @@ function _EVAL(ast, env) {
           ast = a2;
       }
       break;
-  case "fn*":
+  case "fn":
       return _function(EVAL, Env, a2, env, a1);
   default:
       var el = eval_ast(ast, env), f = el[0];
@@ -170,4 +170,4 @@ repl_env.set(_symbol('eval'), function(ast) {
 repl_env.set(_symbol('*ARGV*'), []);
 
 // core.mal: defined using the language itself
-evalString("(def not (fn* (a) (if a false true)))");
+evalString("(def not (fn (a) (if a false true)))");
