@@ -1,6 +1,6 @@
 import { read_str } from './reader.js';
 import { _pr_str } from './printer.js';
-import { Env } from './env.js';
+import { Env} from './env.js';
 import { ns } from './core.js';
 import { _symbol, _list_Q, _symbol_Q, _vector_Q, _hash_map_Q, _function, _clone } from './types.js';
 
@@ -64,7 +64,7 @@ function eval_ast(ast, env) {
       }
       return new_hm;
   } else {
-    console.log("AST:", ast)
+    //console.log("AST:", ast)
       return ast;
   }
 }
@@ -152,7 +152,7 @@ function _EVAL(ast, env) {
 
 function EVAL(ast, env) {
   var result = _EVAL(ast, env);
-  console.log("EVAL", result)
+  //console.log("EVAL", result)
   return (typeof result !== "undefined") ? result : null;
 }
 

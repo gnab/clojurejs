@@ -1,8 +1,5 @@
 // Node vs browser behavior
-var types = {};
-if (typeof module === 'undefined') {
-    var exports = types;
-}
+const types = {};
 
 // General functions
 

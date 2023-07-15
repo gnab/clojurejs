@@ -1,8 +1,5 @@
 // Node vs browser behavior
-var env = {};
-if (typeof module === 'undefined') {
-    var exports = env;
-}
+const env = {};
 
 // Env implementation
 class Env {
@@ -39,7 +36,7 @@ class Env {
             return "env.set key must be a symbol";
         }
         this.data[key.value] = value;
-        console.log("set value:", value)
+       // console.log("set value:", value)
         return value;
     }
     get(key) {

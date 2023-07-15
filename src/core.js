@@ -4,6 +4,7 @@ import {_obj_type, _clone, _assoc_BANG, _dissoc_BANG, _list_Q, _vector_Q,
     _keyword, _keyword_Q, _fn_Q, _macro_Q, _list, _vector,
     _hash_map, _atom, _atom_Q} from './types.js'
 import { read_str } from './reader.js';
+import { js_to_mal, resolve_js } from './interop.js';
 
 var core = {};
 
@@ -178,15 +179,15 @@ function swap_BANG(atm, f) {
 }
 
 function js_eval(str) {
-    return interop.js_to_mal(eval(str.toString()));
+    return js_to_mal(eval(str.toString()));
 }
 
 function js_method_call(object_method_str) {
     var args = Array.prototype.slice.call(arguments, 1),
-        r = interop.resolve_js(object_method_str),
+        r = resolve_js(object_method_str),
         obj = r[0], f = r[1];
     var res = f.apply(obj, args);
-    return interop.js_to_mal(res);
+    return js_to_mal(res);
 }
 
 // types.ns is namespace of type functions
