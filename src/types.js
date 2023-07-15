@@ -1,4 +1,3 @@
-// Node vs browser behavior
 const types = {};
 
 // General functions

@@ -1,9 +1,4 @@
-// Node vs browser behavior
-var interop = {};
-if (typeof module === 'undefined') {
-    var exports = interop,
-        GLOBAL = window;
-}
+const interop = {};
 
 function resolve_js(str) {
     if (str.match(/\./)) {
