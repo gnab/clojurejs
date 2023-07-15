@@ -1,21 +1,8 @@
-import { createInterface } from 'node:readline';
 import { read_str } from './reader.js';
 import { _pr_str } from './printer.js';
 import { Env } from './env.js';
 import { ns } from './core.js';
 import { _symbol, _list_Q, _symbol_Q, _vector_Q, _hash_map_Q } from './types.js';
-
-const readline = createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-console.log("Welcome to the clojurejs REPL! Type (quit) to quit");
-
-readline.on('line', readEvalPrompt)
-  .on('close', function () {process.exit(0);});
-
-prompt();
 
 // read
 function READ(str) {
@@ -44,7 +31,6 @@ function eval_ast(ast, env) {
 }
 
 function _EVAL(ast, env) {
-  //printer.println("EVAL:", printer._pr_str(ast, true));
   if (!_list_Q(ast)) {
       return eval_ast(ast, env);
   }
@@ -96,7 +82,7 @@ function PRINT(exp) {
 
 // repl
 const repl_env = new Env();
-
+export const evalString = function(str) { return EVAL(READ(str), repl_env).toString(); };
 const rep = function(str) { return PRINT(EVAL(READ(str), repl_env)); };
 
 
