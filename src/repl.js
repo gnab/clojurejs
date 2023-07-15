@@ -14,6 +14,25 @@ readline.on('line', readEvalPrompt)
 
 prompt();
 
+// read
+function READ(str) {
+  return read_str(str);
+}
+
+// eval
+function EVAL(ast, env) {
+  return ast;
+}
+
+// print
+function PRINT(exp) {
+  return _pr_str(exp, true);
+}
+
+// repl
+var re = function(str) { return EVAL(READ(str), {}); };
+var rep = function(str) { return PRINT(EVAL(READ(str), {})); };
+
 function readEvalPrompt (input) {
   var result;
 
@@ -24,7 +43,7 @@ function readEvalPrompt (input) {
       process.exit(0);
   }
   try {
-    result = read_str(input)
+    result = rep(input)
 
     if (result !== undefined) {
       console.log(result);
