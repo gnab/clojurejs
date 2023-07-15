@@ -156,15 +156,9 @@ function EVAL(ast, env) {
   return (typeof result !== "undefined") ? result : null;
 }
 
-// print
-function PRINT(exp) {
-  return _pr_str(exp, true);
-}
-
 // repl
 const repl_env = new Env();
 export const evalString = function(str) { return EVAL(READ(str), repl_env).toString(); };
-const rep = function(str) { return PRINT(EVAL(READ(str), repl_env)); };
 
 // core.js: defined using javascript
 for (var n in ns) { repl_env.set(_symbol(n), ns[n]); }
@@ -173,4 +167,4 @@ repl_env.set(_symbol('eval'), function(ast) {
 repl_env.set(_symbol('*ARGV*'), []);
 
 // core.mal: defined using the language itself
-rep("(def! not (fn* (a) (if a false true)))");
+evalString("(def! not (fn* (a) (if a false true)))");

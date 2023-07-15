@@ -28,7 +28,7 @@ class Env {
     }
     find(key) {
         if (!key.constructor || key.constructor.name !== 'Symbol') {
-            throw new Error("env.find key must be a symbol");
+            return "env.find key must be a symbol";
         }
         if (key.value in this.data) { return this; }
         else if (this.outer) { return this.outer.find(key); }
@@ -36,7 +36,7 @@ class Env {
     }
     set(key, value) {
         if (!key.constructor || key.constructor.name !== 'Symbol') {
-            throw new Error("env.set key must be a symbol");
+            return "env.set key must be a symbol";
         }
         this.data[key.value] = value;
         console.log("set value:", value)
@@ -44,7 +44,7 @@ class Env {
     }
     get(key) {
         if (!key.constructor || key.constructor.name !== 'Symbol') {
-            throw new Error("env.get key must be a symbol");
+            return  "env.get key must be a symbol";
         }
         var env = this.find(key);
         if (!env) { throw new Error("'" + key.value + "' not found"); }
