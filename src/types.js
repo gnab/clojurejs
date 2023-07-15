@@ -19,10 +19,10 @@ export function _obj_type(obj) {
     }
 }
 
-function _sequential_Q(lst) { return _list_Q(lst) || _vector_Q(lst); }
+export function _sequential_Q(lst) { return _list_Q(lst) || _vector_Q(lst); }
 
 
-function _equal_Q (a, b) {
+export function _equal_Q (a, b) {
     var ota = _obj_type(a), otb = _obj_type(b);
     if (!(ota === otb || (_sequential_Q(a) && _sequential_Q(b)))) {
         return false;
@@ -48,7 +48,7 @@ function _equal_Q (a, b) {
 }
 
 
-function _clone (obj) {
+export function _clone (obj) {
     var new_obj;
     switch (_obj_type(obj)) {
     case 'list':
@@ -79,11 +79,11 @@ function _clone (obj) {
 
 
 // Scalars
-function _nil_Q(a) { return a === null ? true : false; }
-function _true_Q(a) { return a === true ? true : false; }
-function _false_Q(a) { return a === false ? true : false; }
-function _number_Q(obj) { return typeof obj === 'number'; }
-function _string_Q(obj) {
+export function _nil_Q(a) { return a === null ? true : false; }
+export function _true_Q(a) { return a === true ? true : false; }
+export function _false_Q(a) { return a === false ? true : false; }
+export function _number_Q(obj) { return typeof obj === 'number'; }
+export function _string_Q(obj) {
     return typeof obj === 'string' && obj[0] !== '\u029e';
 }
 
@@ -95,7 +95,7 @@ function Symbol(name) {
 }
 Symbol.prototype.toString = function() { return this.value; }
 export function _symbol(name) { return new Symbol(name); }
-function _symbol_Q(obj) { return obj instanceof Symbol; }
+export function _symbol_Q(obj) { return obj instanceof Symbol; }
 
 
 // Keywords
@@ -106,13 +106,13 @@ export function _keyword(obj) {
         return "\u029e" + obj;
     }
 }
-function _keyword_Q(obj) {
+export function _keyword_Q(obj) {
     return typeof obj === 'string' && obj[0] === '\u029e';
 }
 
 
 // Functions
-function _function(Eval, Env, ast, env, params) {
+export function _function(Eval, Env, ast, env, params) {
     var fn = function() {
         return Eval(ast, new Env(env, params, arguments));
     };
@@ -122,7 +122,7 @@ function _function(Eval, Env, ast, env, params) {
     fn._ismacro_ = false;
     return fn;
 }
-function _function_Q(obj) { return typeof obj == "function"; }
+export function _function_Q(obj) { return typeof obj == "function"; }
 Function.prototype.clone = function() {
     var that = this;
     var temp = function () { return that.apply(this, arguments); };
@@ -131,13 +131,13 @@ Function.prototype.clone = function() {
     }
     return temp;
 };
-function _fn_Q(obj) { return _function_Q(obj) && !obj._ismacro_; }
-function _macro_Q(obj) { return _function_Q(obj) && !!obj._ismacro_; }
+export function _fn_Q(obj) { return _function_Q(obj) && !obj._ismacro_; }
+export function _macro_Q(obj) { return _function_Q(obj) && !!obj._ismacro_; }
 
 
 // Lists
-function _list() { return Array.prototype.slice.call(arguments, 0); }
-function _list_Q(obj) { return Array.isArray(obj) && !obj.__isvector__; }
+export function _list() { return Array.prototype.slice.call(arguments, 0); }
+export function _list_Q(obj) { return Array.isArray(obj) && !obj.__isvector__; }
 
 
 // Vectors
@@ -146,7 +146,7 @@ export function _vector() {
     v.__isvector__ = true;
     return v;
 }
-function _vector_Q(obj) { return Array.isArray(obj) && !!obj.__isvector__; }
+export function _vector_Q(obj) { return Array.isArray(obj) && !!obj.__isvector__; }
 
 
 
@@ -158,14 +158,14 @@ export function _hash_map() {
     var args = [{}].concat(Array.prototype.slice.call(arguments, 0));
     return _assoc_BANG.apply(null, args);
 }
-function _hash_map_Q(hm) {
+export function _hash_map_Q(hm) {
     return typeof hm === "object" &&
            !Array.isArray(hm) &&
            !(hm === null) &&
            !(hm instanceof Symbol) &&
            !(hm instanceof Atom);
 }
-function _assoc_BANG(hm) {
+export function _assoc_BANG(hm) {
     if (arguments.length % 2 !== 1) {
         throw new Error("Odd number of assoc arguments");
     }
@@ -179,7 +179,7 @@ function _assoc_BANG(hm) {
     }
     return hm;
 }
-function _dissoc_BANG(hm) {
+export function _dissoc_BANG(hm) {
     for (var i=1; i<arguments.length; i++) {
         var ktoken = arguments[i];
         delete hm[ktoken];
@@ -190,5 +190,5 @@ function _dissoc_BANG(hm) {
 
 // Atoms
 function Atom(val) { this.val = val; }
-function _atom(val) { return new Atom(val); }
-function _atom_Q(atm) { return atm instanceof Atom; }
+export function _atom(val) { return new Atom(val); }
+export function _atom_Q(atm) { return atm instanceof Atom; }
