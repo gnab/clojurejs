@@ -5,7 +5,7 @@ import { clojure } from "../src/clojure"
 
 let editorState = EditorState.create({
     doc: `(def hi "hello")
-(str hi)`,
+(str hi " kitty")`,
     extensions: [basicSetup, clojure()]
 })
 
