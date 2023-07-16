@@ -90,13 +90,13 @@ function _EVAL(ast, env) {
     }
 
     var a0 = ast[0], a1 = ast[1], a2 = ast[2], a3 = ast[3];
-    console.log("a0.value:", a0.value)
+    //console.log("a0.value:", a0.value)
     switch (a0.value) {
       case "def":
         var res = EVAL(a2, env);
         return addToEnv(init_env, a1, res);
       case "let*":
-        var let_env = new Env(env);
+        var let_env = newScope(env);
         for (var i = 0; i < a1.length; i += 2) {
           let_env.set(a1[i], EVAL(a1[i + 1], let_env));
         }
@@ -122,8 +122,7 @@ function _EVAL(ast, env) {
         } catch (exc) {
           if (a2 && a2[0].value === "catch*") {
             if (exc instanceof Error) { exc = exc.message; }
-            return "try not implemented"
-            //  return EVAL(a2[2], new Env(env, [a2[1]], [exc]));
+            return EVAL(a2[2], bindExprs(env, [a2[1]], [exc]));
           } else {
             throw exc;
           }

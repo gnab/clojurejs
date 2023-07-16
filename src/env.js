@@ -16,6 +16,7 @@ export function bindExprs(outer, binds, exprs) {
                 env.data[binds[i].value] = exprs[i];
             }
         }
+        env.outer = outer
         return env
 }
 
