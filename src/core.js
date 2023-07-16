@@ -5,6 +5,7 @@ import {_obj_type, _clone, _assoc_BANG, _dissoc_BANG, _list_Q, _vector_Q,
     _hash_map, _atom, _atom_Q} from './types.js'
 import { read_str } from './reader.js';
 import { js_to_mal, resolve_js } from './interop.js';
+import {_pr_str} from './printer.js'
 
 var core = {};
 
@@ -15,13 +16,13 @@ function mal_throw(exc) { throw exc; }
 // String functions
 function pr_str() {
     return Array.prototype.map.call(arguments,function(exp) {
-        return printer._pr_str(exp, true);
+        return _pr_str(exp, true);
     }).join(" ");
 }
 
 function str() {
     return Array.prototype.map.call(arguments,function(exp) {
-        return printer._pr_str(exp, false);
+        return _pr_str(exp, false);
     }).join("");
 }
 

@@ -1,3 +1,5 @@
+import {bindExprs} from './env.js'
+
 export function _obj_type(obj) {
     if      (_symbol_Q(obj)) {   return 'symbol'; }
     else if (_list_Q(obj)) {     return 'list'; }
@@ -110,20 +112,20 @@ export function _keyword_Q(obj) {
     return typeof obj === 'string' && obj[0] === '\u029e';
 }
 
-
 // Functions
-export function _function(Eval, Env, ast, env, params) {
-    class fn {
-        constructor() {
-            return Eval(ast, new Env(env, params, arguments));
-        }
-        static __gen_env__(args) { return new Env(env, params, args); }
+// function bindExprs(outer, binds, exprs)
+
+export function _function(Eval, ast, env, params) {
+    var fn = function() {
+        return Eval(ast, bindExprs(env, params, arguments))
     }
     fn.__meta__ = null;
     fn.__ast__ = ast;
+    fn.__gen_env__ = function(args) { return bindExprs(env, params, arguments) };
     fn._ismacro_ = false;
     return fn;
 }
+
 export function _function_Q(obj) { return typeof obj == "function"; }
 Function.prototype.clone = function() {
     var that = this;
