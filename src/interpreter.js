@@ -1,6 +1,6 @@
 import { read_str } from './reader.js';
 import { _pr_str } from './printer.js';
-import { init_env, addToEnv, getKeyInEnv, newScope } from './env.js';
+import { init_env, addToEnv, getKeyInEnv, newScope, findKeyInEnv, setInEnv } from './env.js';
 import { ns } from './core.js';
 import { _symbol, _list_Q, _symbol_Q, _vector_Q, _hash_map_Q, _function, _clone } from './types.js';
 
@@ -33,24 +33,25 @@ function quasiquote(ast) {
   }
 }
 
-/* function is_macro_call(ast, env) {
+function is_macro_call(ast, env) {
+  //console.log("env:", env)
   return _list_Q(ast) &&
          _symbol_Q(ast[0]) &&
-         env.find(ast[0]) &&
-         env.get(ast[0])._ismacro_;
-} */
+         findKeyInEnv(env, ast[0]) &&
+         getKeyInEnv(env, ast[0])._ismacro_;
+}
 
-/* function macroexpand(ast, env) {
+function macroexpand(ast, env) {
   while (is_macro_call(ast, env)) {
-      var mac = env.get(ast[0]);
+      var mac = getKeyInEnv(env, ast[0]);
       ast = mac.apply(mac, ast.slice(1));
   }
   return ast;
-} */
+}
 
 function eval_ast(ast, env) {
-  console.log("ast:", ast)
-  console.log("env:", env)
+  //console.log("ast:", ast)
+  //console.log("env:", env)
   if (_symbol_Q(ast)) {
     return getKeyInEnv(env, ast);
   } else if (_list_Q(ast)) {
@@ -71,7 +72,10 @@ function eval_ast(ast, env) {
   }
 }
 
+let currentEnv = init_env
+
 function _EVAL(ast, env) {
+  //console.log("env:", env)
   while (true) {
 
     if (!_list_Q(ast)) {
@@ -80,7 +84,7 @@ function _EVAL(ast, env) {
     }
 
     // apply list
-    //  ast = macroexpand(ast, env);
+    ast = macroexpand(ast, env);
     if (!_list_Q(ast)) {
       console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
@@ -94,14 +98,14 @@ function _EVAL(ast, env) {
     switch (a0.value) {
       case "def":
         var res = EVAL(a2, env);
-        return addToEnv(init_env, a1, res);
-      case "let*":
+        return addToEnv(env, a1, res);
+      case "let":
         var let_env = newScope(env);
         for (var i = 0; i < a1.length; i += 2) {
-          let_env.set(a1[i], EVAL(a1[i + 1], let_env));
+         setInEnv(let_env, a1[i], EVAL(a1[i + 1], let_env));
         }
         ast = a2;
-        env = let_env;
+        currentEnv = let_env = let_env;
         break;
       case "quote":
         return a1;
@@ -110,17 +114,17 @@ function _EVAL(ast, env) {
       case "quasiquote":
         ast = quasiquote(a1);
         break;
-      case 'defmacro!':
+      case 'defmacro':
         var func = _clone(EVAL(a2, env));
         func._ismacro_ = true;
         return env.set(a1, func);
       case 'macroexpand':
         return macroexpand(a1, env);
-      case "try*":
+      case "try":
         try {
           return EVAL(a1, env);
         } catch (exc) {
-          if (a2 && a2[0].value === "catch*") {
+          if (a2 && a2[0].value === "catch") {
             if (exc instanceof Error) { exc = exc.message; }
             return EVAL(a2[2], bindExprs(env, [a2[1]], [exc]));
           } else {
@@ -140,7 +144,6 @@ function _EVAL(ast, env) {
         }
         break;
       case "fn":
-        // function _function(Eval, ast, env, params) 
         return _function(EVAL, a2, env, a1);
       default:
         var el = eval_ast(ast, env), f = el[0];
@@ -155,16 +158,18 @@ function _EVAL(ast, env) {
 }
 
 function EVAL(ast, env) {
+  //console.log("env:", env)
   var result = _EVAL(ast, env);
   //console.log("EVAL", result)
   return (typeof result !== "undefined") ? result : null;
 }
 
-export const evalString = function (str, env) { return _pr_str(EVAL(READ(str), env)) };
+export function evalString (str) { 
+  return _pr_str(EVAL(READ(str), currentEnv)) 
+}
 
 // core.js: defined using javascript
 for (var n in ns) { addToEnv(init_env, _symbol(n), ns[n]); }
 
 // core.mal: defined using the language itself
-evalString("(def not (fn (a) (if a false true)))", init_env);
-console.log("init_env:", init_env)
+evalString("(def not (fn (a) (if a false true)))", currentEnv);

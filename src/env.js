@@ -39,6 +39,11 @@ export function getKeyInEnv(env, key) {
     return _env.data[key.value]
 }
 
+export function setInEnv(env, key, value) {
+    env.data[key.value] = value
+    return value
+}
+
 export function newScope(env) {
     return {
         data: {},

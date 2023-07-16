@@ -64,8 +64,8 @@ const updateEditor = (view, text, pos) => {
 }
 
 export function tryEval(s) {
+    console.log("trying to Eval:", evalString(s))
     try {
-        console.log("tryEval:", evalString(s))
         return evalString(s)
       } catch (err) {
         console.log(err)
@@ -83,7 +83,7 @@ export const clearEval = (view) => {
 export const evalAtCursor = (view) => {
     clearEval(view)
     const doc = view.state.doc.toString()
-    console.log("doc:", doc)
+    //console.log("doc:", doc)
     codeBeforeEval = doc
     posBeforeEval = view.state.selection.main.head
     const codeBeforeCursor = codeBeforeEval.slice(0, posBeforeEval)
@@ -99,7 +99,7 @@ export const evalTopLevel = (view) => {
     clearEval(view)
     posAtFormEnd = topLevelNode(view.state).to
     const doc = view.state.doc.toString()
-    console.log("doc:", doc)
+    //console.log("doc:", doc)
     posBeforeEval = view.state.selection.main.head
     codeBeforeEval = doc
     const codeBeforeFormEnd = codeBeforeEval.slice(0, posAtFormEnd)
@@ -113,7 +113,7 @@ export const evalTopLevel = (view) => {
 export const evalCell = (view) => {
     clearEval(view)
     const doc = view.state.doc.toString()
-    console.log("doc:", doc)
+    //console.log("doc:", doc)
     posBeforeEval = view.state.selection.main.head
     evalResult = tryEval(view.state.doc.text.join(" "))
     const codeWithResult = doc + "\n" + " => " + evalResult
