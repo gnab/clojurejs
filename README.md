@@ -10,10 +10,14 @@ I put this together from 2 other Lisp interpreters, the [mal (Make A Lisp)](http
 
 ## Dev
 
+```
 npm install
-
 npm run dev
+```
 
 ## Build
 
+```
 npm run build
+npm run preview
+```
