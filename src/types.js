@@ -1,7 +1,3 @@
-const types = {};
-
-// General functions
-
 export function _obj_type(obj) {
     if      (_symbol_Q(obj)) {   return 'symbol'; }
     else if (_list_Q(obj)) {     return 'list'; }
@@ -90,11 +86,14 @@ export function _string_Q(obj) {
 
 
 // Symbols
-export function Symbol(name) {
-    this.value = name;
-    return this;
+// Symbols
+export class Symbol {
+    constructor(name) {
+        this.value = name;
+        return this;
+    }
+    toString() { return this.value; }
 }
-Symbol.prototype.toString = function() { return this.value; }
 export function _symbol(name) { return new Symbol(name); }
 export function _symbol_Q(obj) { return obj instanceof Symbol; }
 
@@ -114,12 +113,14 @@ export function _keyword_Q(obj) {
 
 // Functions
 export function _function(Eval, Env, ast, env, params) {
-    var fn = function() {
-        return Eval(ast, new Env(env, params, arguments));
-    };
+    class fn {
+        constructor() {
+            return Eval(ast, new Env(env, params, arguments));
+        }
+        static __gen_env__(args) { return new Env(env, params, args); }
+    }
     fn.__meta__ = null;
     fn.__ast__ = ast;
-    fn.__gen_env__ = function(args) { return new Env(env, params, args); };
     fn._ismacro_ = false;
     return fn;
 }
@@ -190,6 +191,9 @@ export function _dissoc_BANG(hm) {
 
 
 // Atoms
-export function Atom(val) { this.val = val; }
+// Atoms
+export class Atom {
+    constructor(val) { this.val = val; }
+}
 export function _atom(val) { return new Atom(val); }
 export function _atom_Q(atm) { return atm instanceof Atom; }

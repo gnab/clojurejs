@@ -33,20 +33,20 @@ function quasiquote(ast) {
   }
 }
 
-function is_macro_call(ast, env) {
+/* function is_macro_call(ast, env) {
   return _list_Q(ast) &&
          _symbol_Q(ast[0]) &&
          env.find(ast[0]) &&
          env.get(ast[0])._ismacro_;
-}
+} */
 
-function macroexpand(ast, env) {
+/* function macroexpand(ast, env) {
   while (is_macro_call(ast, env)) {
       var mac = env.get(ast[0]);
       ast = mac.apply(mac, ast.slice(1));
   }
   return ast;
-}
+} */
 
 function eval_ast(ast, env) {
   console.log("ast:", ast)
@@ -74,14 +74,13 @@ function eval_ast(ast, env) {
 function _EVAL(ast, env) {
   while (true) {
 
-  //printer.println("EVAL:", printer._pr_str(ast, true));
   if (!_list_Q(ast)) {
     console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
   }
 
   // apply list
-  ast = macroexpand(ast, env);
+//  ast = macroexpand(ast, env);
   if (!_list_Q(ast)) {
     console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
@@ -95,7 +94,7 @@ function _EVAL(ast, env) {
   switch (a0.value) {
   case "def":
       var res = EVAL(a2, env);
-      return env.set(a1, res);
+      return addToEnv(repl_env, a1, res);
   case "let*":
       var let_env = new Env(env);
       for (var i=0; i < a1.length; i+=2) {
@@ -123,7 +122,8 @@ function _EVAL(ast, env) {
       } catch (exc) {
           if (a2 && a2[0].value === "catch*") {
               if (exc instanceof Error) { exc = exc.message; }
-              return EVAL(a2[2], new Env(env, [a2[1]], [exc]));
+              return "try not implemented"
+ //             return EVAL(a2[2], new Env(env, [a2[1]], [exc]));
           } else {
               throw exc;
           }
@@ -162,17 +162,36 @@ function EVAL(ast, env) {
 }
 
 // repl
-const repl_env = new Env();
-export const evalString = function(str) { return _pr_str(EVAL(READ(str), repl_env)) };
+
+const repl_env = {
+  data: {},
+  outer: null
+}
+
+function addToEnv(env, key, val) {
+  env.data[key] = val
+  return val
+}
+
+function getKeyInEnv(env, key) {
+
+}
+
+//addToEnv(repl_env, "key", "boo")
+
+export const evalString = function(str, env) { return _pr_str(EVAL(READ(str), env)) };
 
 // core.js: defined using javascript
-for (var n in ns) { repl_env.set(_symbol(n), ns[n]); }
-repl_env.set(_symbol('eval'), function(ast) {
-    return EVAL(ast, repl_env); });
-repl_env.set(_symbol('*ARGV*'), []);
+for (var n in ns) { addToEnv(repl_env, _symbol(n), ns[n]); }
+
+//repl_env.set(_symbol('eval'), function(ast) {
+//    return EVAL(ast, repl_env); });
+//repl_env.set(_symbol('*ARGV*'), []);
 
 // core.mal: defined using the language itself
-evalString("(def not (fn (a) (if a false true)))");
+evalString("(def not (fn (a) (if a false true)))", repl_env);
+console.log("repl_env:", repl_env)
+
 //evalString("(defmacro! cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
 
 //evalString("(defmacro! defn (fn (name args body) (def name (fn args body))))");
