@@ -1,13 +1,16 @@
 # clojurejs
 
-Clojure interpreter in JavaScript
+Clojure interpreter in modern JavaScript (ESM)
 
 Live demo: https://bobbicodes.github.io/clojurejs/
 
 ## Rationale
 
 Eventually this will become a Codemirror extension similar to [lang-clojure-eval](https://github.com/bobbicodes/lang-clojure-eval/) but much lighter weight because it removes the Clojurescript dependency.
-I put it together from 2 other Lisp interpreters, the [mal (Make A Lisp)](https://github.com/kanaka/mal) project, and the upstream clojurejs repo. Neither completely worked for my purpose but they contained enough pieces between them to put this together. 
+
+## Status
+
+Some things work. Others don't.
 
 ## Dev
 
@@ -22,3 +25,11 @@ npm run dev
 npm run build
 npm run preview
 ```
+
+## Credits
+
+Borrows heavily from these two implementations, but simplified and updated to work with modern JavaScript tooling.
+
+[Mal (Make A Lisp)](https://github.com/kanaka/mal)
+
+[clojurejs](https://github.com/gnab/clojurejs)
