@@ -27,7 +27,7 @@ export function addToEnv(env, key, val) {
 
 export function findKeyInEnv(env, key) {
     if (env.data[key]) {
-        return env.data
+        return env
     } else if (env.outer) {
         return findKeyInEnv(env.outer, key)
     }
@@ -35,6 +35,11 @@ export function findKeyInEnv(env, key) {
 }
 
 export function getKeyInEnv(env, key) {
+    console.log("Attempting to get " + key + " in " + env)
+    console.log(findKeyInEnv(env, key))
+    if (!findKeyInEnv(env, key)) {
+        return "Can't find " + key + "in env"
+    }
     let _env = findKeyInEnv(env, key)
     return _env.data[key.value]
 }

@@ -33,8 +33,10 @@ function quasiquote(ast) {
   }
 }
 
-function is_macro_call(ast, env) {
-  //console.log("env:", env)
+/* function is_macro_call(ast, env) {
+  if (!findKeyInEnv(env, ast[0])) {
+    return "Can't find " + ast[0] + "in env"
+  }
   return _list_Q(ast) &&
          _symbol_Q(ast[0]) &&
          findKeyInEnv(env, ast[0]) &&
@@ -47,12 +49,13 @@ function macroexpand(ast, env) {
       ast = mac.apply(mac, ast.slice(1));
   }
   return ast;
-}
+} */
 
 function eval_ast(ast, env) {
   //console.log("ast:", ast)
   //console.log("env:", env)
   if (_symbol_Q(ast)) {
+    console.log(ast, "is a symbol")
     return getKeyInEnv(env, ast);
   } else if (_list_Q(ast)) {
     return ast.map(function (a) { return EVAL(a, env); });
@@ -75,7 +78,7 @@ function eval_ast(ast, env) {
 let currentEnv = init_env
 
 function _EVAL(ast, env) {
-  //console.log("env:", env)
+  console.log("trying to Eval:", ast, "in env:", env)
   while (true) {
 
     if (!_list_Q(ast)) {
@@ -84,7 +87,7 @@ function _EVAL(ast, env) {
     }
 
     // apply list
-    ast = macroexpand(ast, env);
+    //ast = macroexpand(ast, env);
     if (!_list_Q(ast)) {
       console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
@@ -147,6 +150,7 @@ function _EVAL(ast, env) {
         return _function(EVAL, a2, env, a1);
       default:
         var el = eval_ast(ast, env), f = el[0];
+        console.log("el:", el)
         if (f.__ast__) {
           ast = f.__ast__;
           env = f.__gen_env__(el.slice(1));
