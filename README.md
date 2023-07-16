@@ -30,6 +30,5 @@ npm run preview
 
 Borrows heavily from these two implementations, but simplified and updated to work with modern JavaScript tooling.
 
-[Mal (Make A Lisp)](https://github.com/kanaka/mal)
-
-[clojurejs](https://github.com/gnab/clojurejs)
+- [Mal (Make A Lisp)](https://github.com/kanaka/mal)
+- [clojurejs](https://github.com/gnab/clojurejs)

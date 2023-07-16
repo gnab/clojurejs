@@ -24,8 +24,18 @@ export function addToEnv(env, key, val) {
     return val
 }
 
+export function findKeyInEnv(env, key) {
+    if (env.data[key]) {
+        return env.data
+    } else if (env.outer) {
+        return findKeyInEnv(env.outer, key)
+    }
+    return null
+}
+
 export function getKeyInEnv(env, key) {
-    return env.data[key]
+    let _env = findKeyInEnv(env, key)
+    return _env.data[key.value]
 }
 
 export function newScope(env) {
