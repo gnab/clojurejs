@@ -1,7 +1,7 @@
 import * as types from './types.js'
 import { read_str } from './reader.js';
 import { js_to_mal, resolve_js } from './interop.js';
-import {_pr_str} from './printer.js'
+import {_pr_str, _println} from './printer.js'
 
 var core = {};
 
@@ -23,14 +23,14 @@ function str() {
 }
 
 function prn() {
-    printer.println.apply({}, Array.prototype.map.call(arguments,function(exp) {
-        return printer._pr_str(exp, true);
+    _println.apply({}, Array.prototype.map.call(arguments,function(exp) {
+        return _pr_str(exp, true);
     }));
 }
 
 function println() {
-    printer.println.apply({}, Array.prototype.map.call(arguments,function(exp) {
-        return printer._pr_str(exp, false);
+    _println.apply({}, Array.prototype.map.call(arguments,function(exp) {
+        return _pr_str(exp, false);
     }));
 }
 

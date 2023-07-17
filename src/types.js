@@ -130,7 +130,7 @@ export function _function_Q(obj) { return typeof obj == "function"; }
 Function.prototype.clone = function() {
     var that = this;
     var temp = function () { return that.apply(this, arguments); };
-    for( key in this ) {
+    for(const key in this ) {
         temp[key] = this[key];
     }
     return temp;

@@ -32,13 +32,14 @@ export function findKeyInEnv(env, key) {
         return env
     } else if (env.outer) {
         return findKeyInEnv(env.outer, key)
+    } else { 
+        return null
     }
-    return null
 }
 
 export function getKeyInEnv(env, key) {
-    console.log("Attempting to get " + key + " in " + env)
-    console.log(findKeyInEnv(env, key))
+   // console.log("Attempting to get " + key + " in " + env)
+    //console.log(findKeyInEnv(env, key))
     if (!findKeyInEnv(env, key)) {
         return "Error: " + key + " is undefined"
     }

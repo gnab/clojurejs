@@ -4,7 +4,7 @@ import { EditorState } from '@codemirror/state'
 import { clojure } from "../src/clojure"
 
 let editorState = EditorState.create({
-    doc: `(let [x 2] x)`,
+    doc: ``,
     extensions: [basicSetup, clojure()]
 })
 

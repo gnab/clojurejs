@@ -35,7 +35,7 @@ function quasiquote(ast) {
 
 function is_macro_call(ast, env) {
   if (!_env.findKeyInEnv(env, ast[0])) {
-    return "Can't find " + ast[0] + "in env"
+    return "Can't find " + ast[0] + " in env"
   }
   return types._list_Q(ast) &&
          types._symbol_Q(ast[0]) &&
@@ -44,10 +44,12 @@ function is_macro_call(ast, env) {
 }
 
 function macroexpand(ast, env) {
-  while (is_macro_call(ast, env)) {
+  //console.log("macro:", is_macro_call(ast, env))
+  /* while (is_macro_call(ast, env)) {
       var mac = _env.getKeyInEnv(env, ast[0]);
+      console.log("macro:", mac)
       ast = mac.apply(mac, ast.slice(1));
-  }
+  } */
   return ast;
 }
 
@@ -62,32 +64,32 @@ function eval_ast(ast, env) {
     v.__isvector__ = true;
     return v;
   } else if (types._hash_map_Q(ast)) {
-    console.log("Object is a hash-map")
+    //console.log("Object is a hash-map")
     let new_hm = {};
     for (const k in ast) {
-      console.log("k:", k)
+     // console.log("k:", k)
       new_hm[k] = EVAL(ast[k], env);
     }
     return new_hm;
   } else {
-    console.log("AST:", ast)
+    //console.log("AST:", ast)
     return ast;
   }
 }
 
 function _EVAL(ast, env) {
-  console.log("trying to Eval:", ast, "in env:", env)
+  //console.log("trying to Eval:", ast, "in env:", env)
   while (true) {
 
     if (!types._list_Q(ast)) {
-      console.log("_EVAL:", eval_ast(ast, env))
+     // console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
     }
 
     // apply list
-    //ast = macroexpand(ast, env);
+    ast = macroexpand(ast, env);
     if (!types._list_Q(ast)) {
-      console.log("_EVAL:", eval_ast(ast, env))
+      //console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
     }
     if (ast.length === 0) {
@@ -107,7 +109,7 @@ function _EVAL(ast, env) {
         }
         ast = a2;
         env = let_env;
-        console.log("let_env:", let_env)
+       // console.log("let_env:", let_env)
         break;
       case "quote":
         return a1;
@@ -119,7 +121,7 @@ function _EVAL(ast, env) {
       case 'defmacro':
         var func = types._clone(EVAL(a2, env));
         func._ismacro_ = true;
-        return env.set(a1, func);
+        return _env.setInEnv(env, a1, func);
       case 'macroexpand':
         return macroexpand(a1, env);
       case "try":
@@ -149,7 +151,7 @@ function _EVAL(ast, env) {
         return types._function(EVAL, a2, env, a1);
       default:
         var el = eval_ast(ast, env), f = el[0];
-        console.log("el:", el)
+       // console.log("el:", el)
         if (f.__ast__) {
           ast = f.__ast__;
           env = f.__gen_env__(el.slice(1));
@@ -161,7 +163,7 @@ function _EVAL(ast, env) {
 }
 
 function EVAL(ast, env) {
-  //console.log("env:", env)
+  console.log("env:", env)
   var result = _EVAL(ast, env);
   //console.log("EVAL", result)
   return (typeof result !== "undefined") ? result : null;
@@ -176,4 +178,6 @@ for (var n in ns) { _env.addToEnv(_env.init_env, types._symbol(n), ns[n]); }
 
 // core.mal: defined using the language itself
 evalString("(def not (fn (a) (if a false true)))", _env.currentEnv);
-//evalString("(defmacro cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
+evalString("(defmacro cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))", _env.currentEnv);
+//evalString("(def gensym (let [counter (atom 0)] (fn [] (symbol (str \"G__\" (swap! counter inc))))))", _env.currentEnv)
+//evalString("(defmacro or (fn (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let (condvar (gensym)) `(let (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))", _env.currentEnv)
