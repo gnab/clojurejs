@@ -62,8 +62,11 @@ function eval_ast(ast, env) {
     v.__isvector__ = true;
     return v;
   } else if (types._hash_map_Q(ast)) {
-    var new_hm = {};
-    for (k in ast) {
+    console.log("Object is a hash-map")
+    let new_hm = {};
+    console.log("ast[0]:", ast[0])
+    for (const k in ast) {
+      console.log("k:", k)
       new_hm[k] = EVAL(ast[k], env);
     }
     return new_hm;

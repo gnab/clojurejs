@@ -160,8 +160,9 @@ export function _hash_map() {
         throw new Error("Odd number of hash map arguments");
     }
     var args = [{}].concat(Array.prototype.slice.call(arguments, 0));
-    return _assoc_BANG.apply(null, args);
+    return _assoc.apply(null, args);
 }
+
 export function _hash_map_Q(hm) {
     return typeof hm === "object" &&
            !Array.isArray(hm) &&
@@ -169,7 +170,7 @@ export function _hash_map_Q(hm) {
            !(hm instanceof Symbol) &&
            !(hm instanceof Atom);
 }
-export function _assoc_BANG(hm) {
+export function _assoc(hm) {
     if (arguments.length % 2 !== 1) {
         throw new Error("Odd number of assoc arguments");
     }
