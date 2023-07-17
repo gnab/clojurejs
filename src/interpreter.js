@@ -109,6 +109,9 @@ function _EVAL(ast, env) {
       case "def":
         var res = EVAL(a2, env);
         return _env.addToEnv(env, a1, res);
+      case "defn":
+        const fn = types._function(EVAL, a3, env, a2);
+        return _env.addToEnv(env, a1, fn)
       case "let":
         var let_env = _env.newScope(env);
         for (var i = 0; i < a1.length; i += 2) {
