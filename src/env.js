@@ -29,13 +29,17 @@ export function addToEnv(env, key, val) {
 }
 
 export function findKeyInEnv(env, key) {
-    if (env.data[key]) {
+ //   console.log("env:", env)
+ //   console.log("key:", key)
+ //   console.log("key.value in env.data:", key.value in env.data)
+    if (key.value in env.data) {
         return env
-    } else if (env.outer) {
-        return findKeyInEnv(env.outer, key)
-    } else { 
-        return null
     }
+    if (env.outer && key.value in env.outer.data) {
+   //     console.log("key in env.outer:", env.outer)
+        return findKeyInEnv(env.outer, key)
+    }
+    return null
 }
 
 export function getKeyInEnv(env, key) {

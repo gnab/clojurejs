@@ -45,6 +45,11 @@ function is_macro_call(ast, env) {
 
 function macroexpand(ast, env) {
   //console.log("macro:", is_macro_call(ast, env))
+  console.log("ast[0]:", ast[0])
+  
+  if (is_macro_call(ast, env)) {
+    console.log("mac:", _env.getKeyInEnv(env, ast[0]))
+  }
   /* while (is_macro_call(ast, env)) {
       var mac = _env.getKeyInEnv(env, ast[0]);
       console.log("macro:", mac)
@@ -89,7 +94,7 @@ function _EVAL(ast, env) {
     }
 
     // apply list
-    ast = macroexpand(ast, env);
+    //ast = macroexpand(ast, env);
     if (!types._list_Q(ast)) {
       //console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
@@ -165,9 +170,9 @@ function _EVAL(ast, env) {
           // and set the env to the scope in which it was defined.
           // and pass it the arguments
           env = f.__gen_env__(el.slice(1));
-          console.log("ast:", ast)
+       //   console.log("ast:", ast)
         } else {
-          console.log("f.apply:", f.apply(f, el.slice(1)))
+       //   console.log("f.apply:", f.apply(f, el.slice(1)))
           return f.apply(f, el.slice(1));
         }
     }
@@ -190,6 +195,6 @@ for (var n in ns) { _env.addToEnv(_env.init_env, types._symbol(n), ns[n]); }
 
 // core.mal: defined using the language itself
 evalString("(def not (fn (a) (if a false true)))", _env.currentEnv);
-evalString("(defmacro cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))", _env.currentEnv);
+//evalString("(defmacro cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))", _env.currentEnv);
 //evalString("(def gensym (let [counter (atom 0)] (fn [] (symbol (str \"G__\" (swap! counter inc))))))", _env.currentEnv)
 //evalString("(defmacro or (fn (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let (condvar (gensym)) `(let (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))", _env.currentEnv)
