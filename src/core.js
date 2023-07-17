@@ -102,6 +102,7 @@ function nth(lst, idx) {
 }
 
 function first(lst) { return (lst === null) ? null : lst[0]; }
+function last(lst) { return (lst === null) ? null : lst.slice(-1)[0]; }
 
 function rest(lst) { return (lst == null) ? [] : lst.slice(1); }
 
@@ -239,6 +240,7 @@ export const ns = {'type': types._obj_type,
           'vec': vec,
           'nth': nth,
           'first': first,
+          'last': last,
           'rest': rest,
           'empty?': empty_Q,
           'count': count,
