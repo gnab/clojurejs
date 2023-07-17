@@ -1,8 +1,8 @@
 import { read_str } from './reader.js';
 import { _pr_str } from './printer.js';
-import { init_env, currentEnv, addToEnv, getKeyInEnv, newScope, findKeyInEnv, setInEnv } from './env.js';
 import { ns } from './core.js';
 import * as types from './types.js'
+import * as _env from './env.js'
 
 // read
 function READ(str) {
@@ -34,18 +34,18 @@ function quasiquote(ast) {
 }
 
 function is_macro_call(ast, env) {
-  if (!findKeyInEnv(env, ast[0])) {
+  if (!_env.findKeyInEnv(env, ast[0])) {
     return "Can't find " + ast[0] + "in env"
   }
   return types._list_Q(ast) &&
          types._symbol_Q(ast[0]) &&
-         findKeyInEnv(env, ast[0]) &&
-         getKeyInEnv(env, ast[0])._ismacro_;
+         _env.findKeyInEnv(env, ast[0]) &&
+         _env.getKeyInEnv(env, ast[0])._ismacro_;
 }
 
 function macroexpand(ast, env) {
   while (is_macro_call(ast, env)) {
-      var mac = getKeyInEnv(env, ast[0]);
+      var mac = _env.getKeyInEnv(env, ast[0]);
       ast = mac.apply(mac, ast.slice(1));
   }
   return ast;
@@ -54,7 +54,7 @@ function macroexpand(ast, env) {
 function eval_ast(ast, env) {
   if (types._symbol_Q(ast)) {
     //console.log(ast, "is a symbol")
-    return getKeyInEnv(env, ast);
+    return _env.getKeyInEnv(env, ast);
   } else if (types._list_Q(ast)) {
     return ast.map(function (a) { return EVAL(a, env); });
   } else if (types._vector_Q(ast)) {
@@ -97,14 +97,14 @@ function _EVAL(ast, env) {
     switch (a0.value) {
       case "def":
         var res = EVAL(a2, env);
-        return addToEnv(env, a1, res);
+        return _env.addToEnv(env, a1, res);
       case "let":
-        var let_env = newScope(env);
+        var let_env = _env.newScope(env);
         for (var i = 0; i < a1.length; i += 2) {
-         setInEnv(let_env, a1[i], EVAL(a1[i + 1], let_env));
+         _env.setInEnv(let_env, a1[i], EVAL(a1[i + 1], let_env));
         }
         ast = a2;
-        currentEnv = let_env = let_env;
+        env.currentEnv = let_env = let_env;
         break;
       case "quote":
         return a1;
@@ -165,12 +165,12 @@ function EVAL(ast, env) {
 }
 
 export function evalString (str) { 
-  return _pr_str(EVAL(READ(str), currentEnv)) 
+  return _pr_str(EVAL(READ(str), _env.currentEnv)) 
 }
 
 // core.js: defined using javascript
-for (var n in ns) { addToEnv(init_env, types._symbol(n), ns[n]); }
+for (var n in ns) { _env.addToEnv(_env.init_env, types._symbol(n), ns[n]); }
 
 // core.mal: defined using the language itself
-evalString("(def not (fn (a) (if a false true)))", currentEnv);
+evalString("(def not (fn (a) (if a false true)))", _env.currentEnv);
 //evalString("(defmacro cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
