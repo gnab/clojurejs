@@ -60,7 +60,7 @@ function assoc(src_hm) {
 function dissoc(src_hm) {
     var hm = types._clone(src_hm);
     var args = [hm].concat(Array.prototype.slice.call(arguments, 1));
-    return types._dissoc_BANG.apply(null, args);
+    return types._dissoc.apply(null, args);
 }
 
 function get(hm, key) {

@@ -6,13 +6,11 @@ Live demo: https://bobbicodes.github.io/clojurejs/
 
 ## Rationale
 
-Eventually this will become a Codemirror extension similar to [lang-clojure-eval](https://github.com/bobbicodes/lang-clojure-eval/) but much lighter weight because it removes the Clojurescript dependency.
+Eventually this will become a Codemirror extension similar to [lang-clojure-eval](https://github.com/bobbicodes/lang-clojure-eval/) but much lighter weight because it removes the Clojurescript dependency. The goal is very narrow because it's just meant for powering teaching tools, not writing actual software.
 
 ## Status
 
-Some things work. Others don't. Anonymous functions are doing something weird, eg. `((fn [n] (+ n 2)) 1) => "12"`. Instead of adding the numbers, it concatenates them, although regular arithmetic works, even with nested expressions. There are no namespaces, but I don't care (for now) because this is only meant to deal with a single namespace. I'll probably just define `ns` as a no-op. Macros are not yet implemented.
-
-JavaScript interop works. Atoms work. We have map, apply, if, conj, first, rest etc.
+Basically everything works except macros, including JavaScript interop. There are no namespaces, but I don't care (for now) because this is only meant to deal with a single namespace for stuff like solving exercises. I'll probably just define `ns` as a no-op.
 
 ## Dev
 

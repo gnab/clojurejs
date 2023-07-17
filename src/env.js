@@ -15,6 +15,7 @@ export function bindExprs(outer, binds, exprs) {
             env.data[binds[i + 1].value] = Array.prototype.slice.call(exprs, i);
             break;
         } else {
+            console.log("Binding", binds[i].value, "to", exprs[i])
             env.data[binds[i].value] = exprs[i];
         }
     }

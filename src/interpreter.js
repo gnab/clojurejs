@@ -55,7 +55,8 @@ function macroexpand(ast, env) {
 
 function eval_ast(ast, env) {
   if (types._symbol_Q(ast)) {
-    //console.log(ast, "is a symbol")
+    console.log(ast, "is a symbol")
+    console.log("its value is", _env.getKeyInEnv(env, ast))
     return _env.getKeyInEnv(env, ast);
   } else if (types._list_Q(ast)) {
     return ast.map(function (a) { return EVAL(a, env); });
@@ -82,7 +83,8 @@ function _EVAL(ast, env) {
   while (true) {
 
     if (!types._list_Q(ast)) {
-     // console.log("_EVAL:", eval_ast(ast, env))
+      console.log("ast:", ast)
+      console.log("eval_ast:", eval_ast(ast, env))
       return eval_ast(ast, env);
     }
 
@@ -150,12 +152,22 @@ function _EVAL(ast, env) {
       case "fn":
         return types._function(EVAL, a2, env, a1);
       default:
-        var el = eval_ast(ast, env), f = el[0];
+        // function call. fn `f` is the first element of ast
+        const el = eval_ast(ast, env)
+        const f = el[0]
        // console.log("el:", el)
+       // check if function was defined with `fn`
         if (f.__ast__) {
+          // if it is, set the ast to the one passed to it
+          // when it was defined
           ast = f.__ast__;
+         //console.log("f.__ast__", ast)
+          // and set the env to the scope in which it was defined.
+          // and pass it the arguments
           env = f.__gen_env__(el.slice(1));
+          console.log("ast:", ast)
         } else {
+          console.log("f.apply:", f.apply(f, el.slice(1)))
           return f.apply(f, el.slice(1));
         }
     }
@@ -163,7 +175,7 @@ function _EVAL(ast, env) {
 }
 
 function EVAL(ast, env) {
-  console.log("env:", env)
+  console.log("Evaluating", ast, " in", env)
   var result = _EVAL(ast, env);
   //console.log("EVAL", result)
   return (typeof result !== "undefined") ? result : null;

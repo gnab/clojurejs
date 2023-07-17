@@ -21,7 +21,6 @@ export function _obj_type(obj) {
 
 export function _sequential_Q(lst) { return _list_Q(lst) || _vector_Q(lst); }
 
-
 export function _equal_Q (a, b) {
     var ota = _obj_type(a), otb = _obj_type(b);
     if (!(ota === otb || (_sequential_Q(a) && _sequential_Q(b)))) {
@@ -67,7 +66,7 @@ export function _clone (obj) {
         new_obj = obj.clone();
         break;
     default:
-        throw new Error("clone of non-collection: " + _obj_type(obj));
+        throw new Error("Cannot clone a " + _obj_type(obj));
     }
     Object.defineProperty(new_obj, "__meta__", {
         enumerable: false,
@@ -75,7 +74,6 @@ export function _clone (obj) {
     });
     return new_obj;
 }
-
 
 // Scalars
 export function _nil_Q(a) { return a === null ? true : false; }
@@ -86,8 +84,6 @@ export function _string_Q(obj) {
     return typeof obj === 'string' && obj[0] !== '\u029e';
 }
 
-
-// Symbols
 // Symbols
 export class Symbol {
     constructor(name) {
@@ -108,20 +104,24 @@ export function _keyword(obj) {
         return "\u029e" + obj;
     }
 }
+
 export function _keyword_Q(obj) {
     return typeof obj === 'string' && obj[0] === '\u029e';
 }
 
 // Functions
-// function bindExprs(outer, binds, exprs)
 
 export function _function(Eval, ast, env, params) {
-    var fn = function() {
+    console.log("arguments:", arguments)
+    const fn = function() {
         return Eval(ast, bindExprs(env, params, arguments))
     }
     fn.__meta__ = null;
     fn.__ast__ = ast;
-    fn.__gen_env__ = function(args) { return bindExprs(env, params, arguments) };
+    console.log("ast:", ast)
+    fn.__gen_env__ = function(args) {
+        return bindExprs(env, params, args)
+    }
     fn._ismacro_ = false;
     return fn;
 }
@@ -143,7 +143,6 @@ export function _macro_Q(obj) { return _function_Q(obj) && !!obj._ismacro_; }
 export function _list() { return Array.prototype.slice.call(arguments, 0); }
 export function _list_Q(obj) { return Array.isArray(obj) && !obj.__isvector__; }
 
-
 // Vectors
 export function _vector() {
     var v = Array.prototype.slice.call(arguments, 0);
@@ -151,8 +150,6 @@ export function _vector() {
     return v;
 }
 export function _vector_Q(obj) { return Array.isArray(obj) && !!obj.__isvector__; }
-
-
 
 // Hash Maps
 export function _hash_map() {
@@ -184,7 +181,7 @@ export function _assoc(hm) {
     }
     return hm;
 }
-export function _dissoc_BANG(hm) {
+export function _dissoc(hm) {
     for (var i=1; i<arguments.length; i++) {
         var ktoken = arguments[i];
         delete hm[ktoken];
@@ -192,8 +189,6 @@ export function _dissoc_BANG(hm) {
     return hm;
 }
 
-
-// Atoms
 // Atoms
 export class Atom {
     constructor(val) { this.val = val; }
