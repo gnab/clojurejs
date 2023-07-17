@@ -114,7 +114,7 @@ export const evalCell = (view) => {
     const doc = view.state.doc.toString()
     //console.log("doc:", doc)
     posBeforeEval = view.state.selection.main.head
-    evalResult = tryEval(view.state.doc.text.join(" "))
+    evalResult = tryEval("(do " + view.state.doc.text.join(" ") + ")")
     const codeWithResult = doc + "\n" + " => " + evalResult
     updateEditor(view, codeWithResult, posBeforeEval)
     return true
