@@ -64,7 +64,6 @@ function eval_ast(ast, env) {
   } else if (types._hash_map_Q(ast)) {
     console.log("Object is a hash-map")
     let new_hm = {};
-    console.log("ast[0]:", ast[0])
     for (const k in ast) {
       console.log("k:", k)
       new_hm[k] = EVAL(ast[k], env);
@@ -107,7 +106,8 @@ function _EVAL(ast, env) {
          _env.setInEnv(let_env, a1[i], EVAL(a1[i + 1], let_env));
         }
         ast = a2;
-        env.currentEnv = let_env = let_env;
+        env = let_env;
+        console.log("let_env:", let_env)
         break;
       case "quote":
         return a1;
