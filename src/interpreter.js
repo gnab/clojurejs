@@ -2,7 +2,7 @@ import { read_str } from './reader.js';
 import { _pr_str } from './printer.js';
 import { init_env, currentEnv, addToEnv, getKeyInEnv, newScope, findKeyInEnv, setInEnv } from './env.js';
 import { ns } from './core.js';
-import { _symbol, _list_Q, _symbol_Q, _vector_Q, _hash_map_Q, _function, _clone } from './types.js';
+import * as types from './types.js'
 
 // read
 function READ(str) {
@@ -11,23 +11,23 @@ function READ(str) {
 
 // eval
 function qqLoop(acc, elt) {
-  if (_list_Q(elt) && elt.length
-    && _symbol_Q(elt[0]) && elt[0].value == 'splice-unquote') {
-    return [_symbol("concat"), elt[1], acc];
+  if (types._list_Q(elt) && elt.length
+    && types._symbol_Q(elt[0]) && elt[0].value == 'splice-unquote') {
+    return [types._symbol("concat"), elt[1], acc];
   } else {
-    return [_symbol("cons"), quasiquote(elt), acc];
+    return [types._symbol("cons"), quasiquote(elt), acc];
   }
 }
 function quasiquote(ast) {
-  if (_list_Q(ast) && 0 < ast.length
-    && _symbol_Q(ast[0]) && ast[0].value == 'unquote') {
+  if (types._list_Q(ast) && 0 < ast.length
+    && types._symbol_Q(ast[0]) && ast[0].value == 'unquote') {
     return ast[1];
-  } else if (_list_Q(ast)) {
+  } else if (types._list_Q(ast)) {
     return ast.reduceRight(qqLoop, []);
-  } else if (_vector_Q(ast)) {
-    return [_symbol("vec"), ast.reduceRight(qqLoop, [])];
-  } else if (_symbol_Q(ast) || _hash_map_Q(ast)) {
-    return [_symbol("quote"), ast];
+  } else if (types._vector_Q(ast)) {
+    return [types._symbol("vec"), ast.reduceRight(qqLoop, [])];
+  } else if (types._symbol_Q(ast) || types._hash_map_Q(ast)) {
+    return [types._symbol("quote"), ast];
   } else {
     return ast;
   }
@@ -37,8 +37,8 @@ function is_macro_call(ast, env) {
   if (!findKeyInEnv(env, ast[0])) {
     return "Can't find " + ast[0] + "in env"
   }
-  return _list_Q(ast) &&
-         _symbol_Q(ast[0]) &&
+  return types._list_Q(ast) &&
+         types._symbol_Q(ast[0]) &&
          findKeyInEnv(env, ast[0]) &&
          getKeyInEnv(env, ast[0])._ismacro_;
 }
@@ -52,16 +52,16 @@ function macroexpand(ast, env) {
 }
 
 function eval_ast(ast, env) {
-  if (_symbol_Q(ast)) {
+  if (types._symbol_Q(ast)) {
     //console.log(ast, "is a symbol")
     return getKeyInEnv(env, ast);
-  } else if (_list_Q(ast)) {
+  } else if (types._list_Q(ast)) {
     return ast.map(function (a) { return EVAL(a, env); });
-  } else if (_vector_Q(ast)) {
+  } else if (types._vector_Q(ast)) {
     var v = ast.map(function (a) { return EVAL(a, env); });
     v.__isvector__ = true;
     return v;
-  } else if (_hash_map_Q(ast)) {
+  } else if (types._hash_map_Q(ast)) {
     var new_hm = {};
     for (k in ast) {
       new_hm[k] = EVAL(ast[k], env);
@@ -77,14 +77,14 @@ function _EVAL(ast, env) {
   console.log("trying to Eval:", ast, "in env:", env)
   while (true) {
 
-    if (!_list_Q(ast)) {
+    if (!types._list_Q(ast)) {
       console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
     }
 
     // apply list
     //ast = macroexpand(ast, env);
-    if (!_list_Q(ast)) {
+    if (!types._list_Q(ast)) {
       console.log("_EVAL:", eval_ast(ast, env))
       return eval_ast(ast, env);
     }
@@ -114,7 +114,7 @@ function _EVAL(ast, env) {
         ast = quasiquote(a1);
         break;
       case 'defmacro':
-        var func = _clone(EVAL(a2, env));
+        var func = types._clone(EVAL(a2, env));
         func._ismacro_ = true;
         return env.set(a1, func);
       case 'macroexpand':
@@ -143,7 +143,7 @@ function _EVAL(ast, env) {
         }
         break;
       case "fn":
-        return _function(EVAL, a2, env, a1);
+        return types._function(EVAL, a2, env, a1);
       default:
         var el = eval_ast(ast, env), f = el[0];
         console.log("el:", el)
@@ -169,7 +169,7 @@ export function evalString (str) {
 }
 
 // core.js: defined using javascript
-for (var n in ns) { addToEnv(init_env, _symbol(n), ns[n]); }
+for (var n in ns) { addToEnv(init_env, types._symbol(n), ns[n]); }
 
 // core.mal: defined using the language itself
 evalString("(def not (fn (a) (if a false true)))", currentEnv);
