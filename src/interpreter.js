@@ -60,8 +60,9 @@ function macroexpand(ast, env) {
 
 function eval_ast(ast, env) {
   if (types._symbol_Q(ast)) {
-    console.log(ast, "is a symbol")
+    console.log(ast.value, "is a symbol")
     console.log("its value is", _env.getKeyInEnv(env, ast))
+    console.log("in env", env)
     return _env.getKeyInEnv(env, ast);
   } else if (types._list_Q(ast)) {
     return ast.map(function (a) { return EVAL(a, env); });
@@ -88,8 +89,8 @@ function _EVAL(ast, env) {
   while (true) {
 
     if (!types._list_Q(ast)) {
-      console.log("ast:", ast)
-      console.log("eval_ast:", eval_ast(ast, env))
+  //    console.log("ast:", ast)
+   //   console.log("eval_ast:", eval_ast(ast, env))
       return eval_ast(ast, env);
     }
 
@@ -183,7 +184,7 @@ function _EVAL(ast, env) {
 }
 
 function EVAL(ast, env) {
-  console.log("Evaluating", ast, " in", env)
+  //console.log("Evaluating", ast, " in", env)
   var result = _EVAL(ast, env);
   //console.log("EVAL", result)
   return (typeof result !== "undefined") ? result : null;

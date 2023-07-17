@@ -112,13 +112,13 @@ export function _keyword_Q(obj) {
 // Functions
 
 export function _function(Eval, ast, env, params) {
-    console.log("arguments:", arguments)
+ //   console.log("arguments:", arguments)
     const fn = function() {
         return Eval(ast, bindExprs(env, params, arguments))
     }
     fn.__meta__ = null;
     fn.__ast__ = ast;
-    console.log("ast:", ast)
+ //   console.log("ast:", ast)
     fn.__gen_env__ = function(args) {
         return bindExprs(env, params, args)
     }

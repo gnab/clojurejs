@@ -4,7 +4,10 @@ import { EditorState } from '@codemirror/state'
 import { clojure } from "../src/clojure"
 
 let editorState = EditorState.create({
-    doc: ``,
+    doc: `(defn inc-range [n]
+  (map inc (range n)))
+      
+(inc-range 5)`,
     extensions: [basicSetup, clojure()]
 })
 

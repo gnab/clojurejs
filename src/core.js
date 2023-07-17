@@ -1,5 +1,6 @@
 import * as types from './types.js'
 import { read_str } from './reader.js';
+import { currentEnv } from './env.js';
 import { js_to_mal, resolve_js } from './interop.js';
 import {_pr_str, _println} from './printer.js'
 
@@ -17,6 +18,13 @@ function pr_str() {
 }
 
 function str() {
+    console.log(arguments)
+    return Array.prototype.map.call(arguments,function(exp) {
+        return _pr_str(exp, false);
+    }).join("");
+}
+
+function env() {
     return Array.prototype.map.call(arguments,function(exp) {
         return _pr_str(exp, false);
     }).join("");
@@ -99,6 +107,17 @@ function vec(lst) {
 function nth(lst, idx) {
     if (idx < lst.length) { return lst[idx]; }
     else                  { throw new Error("nth: index out of range"); }
+}
+
+function range(start, end) {
+    if (!end) {
+        return range(0, start)
+    }
+    var ans = [];
+    for (let i = start; i <= end; i++) {
+        ans.push(i);
+    }
+    return ans;
 }
 
 function first(lst) { return (lst === null) ? null : lst[0]; }
@@ -188,7 +207,6 @@ function js_method_call(object_method_str) {
     return js_to_mal(res);
 }
 
-// types.ns is namespace of type functions
 export const ns = {'type': types._obj_type,
           '=': types._equal_Q,
           'throw': mal_throw,
@@ -246,6 +264,7 @@ export const ns = {'type': types._obj_type,
           'count': count,
           'apply': apply,
           'map': map,
+          'range': range,
 
           'conj': conj,
           'seq': seq,
