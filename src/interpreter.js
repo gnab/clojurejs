@@ -1,6 +1,6 @@
 import { read_str } from './reader.js';
 import { _pr_str } from './printer.js';
-import { init_env, addToEnv, getKeyInEnv, newScope, findKeyInEnv, setInEnv } from './env.js';
+import { init_env, currentEnv, addToEnv, getKeyInEnv, newScope, findKeyInEnv, setInEnv } from './env.js';
 import { ns } from './core.js';
 import { _symbol, _list_Q, _symbol_Q, _vector_Q, _hash_map_Q, _function, _clone } from './types.js';
 
@@ -33,7 +33,7 @@ function quasiquote(ast) {
   }
 }
 
-/* function is_macro_call(ast, env) {
+function is_macro_call(ast, env) {
   if (!findKeyInEnv(env, ast[0])) {
     return "Can't find " + ast[0] + "in env"
   }
@@ -49,13 +49,11 @@ function macroexpand(ast, env) {
       ast = mac.apply(mac, ast.slice(1));
   }
   return ast;
-} */
+}
 
 function eval_ast(ast, env) {
-  //console.log("ast:", ast)
-  //console.log("env:", env)
   if (_symbol_Q(ast)) {
-    console.log(ast, "is a symbol")
+    //console.log(ast, "is a symbol")
     return getKeyInEnv(env, ast);
   } else if (_list_Q(ast)) {
     return ast.map(function (a) { return EVAL(a, env); });
@@ -74,8 +72,6 @@ function eval_ast(ast, env) {
     return ast;
   }
 }
-
-let currentEnv = init_env
 
 function _EVAL(ast, env) {
   console.log("trying to Eval:", ast, "in env:", env)
@@ -177,3 +173,4 @@ for (var n in ns) { addToEnv(init_env, _symbol(n), ns[n]); }
 
 // core.mal: defined using the language itself
 evalString("(def not (fn (a) (if a false true)))", currentEnv);
+//evalString("(defmacro cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");

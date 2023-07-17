@@ -1,8 +1,4 @@
-import {_obj_type, _clone, _assoc_BANG, _dissoc_BANG, _list_Q, _vector_Q,
-    _string_Q, _sequential_Q, _hash_map_Q, _function_Q, _equal_Q,
-    _nil_Q, _true_Q, _false_Q, _number_Q, _symbol, _symbol_Q,
-    _keyword, _keyword_Q, _fn_Q, _macro_Q, _list, _vector,
-    _hash_map, _atom, _atom_Q} from './types.js'
+import * as types from './types.js'
 import { read_str } from './reader.js';
 import { js_to_mal, resolve_js } from './interop.js';
 import {_pr_str} from './printer.js'
@@ -56,15 +52,15 @@ function time_ms() { return new Date().getTime(); }
 
 // Hash Map functions
 function assoc(src_hm) {
-    var hm = _clone(src_hm);
+    var hm = types._clone(src_hm);
     var args = [hm].concat(Array.prototype.slice.call(arguments, 1));
-    return _assoc_BANG.apply(null, args);
+    return types._assoc_BANG.apply(null, args);
 }
 
 function dissoc(src_hm) {
-    var hm = _clone(src_hm);
+    var hm = types._clone(src_hm);
     var args = [hm].concat(Array.prototype.slice.call(arguments, 1));
-    return _dissoc_BANG.apply(null, args);
+    return types._dissoc_BANG.apply(null, args);
 }
 
 function get(hm, key) {
@@ -91,7 +87,7 @@ function concat(lst) {
     return lst.concat.apply(lst, Array.prototype.slice.call(arguments, 1));
 }
 function vec(lst) {
-    if (_list_Q(lst)) {
+    if (types._list_Q(lst)) {
         var v = Array.prototype.slice.call(lst, 0);
         v.__isvector__ = true;
         return v;
@@ -118,7 +114,7 @@ function count(s) {
 }
 
 function conj(lst) {
-    if (_list_Q(lst)) {
+    if (types._list_Q(lst)) {
         return Array.prototype.slice.call(arguments, 1).reverse().concat(lst);
     } else {
         var v = lst.concat(Array.prototype.slice.call(arguments, 1));
@@ -128,11 +124,11 @@ function conj(lst) {
 }
 
 function seq(obj) {
-    if (_list_Q(obj)) {
+    if (types._list_Q(obj)) {
         return obj.length > 0 ? obj : null;
-    } else if (_vector_Q(obj)) {
+    } else if (types._vector_Q(obj)) {
         return obj.length > 0 ? Array.prototype.slice.call(obj, 0): null;
-    } else if (_string_Q(obj)) {
+    } else if (types._string_Q(obj)) {
         return obj.length > 0 ? obj.split('') : null;
     } else if (obj === null) {
         return null;
@@ -154,17 +150,17 @@ function map(f, lst) {
 
 // Metadata functions
 function with_meta(obj, m) {
-    var new_obj = _clone(obj);
+    var new_obj = types._clone(obj);
     new_obj.__meta__ = m;
     return new_obj;
 }
 
 function meta(obj) {
     // TODO: support symbols and atoms
-    if ((!_sequential_Q(obj)) &&
-        (!(_hash_map_Q(obj))) &&
-        (!(_function_Q(obj)))) {
-        throw new Error("attempt to get metadata from: " + _obj_type(obj));
+    if ((!types._sequential_Q(obj)) &&
+        (!(types._hash_map_Q(obj))) &&
+        (!(types._function_Q(obj)))) {
+        throw new Error("attempt to get metadata from: " + types._obj_type(obj));
     }
     return obj.__meta__;
 }
@@ -192,20 +188,20 @@ function js_method_call(object_method_str) {
 }
 
 // types.ns is namespace of type functions
-export const ns = {'type': _obj_type,
-          '=': _equal_Q,
+export const ns = {'type': types._obj_type,
+          '=': types._equal_Q,
           'throw': mal_throw,
-          'nil?': _nil_Q,
-          'true?': _true_Q,
-          'false?': _false_Q,
-          'number?': _number_Q,
-          'string?': _string_Q,
-          'symbol': _symbol,
-          'symbol?': _symbol_Q,
-          'keyword': _keyword,
-          'keyword?': _keyword_Q,
-          'fn?': _fn_Q,
-          'macro?': _macro_Q,
+          'nil?': types._nil_Q,
+          'true?': types._true_Q,
+          'false?': types._false_Q,
+          'number?': types._number_Q,
+          'string?': types._string_Q,
+          'symbol': types._symbol,
+          'symbol?': types._symbol_Q,
+          'keyword': types._keyword,
+          'keyword?': types._keyword_Q,
+          'fn?': types._fn_Q,
+          'macro?': types._macro_Q,
 
           'pr-str': pr_str,
           'str': str,
@@ -224,12 +220,12 @@ export const ns = {'type': _obj_type,
           'inc'  : function(a){return a+1;},
           "time-ms": time_ms,
 
-          'list': _list,
-          'list?': _list_Q,
-          'vector': _vector,
-          'vector?': _vector_Q,
-          'hash-map': _hash_map,
-          'map?': _hash_map_Q,
+          'list': types._list,
+          'list?': types._list_Q,
+          'vector': types._vector,
+          'vector?': types._vector_Q,
+          'hash-map': types._hash_map,
+          'map?': types._hash_map_Q,
           'assoc': assoc,
           'dissoc': dissoc,
           'get': get,
@@ -237,7 +233,7 @@ export const ns = {'type': _obj_type,
           'keys': keys,
           'vals': vals,
 
-          'sequential?': _sequential_Q,
+          'sequential?': types._sequential_Q,
           'cons': cons,
           'concat': concat,
           'vec': vec,
@@ -254,8 +250,8 @@ export const ns = {'type': _obj_type,
 
           'with-meta': with_meta,
           'meta': meta,
-          'atom': _atom,
-          'atom?': _atom_Q,
+          'atom': types._atom,
+          'atom?': types._atom_Q,
           "deref": deref,
           "reset!": reset_BANG,
           "swap!": swap_BANG,

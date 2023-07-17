@@ -3,21 +3,23 @@ export const init_env = {
     outer: null
 }
 
+export let currentEnv = init_env
+
 export function bindExprs(outer, binds, exprs) {
     // Returns a new Env with symbols in binds bound to
     // corresponding values in exprs
     let env = init_env
-        for (var i=0; i<binds.length;i++) {
-            if (binds[i].value === "&") {
-                // variable length arguments
-                env.data[binds[i+1].value] = Array.prototype.slice.call(exprs, i);
-                break;
-            } else {
-                env.data[binds[i].value] = exprs[i];
-            }
+    for (var i = 0; i < binds.length; i++) {
+        if (binds[i].value === "&") {
+            // variable length arguments
+            env.data[binds[i + 1].value] = Array.prototype.slice.call(exprs, i);
+            break;
+        } else {
+            env.data[binds[i].value] = exprs[i];
         }
-        env.outer = outer
-        return env
+    }
+    env.outer = outer
+    return env
 }
 
 export function addToEnv(env, key, val) {
@@ -38,7 +40,7 @@ export function getKeyInEnv(env, key) {
     console.log("Attempting to get " + key + " in " + env)
     console.log(findKeyInEnv(env, key))
     if (!findKeyInEnv(env, key)) {
-        return "Can't find " + key + "in env"
+        return "Error: " + key + " is undefined"
     }
     let _env = findKeyInEnv(env, key)
     return _env.data[key.value]
