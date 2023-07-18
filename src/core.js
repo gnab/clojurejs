@@ -24,29 +24,31 @@ function pr_str() {
 }
 
 function str() {
-    console.log(arguments)
     return Array.prototype.map.call(arguments,function(exp) {
         return _pr_str(exp, false);
     }).join("");
 }
 
-function env() {
+function print() {
     return Array.prototype.map.call(arguments,function(exp) {
         return _pr_str(exp, false);
     }).join("");
 }
+
 
 function prn() {
-    _println.apply({}, Array.prototype.map.call(arguments,function(exp) {
-        return _pr_str(exp, true);
-    }));
+    return Array.prototype.map.call(arguments,function(exp) {
+        return _pr_str(exp, false);
+    }).join("");
 }
 
+
 function println() {
-    _println.apply({}, Array.prototype.map.call(arguments,function(exp) {
+    return Array.prototype.map.call(arguments,function(exp) {
         return _pr_str(exp, false);
-    }));
+    }).join("");
 }
+
 
 function slurp(f) {
     var req = new XMLHttpRequest();
@@ -230,6 +232,7 @@ export const ns = {'type': types._obj_type,
           'macro?': types._macro_Q,
 
           'pr-str': pr_str,
+          'print': print,
           'str': str,
           'prn': prn,
           'println': println,
