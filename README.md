@@ -8,9 +8,15 @@ Live demo: https://bobbicodes.github.io/clojurejs/
 
 Eventually this will become a Codemirror extension similar to [lang-clojure-eval](https://github.com/bobbicodes/lang-clojure-eval/) but much lighter weight because it removes the Clojurescript dependency. The goal is very narrow because it's just meant for powering teaching tools, not writing actual software.
 
-## Status
+## Features
 
-Basically everything works except macros, including JavaScript interop. There are no namespaces, but I don't care (for now) because this is only meant to deal with a single namespace for stuff like solving exercises. I'll probably just define `ns` as a no-op.
+No macros yet, but some common Clojure macros are being implemented as special forms.
+
+- ✅ Tail call optimization
+- ✅ Immutable collections and swappable atoms like Clojure
+- ✅ JavaScript interop
+- ✅ Thread-first (`->`)
+- [ ] Thread-last (`->>`)
 
 ## Dev
 

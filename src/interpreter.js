@@ -18,6 +18,7 @@ function qqLoop(acc, elt) {
     return [types._symbol("cons"), quasiquote(elt), acc];
   }
 }
+
 function quasiquote(ast) {
   if (types._list_Q(ast) && 0 < ast.length
     && types._symbol_Q(ast[0]) && ast[0].value == 'unquote') {
@@ -60,9 +61,8 @@ function macroexpand(ast, env) {
 
 function eval_ast(ast, env) {
   if (types._symbol_Q(ast)) {
-    console.log(ast.value, "is a symbol")
-    console.log("its value is", _env.getKeyInEnv(env, ast))
-    console.log("in env", env)
+    console.log(ast.value, "resolved", "in env:", env)
+  //  console.log("its value is", _env.getKeyInEnv(env, ast))
     return _env.getKeyInEnv(env, ast);
   } else if (types._list_Q(ast)) {
     return ast.map(function (a) { return EVAL(a, env); });
@@ -83,6 +83,33 @@ function eval_ast(ast, env) {
     return ast;
   }
 }
+
+// Let's make a function that will just thread one form into the other 
+// It threads the *form* *into* the *expr*.
+// `expr` must be a list.
+// Example:
+// `expr` -> (add-language "Clojure")
+// `form` -> (new-list)
+// output: (add-language (new-list) "Clojure")
+// But it needs to handle cases where the expr is a list of 1.
+function threadFirst(form, expr) {
+  let l = expr.slice(0, 1)
+  let r = expr.slice(1)[0]
+  l.push(form)
+  if (r) {
+    l.push(r)
+  }
+  return l
+}
+
+//console.log(threadFirst(["new-list"], ["add-language", "Clojure"]))
+//console.log(threadFirst(["add-language", ["new-list"], "Clojure"], ["add-language", "Lisp"]))
+console.log(threadFirst(
+  ["add-language", ["add-language", ["new-list"], "Clojure"], "Lisp"],
+                          ["remove-language"]))
+console.log(threadFirst(
+  ["remove-language", ["add-language", ["add-language", ["new-list"], "Clojure"], "Lisp"]],
+  ["add-language", "Java"]))
 
 function _EVAL(ast, env) {
   //console.log("trying to Eval:", ast, "in env:", env)
@@ -105,7 +132,7 @@ function _EVAL(ast, env) {
     }
 
     var a0 = ast[0], a1 = ast[1], a2 = ast[2], a3 = ast[3];
-    //console.log("a0.value:", a0.value)
+    // Special forms:
     switch (a0.value) {
       case "def":
         var res = EVAL(a2, env);
@@ -122,6 +149,34 @@ function _EVAL(ast, env) {
         env = let_env;
        // console.log("let_env:", let_env)
         break;
+      case "->":
+        // First element in the AST, a0, is the actual thread-first operator (`->`)
+        // so a1 is the first form to be threaded into the following exprs
+        const first = a1
+        // Make a new list of just the forms to be *threaded*,
+        // i.e. the ones that have forms threaded *into* them.
+        // so we slice it at 2
+        const rest = ast.slice(2)
+        let lists = []
+        // make each form to be threaded into a list
+        // if it is not a list already
+        for (let i = 0; i < rest.length; i++) {
+          if (types._list_Q(rest[i])) {
+            lists.push(rest[i])
+          } else {
+            lists.push([rest[i]])
+          }
+        }
+        console.log("lists:", lists)
+        let threaded = first
+        console.log(first)
+        for (let i = 0; i < lists.length; i++) {
+          threaded = threadFirst(threaded, lists[i])
+          console.log(threaded)
+        }
+       return EVAL(threaded, env)
+      case "->>":
+        return ast;
       case "quote":
         return a1;
       case "quasiquoteexpand":
@@ -161,22 +216,27 @@ function _EVAL(ast, env) {
       case "fn":
         return types._function(EVAL, a2, env, a1);
       default:
-        // function call. fn `f` is the first element of ast
+        // not a special form, so a regular function call. 
+        // first we use `eval_ast()` to resolve the individual
+        // elements and get another ast
         const el = eval_ast(ast, env)
+        // fn `f` is the first element of this new ast
         const f = el[0]
-       // console.log("el:", el)
-       // check if function was defined with `fn`
+        // console.log("el:", el)
+        // check if function was defined with `fn`
         if (f.__ast__) {
-          // if it is, set the ast to the one passed to it
-          // when it was defined
-          ast = f.__ast__;
-         //console.log("f.__ast__", ast)
-          // and set the env to the scope in which it was defined.
-          // and pass it the arguments
+        // if it is, set the ast to the one passed to it
+        // when it was defined
+           ast = f.__ast__;
+        //console.log("f.__ast__", ast)
+        // and set the env to the scope in which it was defined.
+        // and pass it the arguments
           env = f.__gen_env__(el.slice(1));
-       //   console.log("ast:", ast)
+        // notice there's no return value. Instead it loops again
+        // with newly defined ast and env
+        // console.log("ast:", ast)
         } else {
-       //   console.log("f.apply:", f.apply(f, el.slice(1)))
+       //  console.log("f.apply:", f.apply(f, el.slice(1)))
           return f.apply(f, el.slice(1));
         }
     }

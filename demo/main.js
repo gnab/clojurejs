@@ -4,12 +4,30 @@ import { EditorState } from '@codemirror/state'
 import { clojure } from "../src/clojure"
 
 let editorState = EditorState.create({
-    doc: `(ns clojurejs)
+    doc: `(defn new-list [] '())
 
-(defn inc-range [n]
-  (map inc (range n)))
+(defn add-language [lang-list lang] 
+  (conj lang-list lang))
 
-(inc-range 5)`,
+(defn first-language [lang-list] 
+  (first lang-list))
+
+(defn remove-language [lang-list] 
+  (rest lang-list))
+
+(defn count-languages [lang-list]
+  (count lang-list))
+
+(defn learning-list []
+  (-> (new-list)
+      (add-language "Clojure")
+      (add-language "Lisp")
+      remove-language
+      (add-language "Java")
+      (add-language "JavaScript")
+      count-languages))
+
+(learning-list)`,
     extensions: [basicSetup, clojure()]
 })
 
