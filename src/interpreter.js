@@ -102,6 +102,13 @@ function threadFirst(form, expr) {
   return l
 }
 
+// thread-last is much simpler, we just append form to expr
+function threadLast(form, expr) {
+  let l = expr
+  l.push(form)
+  return l
+}
+
 //console.log(threadFirst(["new-list"], ["add-language", "Clojure"]))
 //console.log(threadFirst(["add-language", ["new-list"], "Clojure"], ["add-language", "Lisp"]))
 console.log(threadFirst(
@@ -160,6 +167,8 @@ function _EVAL(ast, env) {
         let lists = []
         // make each form to be threaded into a list
         // if it is not a list already
+        // remember, we actually mean arrays here in the AST
+        // which the printer then prints as lists.
         for (let i = 0; i < rest.length; i++) {
           if (types._list_Q(rest[i])) {
             lists.push(rest[i])
@@ -176,7 +185,21 @@ function _EVAL(ast, env) {
         }
        return EVAL(threaded, env)
       case "->>":
-        return ast;
+        const first2 = a1
+        const rest2 = ast.slice(2)
+        let lists2 = []
+        for (let i = 0; i < rest2.length; i++) {
+          if (types._list_Q(rest2[i])) {
+            lists2.push(rest2[i])
+          } else {
+            lists2.push([rest2[i]])
+          }
+        }
+        let threaded2 = first2
+        for (let i = 0; i < lists2.length; i++) {
+          threaded2 = threadLast(threaded2, lists2[i])
+        }
+       return EVAL(threaded2, env)
       case "quote":
         return a1;
       case "quasiquoteexpand":

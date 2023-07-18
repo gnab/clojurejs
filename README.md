@@ -16,7 +16,7 @@ No macros yet, but some common Clojure macros are being implemented as special f
 - ✅ Immutable collections and swappable atoms like Clojure
 - ✅ JavaScript interop
 - ✅ Thread-first (`->`)
-- [ ] Thread-last (`->>`)
+- ✅ Thread-last (`->>`)
 
 ## Dev
 
