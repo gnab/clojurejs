@@ -77,8 +77,17 @@ function assoc(src) {
     return types._assoc.apply(null, args);
 }
 
-function dissoc(src_hm) {
-    var hm = types._clone(src_hm);
+function dissoc(src) {
+    if (types._vector_Q(src)) {
+        let vec = types._clone(src);
+        const index = arguments[1]
+        const head = vec.slice(0, index)
+        const tail = vec.slice(index+1)
+        vec = head.concat(tail)
+        vec.__isvector__ = true;
+        return vec
+    }
+    var hm = types._clone(src);
     var args = [hm].concat(Array.prototype.slice.call(arguments, 1));
     return types._dissoc.apply(null, args);
 }
