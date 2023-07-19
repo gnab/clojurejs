@@ -1,1 +1,1 @@
-["^ ","~$cond",["^ ","~:row",1,"~:col",1,"~:macro",true,"~:name","^0","~:ns","~$user","~:top-ns",null],"~:filename","C:\\Users\\porko\\Documents\\GitHub\\clojurejs\\scratch.clj"]
+["^ ","~$walk",["^ ","~:row",1,"~:col",1,"~:fixed-arities",["~#set",[3]],"~:name","^0","~:ns","~$user","~:top-ns",null,"~:type","~:fn"],"~$postwalk",["^ ","^1",12,"^2",1,"^3",["^4",[2]],"^5","^;","^6","^7","^8",null,"^9","^:"],"~$postwalk-demo",["^ ","^1",15,"^2",1,"^3",["^4",[1]],"^5","^<","^6","^7","^8",null,"^9","^:"],"~:filename","C:\\Users\\porko\\Documents\\GitHub\\clojurejs\\scratch.clj"]

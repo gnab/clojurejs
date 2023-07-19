@@ -130,13 +130,21 @@ function walk(inner, outer, form) {
     v.__isvector__ = true;
     return v
   }
+  if (form.__mapEntry__) {
+    const k = inner(form[0])
+    const v = inner(form[1])
+    let mapEntry = [k, v]
+    mapEntry.__mapEntry__ = true
+    return outer(mapEntry)
+  }
   if (types._hash_map_Q(form)) {
+    return outer(seq(form).map(inner))
   }
 }
 
-console.log(seq({a: 1, b: 2}))
+//console.log(seq({a: 1, b: 2})[0].__mapEntry__)
 //console.log(walk(x => x, x => x, [1, 2, [3, 4]]))
-//console.log(walk(x => x, x => x, {a: 1, b: 2}))
+console.log(walk(x => x, x => x, {a: 1, b: 2}))
 //console.log(Object.entries({a: 1, b: 2}))
 
 function _EVAL(ast, env) {
