@@ -128,18 +128,6 @@ function _EVAL(ast, env) {
       return ast;
     }
 
-     // We want to support Clojure's `recur`.
-    // Since we have real, implicit TCO,
-    // we can simply walk the AST and replace any
-    // `recur` with the function name.
-    let swapRecur = types.postwalk(x => {
-      if (x.value == types._symbol("recur")) {
-         return types._symbol(ast[1].value)
-      } else {
-          return x
-      }
-      return x
-  }, ast)
     var a0 = ast[0], a1 = ast[1], a2 = ast[2], a3 = ast[3];
     // Special forms:
     switch (a0.value) {
@@ -151,9 +139,9 @@ function _EVAL(ast, env) {
         _env.addToEnv(env, a1, res);
         return "#'" + namespace + "/" + a1
       case "defn":
-        const fn = types._function(EVAL, swapRecur[3], env, swapRecur[2]);
-        _env.addToEnv(env, swapRecur[1], fn)
-        return "#'" + namespace + "/" + swapRecur[1]
+        const fn = types._function(EVAL, a3, env, a2);
+        _env.addToEnv(env, a1, fn)
+        return "#'" + namespace + "/" + a1
       case "let":
         var let_env = _env.newScope(env);
         for (var i = 0; i < a1.length; i += 2) {

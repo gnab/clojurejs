@@ -147,11 +147,23 @@ export function postwalk(f, form) {
 // Functions
 
 export function _function(Eval, ast, env, params) {
+     // We want to support Clojure's `recur`.
+    // Since we have real, implicit TCO,
+    // we can simply walk the AST and replace any
+    // `recur` with the function name.
     const fn = function () {
-        return Eval(ast, bindExprs(env, params, arguments))
+        return Eval(swapRecur, bindExprs(env, params, arguments))
     }
+    const swapRecur = postwalk(x => {
+        if (x.value == _symbol("recur")) {
+           return fn
+        } else {
+            return x
+        }
+        return x
+    }, ast)
     fn.__meta__ = null;
-    fn.__ast__ = ast;
+    fn.__ast__ = swapRecur;
     //   console.log("ast:", ast)
     fn.__gen_env__ = function (args) {
         return bindExprs(env, params, args)
