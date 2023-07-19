@@ -6,14 +6,17 @@ import { clojure } from "../src/clojure"
 let editorState = EditorState.create({
     doc: `(ns bird-watcher
   (:require [clojure.string :as string]))
-  
+        
 (def birds-in-busy-day 5)
-  
-(def last-week
-  [0 2 5 3 7 8 4])
-  
-(defn today [birds]
-  (last birds))`,
+        
+(def last-week [0 2 5 3 7 8 4])
+        
+(defn today [birds] (last birds))
+      
+(defn inc-bird [birds]
+  (conj (pop birds) (inc (last birds))))
+      
+(inc-bird last-week)`,
     extensions: [basicSetup, clojure()]
 })
 

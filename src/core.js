@@ -144,6 +144,16 @@ function conj(lst) {
     }
 }
 
+function pop(lst) {
+    if (types._list_Q(lst)) {
+        return lst.slice(1);
+    } else {
+        var v = lst.slice(0, -1);
+        v.__isvector__ = true;
+        return v;
+    }
+}
+
 function seq(obj) {
     if (types._list_Q(obj)) {
         return obj.length > 0 ? obj : null;
@@ -270,6 +280,7 @@ export const ns = {'type': types._obj_type,
 
           'conj': conj,
           'seq': seq,
+          'pop': pop,
 
           'with-meta': with_meta,
           'meta': meta,
