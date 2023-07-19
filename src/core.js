@@ -216,7 +216,6 @@ function meta(obj) {
     return obj.__meta__;
 }
 
-
 // Atom functions
 function deref(atm) { return atm.val; }
 function reset_BANG(atm, val) { return atm.val = val; }

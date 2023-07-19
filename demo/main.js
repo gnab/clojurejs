@@ -16,7 +16,7 @@ let editorState = EditorState.create({
 (defn inc-bird [birds]
   (conj (pop birds) (inc (last birds))))
       
-(assoc last-week 2 0)`,
+(#(assoc % %2 %3) last-week 2 0)`,
     extensions: [basicSetup, clojure()]
 })
 

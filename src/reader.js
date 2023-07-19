@@ -94,6 +94,8 @@ function read_form(reader) {
               return [_symbol('with-meta'), read_form(reader), meta];
     case '@': reader.next();
               return [_symbol('deref'), read_form(reader)];
+    case '#': reader.next();
+              return [_symbol('dispatch'), read_form(reader)];
 
     // list
     case ')': throw new Error("unexpected ')'");

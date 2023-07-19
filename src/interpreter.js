@@ -207,6 +207,13 @@ function _EVAL(ast, env) {
           threaded2 = threadLast(threaded2, lists2[i])
         }
        return EVAL(threaded2, env)
+      case "dispatch":
+        let fun = [types._symbol('fn')]
+        const args = ast.toString().match(/%\d?/g).map(types._symbol)
+        let body = ast.slice(1)[0]
+        fun.push(args)
+        fun.push(body)
+        return types._function(EVAL, body, env, args);
       case "quote":
         return a1;
       case "quasiquoteexpand":
