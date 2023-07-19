@@ -1,1 +1,4 @@
 node_modules
+scratch.clj
+.calva/output-window/output.calva-repl
+*.cache/

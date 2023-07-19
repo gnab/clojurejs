@@ -1,6 +1,6 @@
 import { read_str } from './reader.js';
 import { _pr_str } from './printer.js';
-import { ns } from './core.js';
+import { ns, seq } from './core.js';
 import * as types from './types.js'
 import * as _env from './env.js'
 
@@ -120,8 +120,27 @@ console.log(threadFirst(
   ["remove-language", ["add-language", ["add-language", ["new-list"], "Clojure"], "Lisp"]],
   ["add-language", "Java"]))
 
+// Ported from clojure.walk: https://github.com/clojure/clojure/blob/master/src/clj/clojure/walk.clj
+function walk(inner, outer, form) {
+  if (types._list_Q(form)) {
+    return outer(form.map(inner))
+  }
+  if (types._vector_Q(form)) {
+    let v = outer(form.map(inner))
+    v.__isvector__ = true;
+    return v
+  }
+  if (types._hash_map_Q(form)) {
+  }
+}
+
+console.log(seq({a: 1, b: 2}))
+//console.log(walk(x => x, x => x, [1, 2, [3, 4]]))
+//console.log(walk(x => x, x => x, {a: 1, b: 2}))
+//console.log(Object.entries({a: 1, b: 2}))
+
 function _EVAL(ast, env) {
-  //console.log("trying to Eval:", ast, "in env:", env)
+  //console.log("Walking AST:", walk(x => x*2, x => x, ast))
   while (true) {
 
     if (!types._list_Q(ast)) {

@@ -2,7 +2,7 @@ import * as types from './types.js'
 import { read_str } from './reader.js';
 import { currentEnv } from './env.js';
 import { js_to_mal, resolve_js } from './interop.js';
-import {_pr_str, _println} from './printer.js'
+import { _pr_str, _println } from './printer.js'
 
 var core = {};
 
@@ -11,33 +11,33 @@ function mal_throw(exc) { throw exc; }
 
 // String functions
 function pr_str() {
-    return Array.prototype.map.call(arguments,function(exp) {
+    return Array.prototype.map.call(arguments, function (exp) {
         return _pr_str(exp, true);
     }).join(" ");
 }
 
 function str() {
-    return Array.prototype.map.call(arguments,function(exp) {
+    return Array.prototype.map.call(arguments, function (exp) {
         return _pr_str(exp, false);
     }).join("");
 }
 
 function print() {
-    return Array.prototype.map.call(arguments,function(exp) {
+    return Array.prototype.map.call(arguments, function (exp) {
         return _pr_str(exp, false);
     }).join("");
 }
 
 
 function prn() {
-    return Array.prototype.map.call(arguments,function(exp) {
+    return Array.prototype.map.call(arguments, function (exp) {
         return _pr_str(exp, false);
     }).join("");
 }
 
 
 function println() {
-    return Array.prototype.map.call(arguments,function(exp) {
+    return Array.prototype.map.call(arguments, function (exp) {
         return _pr_str(exp, false);
     }).join("");
 }
@@ -45,13 +45,13 @@ function println() {
 
 function slurp(f) {
     var req = new XMLHttpRequest();
-        req.open("GET", f, false);
-        req.send();
-        if (req.status == 200) {
-            return req.responseText;
-        } else {
-            throw new Error("Failed to slurp file: " + f);
-        }
+    req.open("GET", f, false);
+    req.send();
+    if (req.status == 200) {
+        return req.responseText;
+    } else {
+        throw new Error("Failed to slurp file: " + f);
+    }
 }
 
 
@@ -66,7 +66,7 @@ function assoc(src) {
         const newVal = arguments[2]
         let vec = types._clone(src);
         const head = vec.slice(0, index)
-        const tail = vec.slice(index+1)
+        const tail = vec.slice(index + 1)
         head.push(newVal)
         vec = head.concat(tail)
         vec.__isvector__ = true;
@@ -82,7 +82,7 @@ function dissoc(src) {
         let vec = types._clone(src);
         const index = arguments[1]
         const head = vec.slice(0, index)
-        const tail = vec.slice(index+1)
+        const tail = vec.slice(index + 1)
         vec = head.concat(tail)
         vec.__isvector__ = true;
         return vec
@@ -105,7 +105,7 @@ function contains_Q(hm, key) {
 }
 
 function keys(hm) { return Object.keys(hm); }
-function vals(hm) { return Object.keys(hm).map(function(k) { return hm[k]; }); }
+function vals(hm) { return Object.keys(hm).map(function (k) { return hm[k]; }); }
 
 
 // Sequence functions
@@ -127,7 +127,7 @@ function vec(lst) {
 
 function nth(lst, idx) {
     if (idx < lst.length) { return lst[idx]; }
-    else                  { throw new Error("nth: index out of range"); }
+    else { throw new Error("nth: index out of range"); }
 }
 
 function range(start, end) {
@@ -150,8 +150,8 @@ function empty_Q(lst) { return lst.length === 0; }
 
 function count(s) {
     if (Array.isArray(s)) { return s.length; }
-    else if (s === null)  { return 0; }
-    else                  { return Object.keys(s).length; }
+    else if (s === null) { return 0; }
+    else { return Object.keys(s).length; }
 }
 
 function conj(lst) {
@@ -174,13 +174,20 @@ function pop(lst) {
     }
 }
 
-function seq(obj) {
+export function seq(obj) {
     if (types._list_Q(obj)) {
         return obj.length > 0 ? obj : null;
     } else if (types._vector_Q(obj)) {
-        return obj.length > 0 ? Array.prototype.slice.call(obj, 0): null;
+        return obj.length > 0 ? Array.prototype.slice.call(obj, 0) : null;
     } else if (types._string_Q(obj)) {
         return obj.length > 0 ? obj.split('') : null;
+    } else if (types._hash_map_Q(obj)) {
+        let kvs = []
+        Object.entries(obj).forEach(kv => {
+            kv.__mapEntry__ = true;
+            kvs.push(kv)
+        })
+        return kvs
     } else if (obj === null) {
         return null;
     } else {
@@ -191,11 +198,11 @@ function seq(obj) {
 
 function apply(f) {
     var args = Array.prototype.slice.call(arguments, 1);
-    return f.apply(f, args.slice(0, args.length-1).concat(args[args.length-1]));
+    return f.apply(f, args.slice(0, args.length - 1).concat(args[args.length - 1]));
 }
 
 function map(f, lst) {
-    return lst.map(function(el){ return f(el); });
+    return lst.map(function (el) { return f(el); });
 }
 
 
@@ -237,78 +244,79 @@ function js_method_call(object_method_str) {
     return js_to_mal(res);
 }
 
-export const ns = {'type': types._obj_type,
-          '=': types._equal_Q,
-          'throw': mal_throw,
-          'nil?': types._nil_Q,
-          'true?': types._true_Q,
-          'false?': types._false_Q,
-          'number?': types._number_Q,
-          'string?': types._string_Q,
-          'symbol': types._symbol,
-          'symbol?': types._symbol_Q,
-          'keyword': types._keyword,
-          'keyword?': types._keyword_Q,
-          'fn?': types._fn_Q,
-          'macro?': types._macro_Q,
+export const ns = {
+    'type': types._obj_type,
+    '=': types._equal_Q,
+    'throw': mal_throw,
+    'nil?': types._nil_Q,
+    'true?': types._true_Q,
+    'false?': types._false_Q,
+    'number?': types._number_Q,
+    'string?': types._string_Q,
+    'symbol': types._symbol,
+    'symbol?': types._symbol_Q,
+    'keyword': types._keyword,
+    'keyword?': types._keyword_Q,
+    'fn?': types._fn_Q,
+    'macro?': types._macro_Q,
 
-          'pr-str': pr_str,
-          'print': print,
-          'str': str,
-          'prn': prn,
-          'println': println,
-          'read-string': read_str,
-          'slurp': slurp,
-          '<'  : function(a,b){return a<b;},
-          '<=' : function(a,b){return a<=b;},
-          '>'  : function(a,b){return a>b;},
-          '>=' : function(a,b){return a>=b;},
-          '+'  : function(a,b){return a+b;},
-          '-'  : function(a,b){return a-b;},
-          '*'  : function(a,b){return a*b;},
-          '/'  : function(a,b){return a/b;},
-          'inc'  : function(a){return a+1;},
-          "time-ms": time_ms,
+    'pr-str': pr_str,
+    'print': print,
+    'str': str,
+    'prn': prn,
+    'println': println,
+    'read-string': read_str,
+    'slurp': slurp,
+    '<': function (a, b) { return a < b; },
+    '<=': function (a, b) { return a <= b; },
+    '>': function (a, b) { return a > b; },
+    '>=': function (a, b) { return a >= b; },
+    '+': function (a, b) { return a + b; },
+    '-': function (a, b) { return a - b; },
+    '*': function (a, b) { return a * b; },
+    '/': function (a, b) { return a / b; },
+    'inc': function (a) { return a + 1; },
+    "time-ms": time_ms,
 
-          'list': types._list,
-          'list?': types._list_Q,
-          'vector': types._vector,
-          'vector?': types._vector_Q,
-          'hash-map': types._hash_map,
-          'map?': types._hash_map_Q,
-          'assoc': assoc,
-          'dissoc': dissoc,
-          'get': get,
-          'contains?': contains_Q,
-          'keys': keys,
-          'vals': vals,
+    'list': types._list,
+    'list?': types._list_Q,
+    'vector': types._vector,
+    'vector?': types._vector_Q,
+    'hash-map': types._hash_map,
+    'map?': types._hash_map_Q,
+    'assoc': assoc,
+    'dissoc': dissoc,
+    'get': get,
+    'contains?': contains_Q,
+    'keys': keys,
+    'vals': vals,
 
-          'sequential?': types._sequential_Q,
-          'cons': cons,
-          'concat': concat,
-          'vec': vec,
-          'nth': nth,
-          'first': first,
-          'last': last,
-          'rest': rest,
-          'empty?': empty_Q,
-          'count': count,
-          'apply': apply,
-          'map': map,
-          'range': range,
+    'sequential?': types._sequential_Q,
+    'cons': cons,
+    'concat': concat,
+    'vec': vec,
+    'nth': nth,
+    'first': first,
+    'last': last,
+    'rest': rest,
+    'empty?': empty_Q,
+    'count': count,
+    'apply': apply,
+    'map': map,
+    'range': range,
 
-          'conj': conj,
-          'seq': seq,
-          'pop': pop,
+    'conj': conj,
+    'seq': seq,
+    'pop': pop,
 
-          'with-meta': with_meta,
-          'meta': meta,
-          'atom': types._atom,
-          'atom?': types._atom_Q,
-          "deref": deref,
-          "reset!": reset_BANG,
-          "swap!": swap_BANG,
+    'with-meta': with_meta,
+    'meta': meta,
+    'atom': types._atom,
+    'atom?': types._atom_Q,
+    "deref": deref,
+    "reset!": reset_BANG,
+    "swap!": swap_BANG,
 
-          'js-eval': js_eval,
-          '.': js_method_call
+    'js-eval': js_eval,
+    '.': js_method_call
 };
