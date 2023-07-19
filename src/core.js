@@ -66,7 +66,7 @@ function assoc(src) {
         const newVal = arguments[2]
         let vec = types._clone(src);
         const head = vec.slice(0, index)
-        const tail = vec.slice(index)
+        const tail = vec.slice(index+1)
         head.push(newVal)
         vec = head.concat(tail)
         vec.__isvector__ = true;
