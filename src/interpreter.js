@@ -109,6 +109,8 @@ function threadLast(form, expr) {
   return l
 }
 
+let namespace = "user"
+
 //console.log(threadFirst(["new-list"], ["add-language", "Clojure"]))
 //console.log(threadFirst(["add-language", ["new-list"], "Clojure"], ["add-language", "Lisp"]))
 console.log(threadFirst(
@@ -142,13 +144,15 @@ function _EVAL(ast, env) {
     // Special forms:
     switch (a0.value) {
       case "ns":
+        namespace = a1
         return null
       case "def":
         var res = EVAL(a2, env);
         return _env.addToEnv(env, a1, res);
       case "defn":
         const fn = types._function(EVAL, a3, env, a2);
-        return _env.addToEnv(env, a1, fn)
+        _env.addToEnv(env, a1, fn)
+        return "#'" + namespace + "/" + a1
       case "let":
         var let_env = _env.newScope(env);
         for (var i = 0; i < a1.length; i += 2) {
