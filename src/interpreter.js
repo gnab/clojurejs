@@ -148,7 +148,8 @@ function _EVAL(ast, env) {
         return null
       case "def":
         var res = EVAL(a2, env);
-        return _env.addToEnv(env, a1, res);
+        _env.addToEnv(env, a1, res);
+        return "#'" + namespace + "/" + a1
       case "defn":
         const fn = types._function(EVAL, a3, env, a2);
         _env.addToEnv(env, a1, fn)
