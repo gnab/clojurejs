@@ -17,6 +17,7 @@ No macros yet, but some common Clojure macros are being implemented as special f
 - ✅ JavaScript interop
 - ✅ Thread-first (`->`)
 - ✅ Thread-last (`->>`)
+- ✅ Anonymous function shorthand eg. `#(inc %)`
 
 ## Dev
 
