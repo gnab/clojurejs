@@ -60,8 +60,19 @@ function time_ms() { return new Date().getTime(); }
 
 
 // Hash Map functions
-function assoc(src_hm) {
-    var hm = types._clone(src_hm);
+function assoc(src) {
+    if (types._vector_Q(src)) {
+        const index = arguments[1]
+        const newVal = arguments[2]
+        let vec = types._clone(src);
+        const head = vec.slice(0, index)
+        const tail = vec.slice(index)
+        head.push(newVal)
+        vec = head.concat(tail)
+        vec.__isvector__ = true;
+        return vec
+    }
+    var hm = types._clone(src);
     var args = [hm].concat(Array.prototype.slice.call(arguments, 1));
     return types._assoc.apply(null, args);
 }
