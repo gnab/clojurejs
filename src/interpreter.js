@@ -111,61 +111,6 @@ function threadLast(form, expr) {
 
 let namespace = "user"
 
-//console.log(threadFirst(["new-list"], ["add-language", "Clojure"]))
-//console.log(threadFirst(["add-language", ["new-list"], "Clojure"], ["add-language", "Lisp"]))
-console.log(threadFirst(
-  ["add-language", ["add-language", ["new-list"], "Clojure"], "Lisp"],
-  ["remove-language"]))
-console.log(threadFirst(
-  ["remove-language", ["add-language", ["add-language", ["new-list"], "Clojure"], "Lisp"]],
-  ["add-language", "Java"]))
-
-// Ported from clojure.walk: https://github.com/clojure/clojure/blob/master/src/clj/clojure/walk.clj
-function walk(inner, outer, form) {
-  if (types._list_Q(form)) {
-    return outer(form.map(inner))
-  } else if (types._vector_Q(form)) {
-    let v = outer(form.map(inner))
-    v.__isvector__ = true;
-    return v
-  } else if (form.__mapEntry__) {
-    const k = inner(form[0])
-    const v = inner(form[1])
-    let mapEntry = [k, v]
-    mapEntry.__mapEntry__ = true
-    return outer(mapEntry)
-  } else if (types._hash_map_Q(form)) {
-    const entries = seq(form).map(inner)
-    let newMap = {}
-    entries.forEach(mapEntry => {
-      newMap[mapEntry[0]] = mapEntry[1]
-    });
-    return outer(newMap)
-  } else {
-    return outer(form)
-  }
-}
-
-//console.log(seq({a: 1, b: 2})[0].__mapEntry__)
-//console.log(walk(x => x, x => x, [1, 2, [3, 4]]))
-//console.log(walk(x => x, x => x, { a: 1, b: 2 }))
-//console.log(Object.entries({a: 1, b: 2}))
-
-// (defn postwalk [f form]
-//   (walk #(postwalk f %) f form))
-
-function postwalk(f, form) {
-  return walk(x => postwalk(f, x), f, form)
-}
-
-// (defn postwalk-demo [form]
-//   (postwalk (fn [x] (print "Walked: ") (prn x) x) form))
-
-/* console.log(postwalk(x => {
-  console.log("Walked:", x)
-  return x
-}, [1, 2, { a: 3, b: 4}])) */
-
 function _EVAL(ast, env) {
   //console.log("Walking AST:", walk(x => x*2, x => x, ast))
   while (true) {
@@ -178,14 +123,23 @@ function _EVAL(ast, env) {
 
     // apply list
     //ast = macroexpand(ast, env);
-    if (!types._list_Q(ast)) {
-      //console.log("_EVAL:", eval_ast(ast, env))
-      return eval_ast(ast, env);
-    }
+
     if (ast.length === 0) {
       return ast;
     }
 
+     // We want to support Clojure's `recur`.
+    // Since we have real, implicit TCO,
+    // we can simply walk the AST and replace any
+    // `recur` with the function name.
+    let swapRecur = types.postwalk(x => {
+      if (x.value == types._symbol("recur")) {
+         return types._symbol(ast[1].value)
+      } else {
+          return x
+      }
+      return x
+  }, ast)
     var a0 = ast[0], a1 = ast[1], a2 = ast[2], a3 = ast[3];
     // Special forms:
     switch (a0.value) {
@@ -197,9 +151,9 @@ function _EVAL(ast, env) {
         _env.addToEnv(env, a1, res);
         return "#'" + namespace + "/" + a1
       case "defn":
-        const fn = types._function(EVAL, a3, env, a2);
-        _env.addToEnv(env, a1, fn)
-        return "#'" + namespace + "/" + a1
+        const fn = types._function(EVAL, swapRecur[3], env, swapRecur[2]);
+        _env.addToEnv(env, swapRecur[1], fn)
+        return "#'" + namespace + "/" + swapRecur[1]
       case "let":
         var let_env = _env.newScope(env);
         for (var i = 0; i < a1.length; i += 2) {
