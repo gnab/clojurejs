@@ -39,15 +39,15 @@ function is_macro_call(ast, env) {
     return "Can't find " + ast[0] + " in env"
   }
   return types._list_Q(ast) &&
-         types._symbol_Q(ast[0]) &&
-         _env.findKeyInEnv(env, ast[0]) &&
-         _env.getKeyInEnv(env, ast[0])._ismacro_;
+    types._symbol_Q(ast[0]) &&
+    _env.findKeyInEnv(env, ast[0]) &&
+    _env.getKeyInEnv(env, ast[0])._ismacro_;
 }
 
 function macroexpand(ast, env) {
   //console.log("macro:", is_macro_call(ast, env))
   console.log("ast[0]:", ast[0])
-  
+
   if (is_macro_call(ast, env)) {
     console.log("mac:", _env.getKeyInEnv(env, ast[0]))
   }
@@ -62,7 +62,7 @@ function macroexpand(ast, env) {
 function eval_ast(ast, env) {
   if (types._symbol_Q(ast)) {
     console.log(ast.value, "resolved", "in env:", env)
-  //  console.log("its value is", _env.getKeyInEnv(env, ast))
+    //  console.log("its value is", _env.getKeyInEnv(env, ast))
     return _env.getKeyInEnv(env, ast);
   } else if (types._list_Q(ast)) {
     return ast.map(function (a) { return EVAL(a, env); });
@@ -74,7 +74,7 @@ function eval_ast(ast, env) {
     //console.log("Object is a hash-map")
     let new_hm = {};
     for (const k in ast) {
-     // console.log("k:", k)
+      // console.log("k:", k)
       new_hm[k] = EVAL(ast[k], env);
     }
     return new_hm;
@@ -115,7 +115,7 @@ let namespace = "user"
 //console.log(threadFirst(["add-language", ["new-list"], "Clojure"], ["add-language", "Lisp"]))
 console.log(threadFirst(
   ["add-language", ["add-language", ["new-list"], "Clojure"], "Lisp"],
-                          ["remove-language"]))
+  ["remove-language"]))
 console.log(threadFirst(
   ["remove-language", ["add-language", ["add-language", ["new-list"], "Clojure"], "Lisp"]],
   ["add-language", "Java"]))
@@ -124,36 +124,55 @@ console.log(threadFirst(
 function walk(inner, outer, form) {
   if (types._list_Q(form)) {
     return outer(form.map(inner))
-  }
-  if (types._vector_Q(form)) {
+  } else if (types._vector_Q(form)) {
     let v = outer(form.map(inner))
     v.__isvector__ = true;
     return v
-  }
-  if (form.__mapEntry__) {
+  } else if (form.__mapEntry__) {
     const k = inner(form[0])
     const v = inner(form[1])
     let mapEntry = [k, v]
     mapEntry.__mapEntry__ = true
     return outer(mapEntry)
-  }
-  if (types._hash_map_Q(form)) {
-    return outer(seq(form).map(inner))
+  } else if (types._hash_map_Q(form)) {
+    const entries = seq(form).map(inner)
+    let newMap = {}
+    entries.forEach(mapEntry => {
+      newMap[mapEntry[0]] = mapEntry[1]
+    });
+    return outer(newMap)
+  } else {
+    return outer(form)
   }
 }
 
 //console.log(seq({a: 1, b: 2})[0].__mapEntry__)
 //console.log(walk(x => x, x => x, [1, 2, [3, 4]]))
-console.log(walk(x => x, x => x, {a: 1, b: 2}))
+//console.log(walk(x => x, x => x, { a: 1, b: 2 }))
 //console.log(Object.entries({a: 1, b: 2}))
+
+// (defn postwalk [f form]
+//   (walk #(postwalk f %) f form))
+
+function postwalk(f, form) {
+  return walk(x => postwalk(f, x), f, form)
+}
+
+// (defn postwalk-demo [form]
+//   (postwalk (fn [x] (print "Walked: ") (prn x) x) form))
+
+/* console.log(postwalk(x => {
+  console.log("Walked:", x)
+  return x
+}, [1, 2, { a: 3, b: 4}])) */
 
 function _EVAL(ast, env) {
   //console.log("Walking AST:", walk(x => x*2, x => x, ast))
   while (true) {
 
     if (!types._list_Q(ast)) {
-  //    console.log("ast:", ast)
-   //   console.log("eval_ast:", eval_ast(ast, env))
+      //    console.log("ast:", ast)
+      //   console.log("eval_ast:", eval_ast(ast, env))
       return eval_ast(ast, env);
     }
 
@@ -184,11 +203,11 @@ function _EVAL(ast, env) {
       case "let":
         var let_env = _env.newScope(env);
         for (var i = 0; i < a1.length; i += 2) {
-         _env.setInEnv(let_env, a1[i], EVAL(a1[i + 1], let_env));
+          _env.setInEnv(let_env, a1[i], EVAL(a1[i + 1], let_env));
         }
         ast = a2;
         env = let_env;
-       // console.log("let_env:", let_env)
+        // console.log("let_env:", let_env)
         break;
       case "->":
         // First element in the AST, a0, is the actual thread-first operator (`->`)
@@ -217,7 +236,7 @@ function _EVAL(ast, env) {
           threaded = threadFirst(threaded, lists[i])
           console.log(threaded)
         }
-       return EVAL(threaded, env)
+        return EVAL(threaded, env)
       case "->>":
         const first2 = a1
         const rest2 = ast.slice(2)
@@ -233,7 +252,7 @@ function _EVAL(ast, env) {
         for (let i = 0; i < lists2.length; i++) {
           threaded2 = threadLast(threaded2, lists2[i])
         }
-       return EVAL(threaded2, env)
+        return EVAL(threaded2, env)
       case "dispatch":
         let fun = [types._symbol('fn')]
         const args = ast.toString().match(/%\d?/g).map(types._symbol)
@@ -289,18 +308,18 @@ function _EVAL(ast, env) {
         // console.log("el:", el)
         // check if function was defined with `fn`
         if (f.__ast__) {
-        // if it is, set the ast to the one passed to it
-        // when it was defined
-           ast = f.__ast__;
-        //console.log("f.__ast__", ast)
-        // and set the env to the scope in which it was defined.
-        // and pass it the arguments
+          // if it is, set the ast to the one passed to it
+          // when it was defined
+          ast = f.__ast__;
+          //console.log("f.__ast__", ast)
+          // and set the env to the scope in which it was defined.
+          // and pass it the arguments
           env = f.__gen_env__(el.slice(1));
-        // notice there's no return value. Instead it loops again
-        // with newly defined ast and env
-        // console.log("ast:", ast)
+          // notice there's no return value. Instead it loops again
+          // with newly defined ast and env
+          // console.log("ast:", ast)
         } else {
-       //  console.log("f.apply:", f.apply(f, el.slice(1)))
+          //  console.log("f.apply:", f.apply(f, el.slice(1)))
           return f.apply(f, el.slice(1));
         }
     }
@@ -314,8 +333,8 @@ function EVAL(ast, env) {
   return (typeof result !== "undefined") ? result : null;
 }
 
-export function evalString (str) { 
-  return _pr_str(EVAL(READ(str), _env.currentEnv)) 
+export function evalString(str) {
+  return _pr_str(EVAL(READ(str), _env.currentEnv))
 }
 
 // core.js: defined using javascript
