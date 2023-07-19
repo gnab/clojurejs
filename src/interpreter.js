@@ -141,6 +141,8 @@ function _EVAL(ast, env) {
     var a0 = ast[0], a1 = ast[1], a2 = ast[2], a3 = ast[3];
     // Special forms:
     switch (a0.value) {
+      case "ns":
+        return null
       case "def":
         var res = EVAL(a2, env);
         return _env.addToEnv(env, a1, res);

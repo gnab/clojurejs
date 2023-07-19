@@ -9,13 +9,6 @@ var core = {};
 // Errors/Exceptions
 function mal_throw(exc) { throw exc; }
 
-function ns_noop() {
-    // pass-through function because we don't have namespaces
-    // but we don't want an error if called
-    return null
-}
-
-
 // String functions
 function pr_str() {
     return Array.prototype.map.call(arguments,function(exp) {
@@ -218,7 +211,6 @@ function js_method_call(object_method_str) {
 export const ns = {'type': types._obj_type,
           '=': types._equal_Q,
           'throw': mal_throw,
-          'ns': ns_noop,
           'nil?': types._nil_Q,
           'true?': types._true_Q,
           'false?': types._false_Q,

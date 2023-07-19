@@ -4,16 +4,8 @@ import { EditorState } from '@codemirror/state'
 import { clojure } from "../src/clojure"
 
 let editorState = EditorState.create({
-    doc: `(defn learning-list []
-  (-> '()
-      (conj "Clojure")
-      (conj "Lisp")
-       rest
-      (conj "Java")
-      (conj "JavaScript")
-       count))
-      
-(learning-list)`,
+    doc: `(ns bird-watcher
+  (:require [clojure.string :as string]))`,
     extensions: [basicSetup, clojure()]
 })
 
