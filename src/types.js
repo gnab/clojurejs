@@ -1,4 +1,4 @@
-import { bindExprs } from './env.js'
+import { bindExprs, newScope } from './env.js'
 
 export function _obj_type(obj) {
     if (_symbol_Q(obj)) { return 'symbol'; }
@@ -151,8 +151,9 @@ export function _function(Eval, ast, env, params) {
     // Since we have real, implicit TCO,
     // we can simply walk the AST and replace any
     // `recur` with the function name.
+    let env2 = newScope(env)
     const fn = function () {
-        return Eval(swapRecur, bindExprs(env, params, arguments))
+        return Eval(swapRecur, bindExprs(env2, params, arguments))
     }
     const swapRecur = postwalk(x => {
         if (x.value == _symbol("recur")) {
@@ -166,7 +167,7 @@ export function _function(Eval, ast, env, params) {
     fn.__ast__ = swapRecur;
     //   console.log("ast:", ast)
     fn.__gen_env__ = function (args) {
-        return bindExprs(env, params, args)
+        return bindExprs(env2, params, args)
     }
     fn._ismacro_ = false;
     return fn;
