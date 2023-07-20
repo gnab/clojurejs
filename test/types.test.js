@@ -1,7 +1,7 @@
-import { expect, test } from 'vitest'
-import { ns } from '../src/core'
-import { _symbol } from '../src/types'
-import { init_env, setInEnv, getKeyInEnv } from '../src/env'
+import {expect, test} from 'vitest'
+import {ns } from '../src/core'
+import {_symbol} from '../src/types'
+import {init_env, setInEnv, getKeyInEnv, newScope, findKeyInEnv} from '../src/env'
 
 const hash_map = ns['hash-map']
 const hash_map_Q = ns['map?']
@@ -66,12 +66,25 @@ test('equal? function', () => {
     expect(equal_Q(L10, L6)).toBe(false)
 })
 
+let env1 = init_env
+
 test('ENV (1 level)', () => {
-    let env1 = init_env
     expect(setInEnv(env1, 'a','val_a')).toBe('val_a')
     expect(setInEnv(env1, 'b','val_b')).toBe('val_b')
     expect(setInEnv(env1, '=','val_eq')).toBe('val_eq')
     expect(getKeyInEnv(env1, 'a')).toBe('val_a')
     expect(getKeyInEnv(env1, 'b')).toBe('val_b')
     expect(getKeyInEnv(env1, '=')).toBe('val_eq')
+})
+
+test('ENV (2 levels)', () => {
+    let env2 = newScope(env1)
+    expect(setInEnv(env2, 'b','val_b2')).toBe('val_b2')
+    expect(setInEnv(env2, 'c','val_c')).toBe('val_c')
+    expect(findKeyInEnv(env2, 'a')).toBe(env1)
+    expect(findKeyInEnv(env2, 'b')).toBe(env2)
+    expect(findKeyInEnv(env2, 'c')).toBe(env2)
+    expect(getKeyInEnv(env2, 'a')).toBe('val_a')
+    expect(getKeyInEnv(env2, 'b')).toBe('val_b2')
+    expect(getKeyInEnv(env2, 'c')).toBe('val_c')
 })
