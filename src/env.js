@@ -32,10 +32,10 @@ export function findKeyInEnv(env, key) {
  //   console.log("env:", env)
  //   console.log("key:", key)
  //   console.log("key.value in env.data:", key.value in env.data)
-    if (key.value in env.data) {
+    if (key in env.data) {
         return env
     }
-    if (env.outer && key.value in env.outer.data) {
+    if (env.outer && key in env.outer.data) {
    //     console.log("key in env.outer:", env.outer)
         return findKeyInEnv(env.outer, key)
     }
@@ -49,11 +49,11 @@ export function getKeyInEnv(env, key) {
         return "Error: " + key + " is undefined"
     }
     let _env = findKeyInEnv(env, key)
-    return _env.data[key.value]
+    return _env.data[key]
 }
 
 export function setInEnv(env, key, value) {
-    env.data[key.value] = value
+    env.data[key] = value
     return value
 }
 

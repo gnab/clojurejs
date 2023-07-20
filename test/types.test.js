@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest'
 import { ns } from '../src/core'
 import { _symbol } from '../src/types'
+import { init_env, setInEnv, getKeyInEnv } from '../src/env'
 
 const hash_map = ns['hash-map']
 const hash_map_Q = ns['map?']
@@ -45,22 +46,32 @@ test('hash_maps', () => {
 })
 
 test('equal? function', () => {
-   expect(equal_Q(2,2)).toBe(true)
-   expect(equal_Q(2,3)).toBe(false)
-   expect(equal_Q("abc","abc")).toBe(true)
-   expect(equal_Q("abc","abz")).toBe(false)
-   expect(equal_Q("zbc","abc")).toBe(false)
-   expect(equal_Q(symbol("abc"),symbol("abc"))).toBe(true)
-   expect(equal_Q(symbol("abc"),symbol("abz"))).toBe(false)
-   expect(equal_Q(symbol("zbc"),symbol("abc"))).toBe(false)
-   const L6 = [1, 2, 3];
-   const L7 = [1, 2, 3];
-   const L8 = [1, 2, "Z"];
-   const L9 = ["Z", 2, 3];
-   const L10 = [1, 2];
-   expect(equal_Q(L6, L7)).toBe(true)
-   expect(equal_Q(L6, L8)).toBe(false)
-   expect(equal_Q(L6, L9)).toBe(false)
-   expect(equal_Q(L6, L10)).toBe(false)
-   expect(equal_Q(L10, L6)).toBe(false)
+    expect(equal_Q(2, 2)).toBe(true)
+    expect(equal_Q(2, 3)).toBe(false)
+    expect(equal_Q("abc", "abc")).toBe(true)
+    expect(equal_Q("abc", "abz")).toBe(false)
+    expect(equal_Q("zbc", "abc")).toBe(false)
+    expect(equal_Q(symbol("abc"), symbol("abc"))).toBe(true)
+    expect(equal_Q(symbol("abc"), symbol("abz"))).toBe(false)
+    expect(equal_Q(symbol("zbc"), symbol("abc"))).toBe(false)
+    const L6 = [1, 2, 3];
+    const L7 = [1, 2, 3];
+    const L8 = [1, 2, "Z"];
+    const L9 = ["Z", 2, 3];
+    const L10 = [1, 2];
+    expect(equal_Q(L6, L7)).toBe(true)
+    expect(equal_Q(L6, L8)).toBe(false)
+    expect(equal_Q(L6, L9)).toBe(false)
+    expect(equal_Q(L6, L10)).toBe(false)
+    expect(equal_Q(L10, L6)).toBe(false)
+})
+
+test('ENV (1 level)', () => {
+    let env1 = init_env
+    expect(setInEnv(env1, 'a','val_a')).toBe('val_a')
+    expect(setInEnv(env1, 'b','val_b')).toBe('val_b')
+    expect(setInEnv(env1, '=','val_eq')).toBe('val_eq')
+    expect(getKeyInEnv(env1, 'a')).toBe('val_a')
+    expect(getKeyInEnv(env1, 'b')).toBe('val_b')
+    expect(getKeyInEnv(env1, '=')).toBe('val_eq')
 })
