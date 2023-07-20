@@ -1,7 +1,7 @@
 import { describe, expect, test, it } from 'vitest'
 import { read_str } from "../src/reader"
 import { _symbol_Q } from "../src/types"
-import { } from "../src/core"
+import {ns} from "../src/core"
 
 test('read of constants/strings', () => {
   expect(read_str('2')).toBe(2)
@@ -29,4 +29,16 @@ test('READ_STR of strings', () => {
   expect(read_str('"$abc"')).toBe('$abc')
   expect(read_str('"abc$()"')).toBe('abc$()')
   expect(read_str('"\\"xyz\\""')).toBe('"xyz"')
+})
+
+test('READ_STR of lists', () => {
+  expect(ns.count(read_str('(2 3)'))).toBe(2)
+  expect(ns.first(read_str('(2 3)'))).toBe(2)
+  expect(ns.first(ns.rest(read_str('(2 3)')))).toBe(3)
+  const L = read_str('(+ 1 2 "str1" "string (with parens) and \'single quotes\'")');
+  expect(ns.count(L)).toBe(5)
+  expect(ns.nth(L, 3)).toBe('str1')
+  expect(ns.nth(L, 4)).toBe('string (with parens) and \'single quotes\'')
+  expect(read_str('(2 3)')).toStrictEqual([2,3])
+  expect(read_str('(2 3 "string (with parens)")')).toStrictEqual([2,3, 'string (with parens)'])
 })
