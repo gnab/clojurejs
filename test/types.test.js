@@ -1,5 +1,6 @@
-import {expect, test} from 'vitest'
+import { expect, test } from 'vitest'
 import { ns } from '../src/core'
+import { _symbol } from '../src/types'
 
 const hash_map = ns['hash-map']
 const hash_map_Q = ns['map?']
@@ -8,14 +9,16 @@ const contains_Q = ns['contains?']
 const assoc = ns['assoc']
 const dissoc = ns['dissoc']
 const count = ns['count']
+const equal_Q = ns['=']
+const symbol = _symbol
 
 test('hash_maps', () => {
     const X = hash_map()
     expect(hash_map_Q(X)).toBe(true)
-    expect(get(X,'a')).toBe(null)
+    expect(get(X, 'a')).toBe(null)
     expect(contains_Q(X, 'a')).toBe(false)
     const X1 = assoc(X, 'a', "value of X a")
-    expect(get(X,'a')).toBe(null)
+    expect(get(X, 'a')).toBe(null)
     expect(contains_Q(X, 'a')).toBe(false)
     expect(get(X1, 'a')).toBe("value of X a")
     expect(contains_Q(X1, 'a')).toBe(true)
@@ -29,9 +32,9 @@ test('hash_maps', () => {
     expect(get(Y2, 'b')).toBe("value of Y b")
     const X2 = assoc(X1, 'b', Y2);
     expect(count(Y2)).toBe(2)
-    expect(hash_map_Q(get(X2,'b'))).toBe(true)
-    expect(get(get(X2,'b'),'a')).toBe('value of Y a')
-    expect(get(get(X2,'b'),'b')).toBe('value of Y b')
+    expect(hash_map_Q(get(X2, 'b'))).toBe(true)
+    expect(get(get(X2, 'b'), 'a')).toBe('value of Y a')
+    expect(get(get(X2, 'b'), 'b')).toBe('value of Y b')
     const Y3 = dissoc(Y2, 'a');
     expect(count(Y2)).toBe(2)
     expect(count(Y3)).toBe(1)
@@ -39,4 +42,25 @@ test('hash_maps', () => {
     const Y4 = dissoc(Y3, 'b');
     expect(count(Y4)).toBe(0)
     expect(get(Y4, 'b')).toBe(null)
-  })
+})
+
+test('equal? function', () => {
+   expect(equal_Q(2,2)).toBe(true)
+   expect(equal_Q(2,3)).toBe(false)
+   expect(equal_Q("abc","abc")).toBe(true)
+   expect(equal_Q("abc","abz")).toBe(false)
+   expect(equal_Q("zbc","abc")).toBe(false)
+   expect(equal_Q(symbol("abc"),symbol("abc"))).toBe(true)
+   expect(equal_Q(symbol("abc"),symbol("abz"))).toBe(false)
+   expect(equal_Q(symbol("zbc"),symbol("abc"))).toBe(false)
+   const L6 = [1, 2, 3];
+   const L7 = [1, 2, 3];
+   const L8 = [1, 2, "Z"];
+   const L9 = ["Z", 2, 3];
+   const L10 = [1, 2];
+   expect(equal_Q(L6, L7)).toBe(true)
+   expect(equal_Q(L6, L8)).toBe(false)
+   expect(equal_Q(L6, L9)).toBe(false)
+   expect(equal_Q(L6, L10)).toBe(false)
+   expect(equal_Q(L10, L6)).toBe(false)
+})
