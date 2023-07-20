@@ -1,4 +1,4 @@
-import { describe, expect, test, it } from 'vitest'
+import {expect, test} from 'vitest'
 import { read_str } from "../src/reader"
 import { _symbol_Q } from "../src/types"
 import {ns} from "../src/core"
