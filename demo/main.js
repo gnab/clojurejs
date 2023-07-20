@@ -4,15 +4,15 @@ import { EditorState } from '@codemirror/state'
 import { clojure } from "../src/clojure"
 
 let editorState = EditorState.create({
-    doc: `(defn compute-across [func elements value]
-  (if (empty? elements)
-      value
-      (recur func (rest elements) (func value (first elements)))))
-      
-(defn total-of [numbers]
-   (compute-across + numbers 0))
-      
-(total-of [1 2 3 4 5])`,
+    doc: `(defn pos-neg-or-zero
+  "Determines whether or not n is positive, negative, or zero"
+  [n]
+  (cond
+    (< n 0) "negative"
+    (> n 0) "positive"
+    :else "zero"))
+
+(pos-neg-or-zero 5)`,
     extensions: [basicSetup, clojure()]
 })
 

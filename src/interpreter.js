@@ -44,13 +44,17 @@ function is_macro_call(ast, env) {
     _env.getKeyInEnv(env, ast[0])._ismacro_;
 }
 
+
+console.log(Object.entries(_env.currentEnv))
+console.log("wtf", _env.getKeyInEnv(_env.currentEnv, "apply"))
+
 function macroexpand(ast, env) {
   //console.log("macro:", is_macro_call(ast, env))
   console.log("ast[0]:", ast[0])
 
-  if (is_macro_call(ast, env)) {
-    console.log("mac:", _env.getKeyInEnv(env, ast[0]))
-  }
+ // if (is_macro_call(ast, env)) {
+ //   console.log("mac:", _env.getKeyInEnv(env, ast[0]))
+ // }
   /* while (is_macro_call(ast, env)) {
       var mac = _env.getKeyInEnv(env, ast[0]);
       console.log("macro:", mac)
@@ -122,8 +126,8 @@ function _EVAL(ast, env) {
     }
 
     // apply list
-    //ast = macroexpand(ast, env);
-
+    ast = macroexpand(ast, env);
+    console.log("expanded:", ast)
     if (ast.length === 0) {
       return ast;
     }
@@ -289,6 +293,13 @@ evalString(`(def reduce
     (if (empty? xs)
       init
       (reduce f (f init (first xs)) (rest xs)))))`)
-//evalString("(defmacro cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))", _env.currentEnv);
+evalString(`(defmacro cond 
+  (fn (& xs) 
+    (if (> (count xs) 0) 
+       (list 'if (first xs) 
+                (if (> (count xs) 1) 
+                    (nth xs 1) 
+                    (throw \"odd number of forms to cond\"))
+                (cons 'cond (rest (rest xs)))))))`, _env.currentEnv);
 //evalString("(def gensym (let [counter (atom 0)] (fn [] (symbol (str \"G__\" (swap! counter inc))))))", _env.currentEnv)
 //evalString("(defmacro or (fn (& xs) (if (empty? xs) nil (if (= 1 (count xs)) (first xs) (let (condvar (gensym)) `(let (~condvar ~(first xs)) (if ~condvar ~condvar (or ~@(rest xs)))))))))", _env.currentEnv)
