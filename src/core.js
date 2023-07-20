@@ -232,7 +232,7 @@ function swap_BANG(atm, f) {
     return atm.val;
 }
 
-function js_eval(str) {
+export function js_eval(str) {
     return js_to_mal(eval(str.toString()));
 }
 
