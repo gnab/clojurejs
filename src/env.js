@@ -5,26 +5,26 @@ export const init_env = {
 
 export let currentEnv = init_env
 
-export function bindExprs(outer, binds, exprs) {
+export function bindExprs(env, binds, exprs) {
     // Returns a new Env with symbols in binds bound to
     // corresponding values in exprs
-    let env = init_env
+    //let env = init_env
     for (var i = 0; i < binds.length; i++) {
-        if (binds[i].value === "&") {
+        if (binds[i].toString() === "&") {
             // variable length arguments
-            env.data[binds[i + 1].value] = Array.prototype.slice.call(exprs, i);
+            env.data[binds[i + 1].toString()] = Array.prototype.slice.call(exprs, i);
             break;
         } else {
-            console.log("Binding", binds[i].value, "to", exprs[i])
-            env.data[binds[i].value] = exprs[i];
+            console.log("Binding", binds[i].toString(), "to", exprs[i])
+            env.data[binds[i].toString()] = exprs[i];
         }
     }
-    env.outer = outer || null
+    //env.outer = outer || null
     return env
 }
 
 export function addToEnv(env, key, val) {
-    env.data[key] = val
+    env.data[key.toString()] = val
     return val
 }
 
