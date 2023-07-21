@@ -111,7 +111,7 @@ function _EVAL(ast, env) {
       case "quasiquote":
         ast = quasiquote(a1);
         break;
-      case 'defmacro!':
+      case 'defmacro':
         var func = types._clone(EVAL(a2, env));
         func._ismacro_ = true;
         return env.set(a1, func);
@@ -172,4 +172,9 @@ export const evalString = function (str) { return PRINT(EVAL(READ(str), repl_env
 // core.js: defined using javascript
 for (var n in core.ns) { repl_env.set(types._symbol(n), core.ns[n]); }
 
-evalString("(defmacro! cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
+evalString("(defmacro cond (fn (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))");
+evalString(`(def reduce
+  (fn (f init xs)
+    (if (empty? xs)
+      init
+      (reduce f (f init (first xs)) (rest xs)))))`)
