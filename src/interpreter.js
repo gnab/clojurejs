@@ -178,3 +178,7 @@ evalString(`(def reduce
     (if (empty? xs)
       init
       (reduce f (f init (first xs)) (rest xs)))))`)
+evalString("(def _iter-> (fn [acc form] (if (list? form) `(~(first form) ~acc ~@(rest form)) (list form acc))))")
+evalString("(defmacro -> (fn (x & xs) (reduce _iter-> x xs)))")
+evalString("(def _iter->> (fn [acc form] (if (list? form) `(~(first form) ~@(rest form) ~acc) (list form acc))))")
+evalString("(defmacro ->> (fn (x & xs) (reduce _iter->> x xs)))")
