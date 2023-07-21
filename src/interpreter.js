@@ -44,10 +44,6 @@ function is_macro_call(ast, env) {
     _env.getKeyInEnv(env, ast[0])._ismacro_;
 }
 
-
-console.log(Object.entries(_env.currentEnv))
-console.log("wtf", _env.getKeyInEnv(_env.currentEnv, "apply"))
-
 function macroexpand(ast, env) {
   //console.log("macro:", is_macro_call(ast, env))
   console.log("ast[0]:", ast[0])
@@ -115,7 +111,7 @@ function threadLast(form, expr) {
 
 let namespace = "user"
 
-function _EVAL(ast, env) {
+export function _EVAL(ast, env) {
   //console.log("Walking AST:", walk(x => x*2, x => x, ast))
   while (true) {
 
@@ -127,7 +123,7 @@ function _EVAL(ast, env) {
 
     // apply list
     ast = macroexpand(ast, env);
-    console.log("expanded:", ast)
+    //console.log("expanded:", ast)
     if (ast.length === 0) {
       return ast;
     }
@@ -272,7 +268,7 @@ function _EVAL(ast, env) {
   }
 }
 
-function EVAL(ast, env) {
+export function EVAL(ast, env) {
   //console.log("Evaluating", ast, " in", env)
   var result = _EVAL(ast, env);
   //console.log("EVAL", result)
@@ -284,7 +280,7 @@ export function evalString(str) {
 }
 
 // core.js: defined using javascript
-for (var n in ns) { _env.addToEnv(_env.init_env, types._symbol(n), ns[n]); }
+for (var n in ns) { _env.addToEnv(_env.currentEnv, types._symbol(n), ns[n]); }
 
 // core.mal: defined using the language itself
 evalString("(def not (fn (a) (if a false true)))", _env.currentEnv);

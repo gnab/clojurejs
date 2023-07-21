@@ -10,13 +10,13 @@ export function bindExprs(env, binds, exprs) {
     // corresponding values in exprs
     //let env = init_env
     for (var i = 0; i < binds.length; i++) {
-        if (binds[i].toString() === "&") {
+        if (binds[i].value === "&") {
             // variable length arguments
-            env.data[binds[i + 1].toString()] = Array.prototype.slice.call(exprs, i);
+            env.data[binds[i + 1].value] = Array.prototype.slice.call(exprs, i);
             break;
         } else {
-            console.log("Binding", binds[i].toString(), "to", exprs[i])
-            env.data[binds[i].toString()] = exprs[i];
+            console.log("Binding", binds[i].value, "to", exprs[i])
+            env.data[binds[i].value] = exprs[i];
         }
     }
     //env.outer = outer || null
@@ -24,7 +24,7 @@ export function bindExprs(env, binds, exprs) {
 }
 
 export function addToEnv(env, key, val) {
-    env.data[key.toString()] = val
+    env.data[key.value] = val
     return val
 }
 
@@ -32,7 +32,7 @@ export function findKeyInEnv(env, key) {
     //   console.log("env:", env)
     //   console.log("key:", key)
     //   console.log("key.value in env.data:", key.value in env.data)
-    if (key.toString() in env.data) {
+    if (key in env.data) {
         return env
     } else if (env.outer && key in env.outer.data) {
         //     console.log("key in env.outer:", env.outer)
@@ -48,13 +48,13 @@ export function getKeyInEnv(env, key) {
         return "Error: " + key + " is undefined"
     }
     let _env = findKeyInEnv(env, key)
-    return _env.data[key.toString()]
+    return _env.data[key]
 }
 
 export function setInEnv(env, key, value) {
-    console.log(key.toString())
+    console.log(key.value)
     console.log("setting", key, "in env", env)
-    env.data[key.toString()] = value
+    env.data[key.value] = value
     return value
 }
 
