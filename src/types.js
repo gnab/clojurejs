@@ -1,4 +1,4 @@
-import { bindExprs, newScope } from './env.js'
+import { Env } from './env.js'
 
 export function _obj_type(obj) {
     if (_symbol_Q(obj)) { return 'symbol'; }
@@ -145,30 +145,13 @@ export function postwalk(f, form) {
 }, [1, 2, { a: 3, b: 4}])) */
 
 // Functions
-
-export function _function(Eval, ast, env, params) {
-     // We want to support Clojure's `recur`.
-    // Since we have real, implicit TCO,
-    // we can simply walk the AST and replace any
-    // `recur` with the function name.
-    let env2 = newScope(env)
-    const fn = function () {
-        return Eval(swapRecur, bindExprs(env2, params, arguments))
-    }
-    const swapRecur = postwalk(x => {
-        if (x.value == _symbol("recur")) {
-           return fn
-        } else {
-            return x
-        }
-        return x
-    }, ast)
+export function _function(Eval, Env, ast, env, params) {
+    var fn = function() {
+        return Eval(ast, new Env(env, params, arguments));
+    };
     fn.__meta__ = null;
-    fn.__ast__ = swapRecur;
-    //   console.log("ast:", ast)
-    fn.__gen_env__ = function (args) {
-        return bindExprs(env2, params, args)
-    }
+    fn.__ast__ = ast;
+    fn.__gen_env__ = function(args) { return new Env(env, params, args); };
     fn._ismacro_ = false;
     return fn;
 }

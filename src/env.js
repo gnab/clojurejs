@@ -1,66 +1,45 @@
-export const init_env = {
-    data: {},
-    outer: null
-}
+// Env implementation
+export function Env(outer, binds, exprs) {
+    this.data = {};
+    this.outer = outer || null;
 
-export let currentEnv = init_env
-
-export function bindExprs(env, binds, exprs) {
-    // Returns a new Env with symbols in binds bound to
-    // corresponding values in exprs
-    //let env = init_env
-    for (var i = 0; i < binds.length; i++) {
-        if (binds[i].value === "&") {
-            // variable length arguments
-            env.data[binds[i + 1].value] = Array.prototype.slice.call(exprs, i);
-            break;
-        } else {
-            console.log("Binding", binds[i].value, "to", exprs[i])
-            env.data[binds[i].value] = exprs[i];
+    if (binds && exprs) {
+        // Returns a new Env with symbols in binds bound to
+        // corresponding values in exprs
+        // TODO: check types of binds and exprs and compare lengths
+        for (var i=0; i<binds.length;i++) {
+            if (binds[i].value === "&") {
+                // variable length arguments
+                this.data[binds[i+1].value] = Array.prototype.slice.call(exprs, i);
+                break;
+            } else {
+                this.data[binds[i].value] = exprs[i];
+            }
         }
     }
-    //env.outer = outer || null
-    return env
+    return this;
 }
-
-export function addToEnv(env, key, val) {
-    env.data[key.value] = val
-    return val
-}
-
-export function findKeyInEnv(env, key) {
-    //   console.log("env:", env)
-    //   console.log("key:", key)
-    //   console.log("key.value in env.data:", key.value in env.data)
-    if (key in env.data) {
-        return env
-    } else if (env.outer && key in env.outer.data) {
-        //     console.log("key in env.outer:", env.outer)
-        return findKeyInEnv(env.outer, key)
-    } else
-        return null
-}
-
-export function getKeyInEnv(env, key) {
-    // console.log("Attempting to get " + key + " in " + env)
-    //console.log(findKeyInEnv(env, key))
-    if (!findKeyInEnv(env, key)) {
-        return "Error: " + key + " is undefined"
+Env.prototype.find = function (key) {
+    if (!key.constructor || key.constructor.name !== 'Symbol') {
+        throw new Error("env.find key must be a symbol")
     }
-    let _env = findKeyInEnv(env, key)
-    return _env.data[key]
-}
-
-export function setInEnv(env, key, value) {
-    console.log(key.value)
-    console.log("setting", key, "in env", env)
-    env.data[key.value] = value
-    return value
-}
-
-export function newScope(env) {
-    return {
-        data: {},
-        outer: env
+    if (key.value in this.data) { return this; }
+    else if (this.outer) {  return this.outer.find(key); }
+    else { return null; }
+};
+Env.prototype.set = function(key, value) {
+    if (!key.constructor || key.constructor.name !== 'Symbol') {
+        console.log("key:", key)
+        throw new Error("env.set key must be a symbol")
     }
-}
+    this.data[key.value] = value;
+    return value;
+};
+Env.prototype.get = function(key) {
+    if (!key.constructor || key.constructor.name !== 'Symbol') {
+        throw new Error("env.get key must be a symbol")
+    }
+    var env = this.find(key);
+    if (!env) { throw new Error("'" + key.value + "' not found"); }
+    return env.data[key.value];
+};

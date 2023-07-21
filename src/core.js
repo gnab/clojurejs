@@ -1,6 +1,6 @@
 import * as types from './types.js'
 import { read_str } from './reader.js';
-import { currentEnv } from './env.js';
+import { Env } from './env.js';
 import { js_to_mal, resolve_js } from './interop.js';
 import { _pr_str, _println } from './printer.js'
 
